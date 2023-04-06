@@ -48,7 +48,7 @@ namespace Settings
 			{
 				if (_storage.TryGetValue(propertyName, out var rawValue))
 				{
-					IPropertyData.GetTyped<T>(rawValue).Set(value);
+					rawValue.ToTyped<T>().Set(value);
 				}
 				else
 				{
@@ -69,7 +69,7 @@ namespace Settings
 			{
 				if (_storage.TryGetValue(propertyName, out var rawValue))
 				{
-					return IPropertyData.GetTyped<T>(rawValue).Get();
+					return rawValue.ToTyped<T>().Get();
 				}
 
 				throw new KeyNotFoundException(string.Format(Strings.PropertyNotFound, propertyName));

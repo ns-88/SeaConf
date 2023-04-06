@@ -1,4 +1,4 @@
-﻿namespace Settings.Demo
+﻿namespace Settings.Test.Infrastructure.Models
 {
     internal interface IProgramSettings
     {
