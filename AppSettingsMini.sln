@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppSettingsMini", "AppSettingsMini\AppSettingsMini.csproj", "{96EF8F4A-F267-49A6-AC97-B603C03B3B66}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppSettingsMini.Demo", "AppSettingsMini.Demo\AppSettingsMini.Demo.csproj", "{1DE58033-EA4C-4EA3-90BA-705373F0589B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppSettingsMini.Test", "AppSettingsMini.Test\AppSettingsMini.Test.csproj", "{554C7AA1-3A9D-4AA1-B4C5-F81CD866B84F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{96EF8F4A-F267-49A6-AC97-B603C03B3B66}.Debug|x64.ActiveCfg = Debug|x64
+		{96EF8F4A-F267-49A6-AC97-B603C03B3B66}.Debug|x64.Build.0 = Debug|x64
+		{96EF8F4A-F267-49A6-AC97-B603C03B3B66}.Release|x64.ActiveCfg = Release|x64
+		{96EF8F4A-F267-49A6-AC97-B603C03B3B66}.Release|x64.Build.0 = Release|x64
+		{1DE58033-EA4C-4EA3-90BA-705373F0589B}.Debug|x64.ActiveCfg = Debug|x64
+		{1DE58033-EA4C-4EA3-90BA-705373F0589B}.Debug|x64.Build.0 = Debug|x64
+		{1DE58033-EA4C-4EA3-90BA-705373F0589B}.Release|x64.ActiveCfg = Release|x64
+		{554C7AA1-3A9D-4AA1-B4C5-F81CD866B84F}.Debug|x64.ActiveCfg = Debug|x64
+		{554C7AA1-3A9D-4AA1-B4C5-F81CD866B84F}.Debug|x64.Build.0 = Debug|x64
+		{554C7AA1-3A9D-4AA1-B4C5-F81CD866B84F}.Release|x64.ActiveCfg = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {24C1D3F3-EA41-4208-9337-0804D5275D92}
+	EndGlobalSection
+EndGlobal
