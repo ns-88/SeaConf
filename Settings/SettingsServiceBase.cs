@@ -11,7 +11,6 @@ namespace Settings
 
 		private readonly Dictionary<Type, ModelInfo> _models;
 		private readonly Dictionary<Type, IValueProvider> _valueProviders;
-		private readonly IValueProvider _bytesValueProvider;
 
 		protected SettingsServiceBase(ISettingsSourceProvider sourceProvider, string? collectionName = null)
 		{
@@ -19,7 +18,6 @@ namespace Settings
 
 			_models = new Dictionary<Type, ModelInfo>();
 			_valueProviders = CreateDefaultProviders(collectionName, sourceProvider);
-			_bytesValueProvider = _valueProviders.Last().Value;
 		}
 
 		private static Dictionary<Type, IValueProvider> CreateDefaultProviders(string? collectionName, ISettingsSourceProvider sourceProvider)
@@ -52,7 +50,7 @@ namespace Settings
 			_valueProviders.Add(provider.Type, provider);
 		}
 
-		protected T RegisterModel<T>(string name, bool isReadOnly, ISerializer? serializer = null) where T : SettingsModelBase, new()
+		protected T RegisterModel<T>(string name, bool isReadOnly) where T : SettingsModelBase, new()
 		{
 			Guard.ThrowIfEmptyString(name);
 
@@ -64,7 +62,7 @@ namespace Settings
 				throw new InvalidOperationException(string.Format(Strings.ModelAlreadyRegistered, type.Name));
 			}
 
-			_models.Add(type, new ModelInfo(model, name, isReadOnly, serializer));
+			_models.Add(type, new ModelInfo(model, name, isReadOnly));
 
 			return model;
 		}
@@ -76,66 +74,35 @@ namespace Settings
 				throw new SettingsSaveLoadFaultException(Strings.NotFoundRegisteredModels);
 			}
 
-			foreach (var pair in _models)
+			foreach (var modelInfo in _models.Values)
 			{
-				var modelInfo = pair.Value;
+				var properties = modelInfo.Model.GetPropertiesData().Values;
 
-				if (modelInfo.Serializer != null)
+				foreach (var property in properties)
 				{
-					var propertyData = await _bytesValueProvider.GetAsync(modelInfo.Name).ConfigureAwait(false);
-					var bytes = IPropertyData.GetTyped<ReadOnlyMemory<byte>>(propertyData).Get();
-
-					var deserializeModel = (SettingsModelBase)modelInfo.Serializer.Deserialize(bytes, modelInfo.Model.GetType());
-					var rhsProperties = ((ISettingsModel)deserializeModel).GetPropertiesData();
-					var lhsProperties = modelInfo.Model.GetPropertiesData();
-
-					if (rhsProperties.Count != lhsProperties.Count)
+					if (!_valueProviders.TryGetValue(property.Type, out var provider))
 					{
-						throw new SettingsSaveLoadFaultException("");
+						throw new SettingsSaveLoadFaultException(string.Format(Strings.ProviderNotFound, property.Type.Name));
 					}
 
-					foreach (var rhsProperty in rhsProperties.Values)
+					IPropertyData value;
+
+					try
 					{
-						if (lhsProperties.TryGetValue(rhsProperty.Name, out var lhsProperty))
-						{
-							lhsProperty.Set(rhsProperty);
-						}
-						else
-						{
-							throw new SettingsSaveLoadFaultException("");
-						}
+						value = await provider.GetAsync(property.Name).ConfigureAwait(false);
 					}
-				}
-				else
-				{
-					var properties = modelInfo.Model.GetPropertiesData().Values;
-
-					foreach (var property in properties)
+					catch (Exception ex)
 					{
-						if (!_valueProviders.TryGetValue(property.Type, out var provider))
-						{
-							throw new SettingsSaveLoadFaultException(string.Format(Strings.ProviderNotFound, property.Type.Name));
-						}
+						throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedLoadPropertyValue, property.Name, modelInfo.Name), ex);
+					}
 
-						IPropertyData value;
-
-						try
-						{
-							value = await provider.GetAsync(property.Name).ConfigureAwait(false);
-						}
-						catch (Exception ex)
-						{
-							throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedLoadPropertyValue, property.Name, modelInfo.Name), ex);
-						}
-
-						try
-						{
-							property.Set(value);
-						}
-						catch (Exception ex)
-						{
-							throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedSetPropertyValue, property.Name, modelInfo.Name), ex);
-						}
+					try
+					{
+						property.Set(value);
+					}
+					catch (Exception ex)
+					{
+						throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedSetPropertyValue, property.Name, modelInfo.Name), ex);
 					}
 				}
 			}
@@ -148,14 +115,14 @@ namespace Settings
 				throw new SettingsSaveLoadFaultException(Strings.NotFoundRegisteredModels);
 			}
 
-			foreach (var model in _models)
+			foreach (var modelInfo in _models)
 			{
-				if (model.Value.IsReadOnly)
+				if (modelInfo.Value.IsReadOnly)
 				{
 					continue;
 				}
 
-				var properties = model.Value.Model.GetModifiedProperties();
+				var properties = modelInfo.Value.Model.GetModifiedProperties();
 
 				foreach (var property in properties)
 				{
@@ -167,7 +134,7 @@ namespace Settings
 						}
 						catch (Exception ex)
 						{
-							throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedSavePropertyValue, property.Name, model.Value.Name), ex);
+							throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedSavePropertyValue, property.Name, modelInfo.Value.Name), ex);
 						}
 					}
 					else
@@ -185,14 +152,12 @@ namespace Settings
 			public readonly ISettingsModel Model;
 			public readonly string Name;
 			public readonly bool IsReadOnly;
-			public readonly ISerializer? Serializer;
 
-			public ModelInfo(ISettingsModel model, string name, bool isReadOnly, ISerializer? serializer)
+			public ModelInfo(ISettingsModel model, string name, bool isReadOnly)
 			{
 				Model = model;
 				Name = name;
 				IsReadOnly = isReadOnly;
-				Serializer = serializer;
 			}
 
 			public override bool Equals(object? obj)
@@ -204,13 +169,12 @@ namespace Settings
 
 				return Model == other.Model &&
 					   Name.Equals(other.Name, StringComparison.Ordinal) &&
-					   IsReadOnly == other.IsReadOnly &&
-					   Serializer == other.Serializer;
+					   IsReadOnly == other.IsReadOnly;
 			}
 
 			public override int GetHashCode()
 			{
-				return HashCode.Combine(Model, Name, IsReadOnly, Serializer);
+				return HashCode.Combine(Model, Name, IsReadOnly);
 			}
 		}
 

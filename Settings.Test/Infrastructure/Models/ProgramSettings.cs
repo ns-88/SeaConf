@@ -1,4 +1,4 @@
-﻿namespace Settings.Demo
+﻿namespace Settings.Test.Infrastructure.Models
 {
     internal class ProgramSettings : SettingsModelBase, IProgramSettings
     {
@@ -22,7 +22,7 @@
 
         public double DoubleValue
         {
-            get=> GetValue<double>();
+            get => GetValue<double>();
             set => SetValue(value);
         }
 

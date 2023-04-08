@@ -1,27 +1,9 @@
 ﻿using Settings.Infrastructure;
+using Settings.Interfaces;
 
 namespace Settings
 {
-	public interface IPropertyData
-	{
-		string Name { get; }
-		Type Type { get; }
-		bool IsModified { get; }
-
-		static PropertyData<T> GetTyped<T>(IPropertyData rawValue)
-		{
-			if (rawValue is not PropertyData<T> typedValue)
-			{
-				throw new InvalidCastException(string.Format(Strings.PropertyTypeNotCorrect, typeof(T), rawValue.Type));
-			}
-
-			return typedValue;
-		}
-
-		internal void Set(IPropertyData propertyData);
-	}
-
-	public class PropertyData<T> : IPropertyData
+	public class PropertyData<T> : IPropertyData<T>
 	{
 		private T? _value;
 
@@ -55,9 +37,19 @@ namespace Settings
 			IsModified = true;
 		}
 
+		IPropertyData<TData> IPropertyData.ToTyped<TData>()
+		{
+			if (this is not IPropertyData<TData> typedValue)
+			{
+				throw new InvalidCastException(string.Format(Strings.PropertyTypeNotCorrect, typeof(T), Type));
+			}
+
+			return typedValue;
+		}
+
 		void IPropertyData.Set(IPropertyData propertyData)
 		{
-			_value = IPropertyData.GetTyped<T>(propertyData).Get();
+			_value = propertyData.ToTyped<T>().Get();
 		}
 	}
 }

@@ -13,7 +13,7 @@ namespace Settings.ValueProviders
 		{
 			var value = string.Empty;
 
-			if (await ReadableStore.PropertyExistsAsync(CollectionName, propertyName))
+			if (await ReadableStore.PropertyExistsAsync(CollectionName, propertyName).ConfigureAwait(false))
 			{
 				value = await ReadableStore.GetStringValueAsync(CollectionName, propertyName);
 			}
@@ -23,7 +23,7 @@ namespace Settings.ValueProviders
 
 		public override ValueTask SetAsync(IPropertyData value)
 		{
-			var typedData = IPropertyData.GetTyped<string>(value);
+			var typedData = value.ToTyped<string>();
 
 			return WriteableStore.SetStringValueAsync(typedData.Get(), CollectionName, value.Name);
 		}
@@ -40,7 +40,7 @@ namespace Settings.ValueProviders
 		{
 			var value = int.MinValue;
 
-			if (await ReadableStore.PropertyExistsAsync(CollectionName, propertyName))
+			if (await ReadableStore.PropertyExistsAsync(CollectionName, propertyName).ConfigureAwait(false))
 			{
 				value = await ReadableStore.GetIntValueAsync(CollectionName, propertyName);
 			}
@@ -50,7 +50,7 @@ namespace Settings.ValueProviders
 
 		public override ValueTask SetAsync(IPropertyData value)
 		{
-			var typedData = IPropertyData.GetTyped<int>(value);
+			var typedData = value.ToTyped<int>();
 
 			return WriteableStore.SetIntValueAsync(typedData.Get(), CollectionName, value.Name);
 		}
@@ -67,7 +67,7 @@ namespace Settings.ValueProviders
 		{
 			var value = long.MinValue;
 
-			if (await ReadableStore.PropertyExistsAsync(CollectionName, propertyName))
+			if (await ReadableStore.PropertyExistsAsync(CollectionName, propertyName).ConfigureAwait(false))
 			{
 				value = await ReadableStore.GetLongValueAsync(CollectionName, propertyName);
 			}
@@ -77,7 +77,7 @@ namespace Settings.ValueProviders
 
 		public override ValueTask SetAsync(IPropertyData value)
 		{
-			var typedData = IPropertyData.GetTyped<long>(value);
+			var typedData = value.ToTyped<long>();
 
 			return WriteableStore.SetLongValueAsync(typedData.Get(), CollectionName, value.Name);
 		}
@@ -94,7 +94,7 @@ namespace Settings.ValueProviders
 		{
 			var value = double.NaN;
 
-			if (await ReadableStore.PropertyExistsAsync(CollectionName, propertyName))
+			if (await ReadableStore.PropertyExistsAsync(CollectionName, propertyName).ConfigureAwait(false))
 			{
 				value = await ReadableStore.GetDoubleValueAsync(CollectionName, propertyName);
 			}
@@ -104,7 +104,7 @@ namespace Settings.ValueProviders
 
 		public override ValueTask SetAsync(IPropertyData value)
 		{
-			var typedData = IPropertyData.GetTyped<double>(value);
+			var typedData = value.ToTyped<double>();
 
 			return WriteableStore.SetDoubleValueAsync(typedData.Get(), CollectionName, value.Name);
 		}
@@ -121,7 +121,7 @@ namespace Settings.ValueProviders
 		{
 			var value = ReadOnlyMemory<byte>.Empty;
 
-			if (await ReadableStore.PropertyExistsAsync(CollectionName, propertyName))
+			if (await ReadableStore.PropertyExistsAsync(CollectionName, propertyName).ConfigureAwait(false))
 			{
 				value = await ReadableStore.GetBytesValueAsync(CollectionName, propertyName);
 			}
@@ -131,7 +131,7 @@ namespace Settings.ValueProviders
 
 		public override ValueTask SetAsync(IPropertyData value)
 		{
-			var typedData = IPropertyData.GetTyped<ReadOnlyMemory<byte>>(value);
+			var typedData = value.ToTyped<ReadOnlyMemory<byte>>();
 
 			return WriteableStore.SetBytesValueAsync(typedData.Get(), CollectionName, value.Name);
 		}

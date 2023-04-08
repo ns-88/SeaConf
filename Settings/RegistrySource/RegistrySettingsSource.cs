@@ -61,7 +61,7 @@ namespace Settings.RegistrySource
 			using var rootKey = _rootKeyFactory.CreateKey();
 
 			var result = rootKey.GetSubKeyNames()
-						  .FirstOrDefault(x => x.Equals(collectionName, StringComparison.Ordinal)) != null;
+								.FirstOrDefault(x => x.Equals(collectionName, StringComparison.Ordinal)) != null;
 
 			return new ValueTask<bool>(result);
 		}
