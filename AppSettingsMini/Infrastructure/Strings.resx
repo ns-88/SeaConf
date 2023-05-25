@@ -132,6 +132,9 @@
   <data name="ModelAlreadyRegistered" xml:space="preserve">
     <value>Модель настроек с типом "{0}" уже зарегистрирована.</value>
   </data>
+  <data name="ModelNotRegistered" xml:space="preserve">
+    <value>Модель с типом "{0}" не зарегистрирована.</value>
+  </data>
   <data name="NotFoundRegisteredModels" xml:space="preserve">
     <value>Отсутствуют зарегистрированные модели настроек.</value>
   </data>
