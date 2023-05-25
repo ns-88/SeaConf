@@ -10,7 +10,7 @@ namespace AppSettingsMini.Test.Infrastructure
 		public SettingsService(ISettingsSourceProvider sourceProvider, string? collectionName = null)
 			: base(sourceProvider, collectionName)
 		{
-			ProgramSettings = RegisterModel<ProgramSettings>("Настройки приложения", false);
+			ProgramSettings = RegisterModel<IProgramSettings, ProgramSettings>("Настройки приложения", false);
 		}
 	}
 }

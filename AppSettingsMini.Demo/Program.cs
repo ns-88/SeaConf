@@ -9,6 +9,8 @@ namespace AppSettingsMini.Demo
 			var provider = new RegistrySettingsSourcesProvider("OrgName\\AppName");
 			var service = new SettingsService(provider);
 
+			var model = service.GetModel<IProgramSettings>();
+
 			await service.LoadAsync();
 		}
 	}

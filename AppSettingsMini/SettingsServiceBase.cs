@@ -1,11 +1,14 @@
-﻿using AppSettingsMini.Infrastructure;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using AppSettingsMini.Infrastructure;
 using AppSettingsMini.Interfaces;
 using AppSettingsMini.Interfaces.ValueProviders;
 using AppSettingsMini.ValueProviders;
 
 namespace AppSettingsMini
 {
-	public abstract class SettingsServiceBase
+	public abstract class SettingsServiceBase : ISettingsService
 	{
 		private const string DefaultCollectionName = "AppSettings";
 
@@ -29,11 +32,11 @@ namespace AppSettingsMini
 
 			return new Dictionary<Type, IValueProvider>
 			{
-				{ typeof(string), new StringValueProvider(collectionName, sourceProvider) },
-				{ typeof(int), new IntValueProvider(collectionName, sourceProvider) },
-				{ typeof(long), new LongValueProvider(collectionName, sourceProvider) },
-				{ typeof(double), new DoubleValueProvider(collectionName, sourceProvider) },
-				{ typeof(ReadOnlyMemory<byte>), new BytesValueProvider(collectionName, sourceProvider) },
+				{ typeof(string), new StringValueProvider(collectionName!, sourceProvider) },
+				{ typeof(int), new IntValueProvider(collectionName!, sourceProvider) },
+				{ typeof(long), new LongValueProvider(collectionName!, sourceProvider) },
+				{ typeof(double), new DoubleValueProvider(collectionName!, sourceProvider) },
+				{ typeof(ReadOnlyMemory<byte>), new BytesValueProvider(collectionName!, sourceProvider) },
 			};
 		}
 
@@ -50,12 +53,14 @@ namespace AppSettingsMini
 			_valueProviders.Add(provider.Type, provider);
 		}
 
-		protected T RegisterModel<T>(string name, bool isReadOnly) where T : SettingsModelBase, new()
+		protected TImpl RegisterModel<T, TImpl>(string name, bool isReadOnly)
+			where T : class
+			where TImpl : SettingsModelBase, T, new()
 		{
 			Guard.ThrowIfEmptyString(name);
 
 			var type = typeof(T);
-			var model = new T();
+			var model = new TImpl();
 
 			if (_models.ContainsKey(type))
 			{
@@ -143,6 +148,18 @@ namespace AppSettingsMini
 					}
 				}
 			}
+		}
+
+		public T GetModel<T>()
+		{
+			var type = typeof(T);
+
+			if (!_models.TryGetValue(type, out var modelInfo))
+			{
+				throw new InvalidOperationException(string.Format(Strings.ModelNotRegistered, type));
+			}
+
+			return (T)modelInfo.Model;
 		}
 
 		#region Nested types

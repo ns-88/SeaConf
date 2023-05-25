@@ -1,4 +1,7 @@
-﻿namespace AppSettingsMini.Interfaces.ValueProviders
+﻿using System;
+using System.Threading.Tasks;
+
+namespace AppSettingsMini.Interfaces.ValueProviders
 {
     public interface IValueProvider
     {

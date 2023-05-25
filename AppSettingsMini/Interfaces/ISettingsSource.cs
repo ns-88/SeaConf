@@ -1,4 +1,7 @@
-﻿namespace AppSettingsMini.Interfaces
+﻿using System;
+using System.Threading.Tasks;
+
+namespace AppSettingsMini.Interfaces
 {
     public interface ISettingsSource
     {

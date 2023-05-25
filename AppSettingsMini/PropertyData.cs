@@ -1,4 +1,5 @@
-﻿using AppSettingsMini.Infrastructure;
+﻿using System;
+using AppSettingsMini.Infrastructure;
 using AppSettingsMini.Interfaces;
 
 namespace AppSettingsMini

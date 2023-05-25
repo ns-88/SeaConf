@@ -1,9 +1,16 @@
-﻿using AppSettingsMini.Infrastructure;
+﻿using System;
+using System.Linq;
+using System.Runtime.Versioning;
+using System.Threading.Tasks;
+using AppSettingsMini.Infrastructure;
 using AppSettingsMini.Interfaces;
 using Microsoft.Win32;
 
 namespace AppSettingsMini.RegistrySource
 {
+#if NET6_0
+	[SupportedOSPlatform("windows")]
+#endif
 	internal class RegistrySettingsSource : IReadableSettingsSource, IWriteableSettingsSource
 	{
 		private readonly RegistryRootKeyFactory _rootKeyFactory;
@@ -71,7 +78,7 @@ namespace AppSettingsMini.RegistrySource
 			using var rootKey = _rootKeyFactory.CreateKey();
 			using var collectionKey = rootKey.OpenSubKey(collectionName);
 
-			return ValueTask.FromResult(collectionKey?.GetValue(propertyName) != null);
+			return new ValueTask<bool>(collectionKey?.GetValue(propertyName) != null);
 		}
 
 		#region Get/Set/Delete methods
@@ -79,64 +86,64 @@ namespace AppSettingsMini.RegistrySource
 		{
 			SetValueInternal(value, collectionName, propertyName, RegistryValueKind.String, _rootKeyFactory);
 
-			return ValueTask.CompletedTask;
+			return new ValueTask();
 		}
-		
+
 		public ValueTask SetIntValueAsync(int value, string collectionName, string propertyName)
 		{
 			SetValueInternal(value, collectionName, propertyName, RegistryValueKind.DWord, _rootKeyFactory);
 
-			return ValueTask.CompletedTask;
+			return new ValueTask();
 		}
 
 		public ValueTask SetLongValueAsync(long value, string collectionName, string propertyName)
 		{
 			SetValueInternal(value, collectionName, propertyName, RegistryValueKind.QWord, _rootKeyFactory);
 
-			return ValueTask.CompletedTask;
+			return new ValueTask();
 		}
 
 		public ValueTask SetDoubleValueAsync(double value, string collectionName, string propertyName)
 		{
 			SetValueInternal(BitConverter.GetBytes(value), collectionName, propertyName, RegistryValueKind.Binary, _rootKeyFactory);
 
-			return ValueTask.CompletedTask;
+			return new ValueTask();
 		}
 
 		public ValueTask SetBytesValueAsync(ReadOnlyMemory<byte> value, string collectionName, string propertyName)
 		{
 			SetValueInternal(value.ToArray(), collectionName, propertyName, RegistryValueKind.Binary, _rootKeyFactory);
 
-			return ValueTask.CompletedTask;
+			return new ValueTask();
 		}
 
 		public ValueTask<string> GetStringValueAsync(string collectionName, string propertyName)
 		{
-			return ValueTask.FromResult(GetValueInternal<string>(collectionName, propertyName, _rootKeyFactory));
+			return new ValueTask<string>(GetValueInternal<string>(collectionName, propertyName, _rootKeyFactory));
 		}
 
 		public ValueTask<int> GetIntValueAsync(string collectionName, string propertyName)
 		{
-			return ValueTask.FromResult(GetValueInternal<int>(collectionName, propertyName, _rootKeyFactory));
+			return new ValueTask<int>(GetValueInternal<int>(collectionName, propertyName, _rootKeyFactory));
 		}
 
 		public ValueTask<long> GetLongValueAsync(string collectionName, string propertyName)
 		{
-			return ValueTask.FromResult(GetValueInternal<long>(collectionName, propertyName, _rootKeyFactory));
+			return new ValueTask<long>(GetValueInternal<long>(collectionName, propertyName, _rootKeyFactory));
 		}
 
 		public ValueTask<double> GetDoubleValueAsync(string collectionName, string propertyName)
 		{
 			var bytes = GetValueInternal<byte[]>(collectionName, propertyName, _rootKeyFactory);
 
-			return ValueTask.FromResult(BitConverter.ToDouble(bytes));
+			return new ValueTask<double>(BitConverter.ToDouble(bytes, 0));
 		}
 
 		public ValueTask<ReadOnlyMemory<byte>> GetBytesValueAsync(string collectionName, string propertyName)
 		{
 			var value = (ReadOnlyMemory<byte>)GetValueInternal<byte[]>(collectionName, propertyName, _rootKeyFactory);
 
-			return ValueTask.FromResult(value);
+			return new ValueTask<ReadOnlyMemory<byte>>(value);
 		}
 
 		public ValueTask DeletePropertyAsync(string collectionName, string propertyName)
@@ -153,7 +160,7 @@ namespace AppSettingsMini.RegistrySource
 				throw new InvalidOperationException($"Не удалось удалить значение. Ключ реестра: \"{collectionName}\", свойство: \"{propertyName}\".", ex);
 			}
 
-			return ValueTask.CompletedTask;
+			return new ValueTask();
 		}
 		#endregion
 

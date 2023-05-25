@@ -106,6 +106,15 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Модель с типом &quot;{0}&quot; не зарегистрирована..
+        /// </summary>
+        internal static string ModelNotRegistered {
+            get {
+                return ResourceManager.GetString("ModelNotRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Отсутствуют зарегистрированные модели настроек..
         /// </summary>
         internal static string NotFoundRegisteredModels {

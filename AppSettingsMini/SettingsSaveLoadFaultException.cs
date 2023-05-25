@@ -1,4 +1,6 @@
-﻿namespace AppSettingsMini
+﻿using System;
+
+namespace AppSettingsMini
 {
     internal class SettingsSaveLoadFaultException : Exception
     {

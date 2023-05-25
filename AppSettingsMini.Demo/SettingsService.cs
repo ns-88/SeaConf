@@ -9,7 +9,7 @@ namespace AppSettingsMini.Demo
 		public SettingsService(ISettingsSourceProvider settingsProvider)
 			: base(settingsProvider)
 		{
-			ProgramSettings = RegisterModel<ProgramSettings>("Настройки приложения", false);
+			ProgramSettings = RegisterModel<IProgramSettings, ProgramSettings>("Настройки приложения", false);
 		}
 	}
 }

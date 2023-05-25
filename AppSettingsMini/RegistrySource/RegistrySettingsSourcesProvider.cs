@@ -1,7 +1,11 @@
-﻿using AppSettingsMini.Interfaces;
+﻿using System.Runtime.Versioning;
+using AppSettingsMini.Interfaces;
 
 namespace AppSettingsMini.RegistrySource
 {
+#if NET6_0
+	[SupportedOSPlatform("windows")]
+#endif
 	public class RegistrySettingsSourcesProvider : ISettingsSourceProvider
 	{
 		public IReadableSettingsSource ReadableSettingsStore { get; }

@@ -1,4 +1,6 @@
-﻿using AppSettingsMini.Interfaces;
+﻿using System;
+using System.Threading.Tasks;
+using AppSettingsMini.Interfaces;
 using AppSettingsMini.Interfaces.ValueProviders;
 
 namespace AppSettingsMini.ValueProviders

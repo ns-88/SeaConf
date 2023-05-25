@@ -1,4 +1,6 @@
-﻿namespace AppSettingsMini.Interfaces
+﻿using System;
+
+namespace AppSettingsMini.Interfaces
 {
 	public interface IPropertyData
 	{

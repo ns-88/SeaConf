@@ -1,4 +1,6 @@
-﻿namespace AppSettingsMini.Interfaces
+﻿using System.Collections.Generic;
+
+namespace AppSettingsMini.Interfaces
 {
 	public interface ISettingsModel
 	{
