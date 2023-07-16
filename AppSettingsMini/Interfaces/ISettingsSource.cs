@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 
 namespace AppSettingsMini.Interfaces
 {
-    public interface ISettingsSource
+    public interface ISettingsSource : IDisposable, IAsyncDisposable
     {
-        ValueTask<bool> CollectionExistsAsync(string collectionName);
+        ValueTask LoadAsync();
+	    ValueTask SaveAsync();
+	    ValueTask<bool> CollectionExistsAsync(string collectionName);
         ValueTask<bool> PropertyExistsAsync(string collectionName, string propertyName);
     }
 

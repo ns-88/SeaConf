@@ -35,7 +35,7 @@ namespace AppSettingsMini
 				var typeArgs = new[] { property.PropertyType };
 				var genericType = openGenericType.MakeGenericType(typeArgs);
 
-				var propertyData = (IPropertyData)Activator.CreateInstance(genericType, $"{modelType.Name}.{property.Name}", property.PropertyType)!;
+				var propertyData = (IPropertyData)Activator.CreateInstance(genericType, property.Name, property.PropertyType)!;
 
 				propertiesData.Add(property.Name, propertyData);
 			}

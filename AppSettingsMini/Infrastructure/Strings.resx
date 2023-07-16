@@ -123,8 +123,20 @@
   <data name="FailedLoadPropertyValue" xml:space="preserve">
     <value>Не удалось получить значение свойства "{0}". Модель "{1}".</value>
   </data>
+  <data name="FailedLoadSettingsFromSource" xml:space="preserve">
+    <value>Не удалось загрузить настройки из источника.</value>
+  </data>
+  <data name="FailedLoadXmlDocument" xml:space="preserve">
+    <value>Не удалось загрузить xml документ.</value>
+  </data>
   <data name="FailedSavePropertyValue" xml:space="preserve">
     <value>Не удалось сохранить значение свойства "{0}". Модель "{1}".</value>
+  </data>
+  <data name="FailedSaveSettingsToSource" xml:space="preserve">
+    <value>Не удалось сохранить настройки в источник.</value>
+  </data>
+  <data name="FailedSaveXmlDocument" xml:space="preserve">
+    <value>Не удалось сохранить xml документ.</value>
   </data>
   <data name="FailedSetPropertyValue" xml:space="preserve">
     <value>Не удалось установить значение свойства "{0}". Модель "{1}".</value>
@@ -149,5 +161,20 @@
   </data>
   <data name="ProviderNotFound" xml:space="preserve">
     <value>Не найден провайдер чтения и записи значения для типа "{0}".</value>
+  </data>
+  <data name="RootCollectionElementNotExist" xml:space="preserve">
+    <value>Корневой элемент коллекции с именем "{0}" не существует.</value>
+  </data>
+  <data name="StringValueCannotConvertedToType" xml:space="preserve">
+    <value>Строковое значение не может быть преобразовано к типу "{0}". Значение "{1}".</value>
+  </data>
+  <data name="ValueAttributeNotFound" xml:space="preserve">
+    <value>Атрибут "value" не найден. Родительский элемент: "{0}".</value>
+  </data>
+  <data name="XmlDocumentElementNotExist" xml:space="preserve">
+    <value>Элемент xml-документа с именем "{0}" не существует.</value>
+  </data>
+  <data name="XmlDocumentRootElementIsMissing" xml:space="preserve">
+    <value>Отсутствует корневой элемент xml-документа.</value>
   </data>
 </root>

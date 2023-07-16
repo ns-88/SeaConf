@@ -1,4 +1,4 @@
-﻿using AppSettingsMini.Interfaces;
+﻿using AppSettingsMini.Interfaces.Factories;
 
 namespace AppSettingsMini.Demo
 {
@@ -6,10 +6,10 @@ namespace AppSettingsMini.Demo
 	{
 		public IProgramSettings ProgramSettings { get; }
 
-		public SettingsService(ISettingsSourceProvider settingsProvider)
-			: base(settingsProvider)
+		public SettingsService(ISettingsSourceProviderFactory sourceProviderFactory)
+			: base(sourceProviderFactory)
 		{
-			ProgramSettings = RegisterModel<IProgramSettings, ProgramSettings>("Настройки приложения", false);
+			ProgramSettings = RegisterModel<IProgramSettings, ProgramSettings>();
 		}
 	}
 }

@@ -1,37 +1,35 @@
 ﻿using AppSettingsMini.Interfaces;
-using Moq;
 
 namespace AppSettingsMini.Test.Infrastructure
 {
 	internal class MockSettingsSourceProvider : ISettingsSourceProvider
-    {
-	    public IReadableSettingsSource ReadableSettingsStore { get; }
-	    public IWriteableSettingsSource WriteableSettingsStore { get; }
+	{
+		public IReadableSettingsSource ReadableSettingsSource { get; }
+		public IWriteableSettingsSource WriteableSettingsSource { get; }
 
-	    private MockSettingsSourceProvider(IReadableSettingsSource readableSettingsStore, IWriteableSettingsSource writeableSettingsStore)
-	    {
-		    ReadableSettingsStore = readableSettingsStore;
-		    WriteableSettingsStore = writeableSettingsStore;
-	    }
+		public MockSettingsSourceProvider(IReadableSettingsSource readableSettingsStore, IWriteableSettingsSource writeableSettingsStore)
+		{
+			ReadableSettingsSource = readableSettingsStore;
+			WriteableSettingsSource = writeableSettingsStore;
+		}
 
-	    public static MockSettingsSourceProvider CreateForReadableSource(out Mock<IReadableSettingsSource> mock)
-	    {
-		    var readableSourceMock = new Mock<IReadableSettingsSource>();
-		    var writeableSourceMock = new Mock<IWriteableSettingsSource>();
+		public ValueTask LoadAsync()
+		{
+			return new ValueTask();
+		}
 
-		    mock = readableSourceMock;
+		public ValueTask SaveAsync()
+		{
+			return new ValueTask();
+		}
 
-		    return new MockSettingsSourceProvider(readableSourceMock.Object, writeableSourceMock.Object);
-	    }
+		public void Dispose()
+		{
+		}
 
-	    public static MockSettingsSourceProvider CreateForWriteableSource(out Mock<IWriteableSettingsSource> mock)
-	    {
-		    var readableSourceMock = new Mock<IReadableSettingsSource>();
-		    var writeableSourceMock = new Mock<IWriteableSettingsSource>();
-
-		    mock = writeableSourceMock;
-
-		    return new MockSettingsSourceProvider(readableSourceMock.Object, writeableSourceMock.Object);
-	    }
+		public ValueTask DisposeAsync()
+		{
+			return new ValueTask();
+		}
 	}
 }

@@ -79,11 +79,47 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось загрузить настройки из источника..
+        /// </summary>
+        internal static string FailedLoadSettingsFromSource {
+            get {
+                return ResourceManager.GetString("FailedLoadSettingsFromSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось загрузить xml документ..
+        /// </summary>
+        internal static string FailedLoadXmlDocument {
+            get {
+                return ResourceManager.GetString("FailedLoadXmlDocument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Не удалось сохранить значение свойства &quot;{0}&quot;. Модель &quot;{1}&quot;..
         /// </summary>
         internal static string FailedSavePropertyValue {
             get {
                 return ResourceManager.GetString("FailedSavePropertyValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось сохранить настройки в источник..
+        /// </summary>
+        internal static string FailedSaveSettingsToSource {
+            get {
+                return ResourceManager.GetString("FailedSaveSettingsToSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось сохранить xml документ..
+        /// </summary>
+        internal static string FailedSaveXmlDocument {
+            get {
+                return ResourceManager.GetString("FailedSaveXmlDocument", resourceCulture);
             }
         }
         
@@ -156,6 +192,51 @@ namespace AppSettingsMini.Infrastructure {
         internal static string ProviderNotFound {
             get {
                 return ResourceManager.GetString("ProviderNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Корневой элемент коллекции с именем &quot;{0}&quot; не существует..
+        /// </summary>
+        internal static string RootCollectionElementNotExist {
+            get {
+                return ResourceManager.GetString("RootCollectionElementNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Строковое значение не может быть преобразовано к типу &quot;{0}&quot;. Значение &quot;{1}&quot;..
+        /// </summary>
+        internal static string StringValueCannotConvertedToType {
+            get {
+                return ResourceManager.GetString("StringValueCannotConvertedToType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Атрибут &quot;value&quot; не найден. Родительский элемент: &quot;{0}&quot;..
+        /// </summary>
+        internal static string ValueAttributeNotFound {
+            get {
+                return ResourceManager.GetString("ValueAttributeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Элемент xml-документа с именем &quot;{0}&quot; не существует..
+        /// </summary>
+        internal static string XmlDocumentElementNotExist {
+            get {
+                return ResourceManager.GetString("XmlDocumentElementNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Отсутствует корневой элемент xml-документа..
+        /// </summary>
+        internal static string XmlDocumentRootElementIsMissing {
+            get {
+                return ResourceManager.GetString("XmlDocumentRootElementIsMissing", resourceCulture);
             }
         }
     }

@@ -1,8 +1,14 @@
-﻿namespace AppSettingsMini.Interfaces
+﻿using System;
+using System.Threading.Tasks;
+
+namespace AppSettingsMini.Interfaces
 {
-	public interface ISettingsSourceProvider
+	public interface ISettingsSourceProvider : IDisposable, IAsyncDisposable
     {
-        IReadableSettingsSource ReadableSettingsStore { get; }
-        IWriteableSettingsSource WriteableSettingsStore { get; }
+        IReadableSettingsSource ReadableSettingsSource { get; }
+        IWriteableSettingsSource WriteableSettingsSource { get; }
+
+        ValueTask LoadAsync();
+        ValueTask SaveAsync();
     }
 }
