@@ -1,64 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AppSettingsMini.Factories;
 using AppSettingsMini.Infrastructure;
 using AppSettingsMini.Interfaces;
-using AppSettingsMini.Interfaces.ValueProviders;
-using AppSettingsMini.ValueProviders;
+using AppSettingsMini.Interfaces.Factories;
 
 namespace AppSettingsMini
 {
 	public abstract class SettingsServiceBase : ISettingsService
 	{
-		private const string DefaultCollectionName = "AppSettings";
-
+		private readonly ISettingsSourceProviderFactory _sourceProviderFactory;
 		private readonly Dictionary<Type, ModelInfo> _models;
-		private readonly Dictionary<Type, IValueProvider> _valueProviders;
+		private readonly Dictionary<Type, IValueProviderFactory> _valueProviderFactories;
 
-		protected SettingsServiceBase(ISettingsSourceProvider sourceProvider, string? collectionName = null)
+		protected SettingsServiceBase(ISettingsSourceProviderFactory sourceProviderFactory)
 		{
-			Guard.ThrowIfNull(sourceProvider);
+			Guard.ThrowIfNull(sourceProviderFactory, out _sourceProviderFactory);
 
 			_models = new Dictionary<Type, ModelInfo>();
-			_valueProviders = CreateDefaultProviders(collectionName, sourceProvider);
+			_valueProviderFactories = new Dictionary<Type, IValueProviderFactory>();
 		}
 
-		private static Dictionary<Type, IValueProvider> CreateDefaultProviders(string? collectionName, ISettingsSourceProvider sourceProvider)
+		protected void RegisterValueProviderFactory(IValueProviderFactory factory)
 		{
-			if (string.IsNullOrWhiteSpace(collectionName))
+			Guard.ThrowIfNull(factory);
+			Guard.ThrowIfNull(factory.Type);
+
+			if (_valueProviderFactories.ContainsKey(factory.Type))
 			{
-				collectionName = DefaultCollectionName;
+				throw new InvalidOperationException(string.Format(Strings.ProviderAlreadyRegistered, factory.Type.Name));
 			}
 
-			return new Dictionary<Type, IValueProvider>
-			{
-				{ typeof(string), new StringValueProvider(collectionName!, sourceProvider) },
-				{ typeof(int), new IntValueProvider(collectionName!, sourceProvider) },
-				{ typeof(long), new LongValueProvider(collectionName!, sourceProvider) },
-				{ typeof(double), new DoubleValueProvider(collectionName!, sourceProvider) },
-				{ typeof(ReadOnlyMemory<byte>), new BytesValueProvider(collectionName!, sourceProvider) },
-			};
+			_valueProviderFactories.Add(factory.Type, factory);
 		}
 
-		protected void RegisterValueProvider(IValueProvider provider)
-		{
-			Guard.ThrowIfNull(provider);
-			Guard.ThrowIfNull(provider.Type);
-
-			if (_valueProviders.ContainsKey(provider.Type))
-			{
-				throw new InvalidOperationException(string.Format(Strings.ProviderAlreadyRegistered, provider.Type.Name));
-			}
-
-			_valueProviders.Add(provider.Type, provider);
-		}
-
-		protected TImpl RegisterModel<T, TImpl>(string name, bool isReadOnly)
+		protected TImpl RegisterModel<T, TImpl>(bool isReadOnly = false)
 			where T : class
 			where TImpl : SettingsModelBase, T, new()
 		{
-			Guard.ThrowIfEmptyString(name);
-
 			var type = typeof(T);
 			var model = new TImpl();
 
@@ -67,7 +47,7 @@ namespace AppSettingsMini
 				throw new InvalidOperationException(string.Format(Strings.ModelAlreadyRegistered, type.Name));
 			}
 
-			_models.Add(type, new ModelInfo(model, name, isReadOnly));
+			_models.Add(type, new ModelInfo(model, type.Name, isReadOnly));
 
 			return model;
 		}
@@ -79,35 +59,51 @@ namespace AppSettingsMini
 				throw new SettingsSaveLoadFaultException(Strings.NotFoundRegisteredModels);
 			}
 
-			foreach (var modelInfo in _models.Values)
+			var sourceProvider = _sourceProviderFactory.Create();
+
+			await using (sourceProvider.ConfigureAwait(false))
 			{
-				var properties = modelInfo.Model.GetPropertiesData().Values;
+				using var valueProvidersFactory = new ValueProvidersFactory(_valueProviderFactories);
 
-				foreach (var property in properties)
+				try
 				{
-					if (!_valueProviders.TryGetValue(property.Type, out var provider))
-					{
-						throw new SettingsSaveLoadFaultException(string.Format(Strings.ProviderNotFound, property.Type.Name));
-					}
+					await sourceProvider.LoadAsync().ConfigureAwait(false);
+				}
+				catch (Exception ex)
+				{
+					throw new SettingsSaveLoadFaultException(Strings.FailedLoadSettingsFromSource, ex);
+				}
 
-					IPropertyData value;
+				foreach (var modelInfo in _models.Values)
+				{
+					var properties = modelInfo.Model.GetPropertiesData().Values;
 
-					try
+					foreach (var property in properties)
 					{
-						value = await provider.GetAsync(property.Name).ConfigureAwait(false);
-					}
-					catch (Exception ex)
-					{
-						throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedLoadPropertyValue, property.Name, modelInfo.Name), ex);
-					}
+						if (!valueProvidersFactory.TryCreate(property.Type, sourceProvider, out var provider))
+						{
+							throw new SettingsSaveLoadFaultException(string.Format(Strings.ProviderNotFound, property.Type.Name));
+						}
 
-					try
-					{
-						property.Set(value);
-					}
-					catch (Exception ex)
-					{
-						throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedSetPropertyValue, property.Name, modelInfo.Name), ex);
+						IPropertyData value;
+
+						try
+						{
+							value = await provider.GetAsync(modelInfo.Name, property.Name).ConfigureAwait(false);
+						}
+						catch (Exception ex)
+						{
+							throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedLoadPropertyValue, property.Name, modelInfo.Name), ex);
+						}
+
+						try
+						{
+							property.Set(value);
+						}
+						catch (Exception ex)
+						{
+							throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedSetPropertyValue, property.Name, modelInfo.Name), ex);
+						}
 					}
 				}
 			}
@@ -120,32 +116,55 @@ namespace AppSettingsMini
 				throw new SettingsSaveLoadFaultException(Strings.NotFoundRegisteredModels);
 			}
 
-			foreach (var modelInfo in _models)
+			var sourceProvider = _sourceProviderFactory.Create();
+
+			await using (sourceProvider.ConfigureAwait(false))
 			{
-				if (modelInfo.Value.IsReadOnly)
+				using var valueProvidersFactory = new ValueProvidersFactory(_valueProviderFactories);
+
+				try
 				{
-					continue;
+					await sourceProvider.LoadAsync().ConfigureAwait(false);
+				}
+				catch (Exception ex)
+				{
+					throw new SettingsSaveLoadFaultException(Strings.FailedLoadSettingsFromSource, ex);
 				}
 
-				var properties = modelInfo.Value.Model.GetModifiedProperties();
-
-				foreach (var property in properties)
+				foreach (var modelInfo in _models.Values)
 				{
-					if (_valueProviders.TryGetValue(property.Type, out var provider))
+					if (modelInfo.IsReadOnly)
 					{
+						continue;
+					}
+
+					var properties = modelInfo.Model.GetModifiedProperties();
+
+					foreach (var property in properties)
+					{
+						if (!valueProvidersFactory.TryCreate(property.Type, sourceProvider, out var provider))
+						{
+							throw new SettingsSaveLoadFaultException(string.Format(Strings.ProviderNotFound, property.Type.Name));
+						}
+
 						try
 						{
-							await provider.SetAsync(property).ConfigureAwait(false);
+							await provider.SetAsync(modelInfo.Name, property).ConfigureAwait(false);
 						}
 						catch (Exception ex)
 						{
-							throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedSavePropertyValue, property.Name, modelInfo.Value.Name), ex);
+							throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedSavePropertyValue, property.Name, modelInfo.Name), ex);
 						}
 					}
-					else
-					{
-						throw new SettingsSaveLoadFaultException(string.Format(Strings.ProviderNotFound, property.Type.Name));
-					}
+				}
+
+				try
+				{
+					await sourceProvider.SaveAsync().ConfigureAwait(false);
+				}
+				catch (Exception ex)
+				{
+					throw new SettingsSaveLoadFaultException(Strings.FailedSaveSettingsToSource, ex);
 				}
 			}
 		}
@@ -172,9 +191,26 @@ namespace AppSettingsMini
 
 			public ModelInfo(ISettingsModel model, string name, bool isReadOnly)
 			{
-				Model = model;
-				Name = name;
+				Model = Guard.ThrowIfNullRet(model);
+				Name = GetName(name);
 				IsReadOnly = isReadOnly;
+			}
+
+			private static string GetName(string name)
+			{
+				Guard.ThrowIfEmptyString(name);
+
+				if (name.Length == 1)
+				{
+					return name;
+				}
+
+				if (name.StartsWith("I"))
+				{
+					name = name.Substring(1, name.Length - 1);
+				}
+
+				return name;
 			}
 
 			public override bool Equals(object? obj)

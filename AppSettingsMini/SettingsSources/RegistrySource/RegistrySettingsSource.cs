@@ -6,20 +6,20 @@ using AppSettingsMini.Infrastructure;
 using AppSettingsMini.Interfaces;
 using Microsoft.Win32;
 
-namespace AppSettingsMini.RegistrySource
+namespace AppSettingsMini.SettingsSources.RegistrySource
 {
 #if NET6_0
 	[SupportedOSPlatform("windows")]
 #endif
-	internal class RegistrySettingsSource : IReadableSettingsSource, IWriteableSettingsSource
+	internal class RegistrySettingsSource : SettingsSourceBase, IReadableSettingsSource, IWriteableSettingsSource
 	{
 		private readonly RegistryRootKeyFactory _rootKeyFactory;
 
-		public RegistrySettingsSource(string appPath)
+		public RegistrySettingsSource(string appPath, string rootKeyName)
 		{
 			Guard.ThrowIfEmptyString(appPath);
 
-			_rootKeyFactory = new RegistryRootKeyFactory($"Software\\{appPath}", false);
+			_rootKeyFactory = new RegistryRootKeyFactory($"Software\\{appPath}\\{rootKeyName}", false);
 		}
 
 		private static RegistryKey OpenOrCreateKey(RegistryKey parentKey, string keyName, bool create = true)
@@ -27,7 +27,9 @@ namespace AppSettingsMini.RegistrySource
 			var key = parentKey.OpenSubKey(keyName, true);
 
 			if (key == null && create)
+			{
 				key = parentKey.CreateSubKey(keyName);
+			}
 
 			return key ?? throw new InvalidOperationException($"Не удалось получить ключ реестра \"{keyName}\".");
 		}

@@ -12,8 +12,8 @@ namespace AppSettingsMini.Test
 		public async Task LoadAsync_ValidData_Success()
 		{
 			// #### Arrange ####
-			var provider = MockSettingsSourceProvider.CreateForReadableSource(out var readableSourceMock);
-			var service = new SettingsService(provider);
+			var factory = MockSettingsSourceProviderFactory.CreateForReadableSource(out var readableSourceMock);
+			var service = new SettingsService(factory);
 
 			IProgramSettings expectedResult = new MockProgramSettings
 			{
@@ -64,27 +64,27 @@ namespace AppSettingsMini.Test
 
 			// #### Assert ####
 			readableSourceMock
-				.Verify(x => x.GetBytesValueAsync(It.IsAny<string>(), It.Is<string>(p => p == "ProgramSettings.BytesValue")), Times.Once);
+				.Verify(x => x.GetBytesValueAsync(It.IsAny<string>(), It.Is<string>(p => p == "BytesValue")), Times.Once);
 
 			readableSourceMock
-				.Verify(x => x.GetIntValueAsync(It.IsAny<string>(), It.Is<string>(p => p == "ProgramSettings.IntValue")), Times.Once);
+				.Verify(x => x.GetIntValueAsync(It.IsAny<string>(), It.Is<string>(p => p == "IntValue")), Times.Once);
 
 			readableSourceMock
-				.Verify(x => x.GetLongValueAsync(It.IsAny<string>(), It.Is<string>(p => p == "ProgramSettings.LongValue")), Times.Once);
+				.Verify(x => x.GetLongValueAsync(It.IsAny<string>(), It.Is<string>(p => p == "LongValue")), Times.Once);
 
 			readableSourceMock
-				.Verify(x => x.GetDoubleValueAsync(It.IsAny<string>(), It.Is<string>(p => p == "ProgramSettings.DoubleValue")), Times.Once);
+				.Verify(x => x.GetDoubleValueAsync(It.IsAny<string>(), It.Is<string>(p => p == "DoubleValue")), Times.Once);
 
 			readableSourceMock
-				.Verify(x => x.GetStringValueAsync(It.IsAny<string>(), It.Is<string>(p => p == "ProgramSettings.StringValue")), Times.Once);
+				.Verify(x => x.GetStringValueAsync(It.IsAny<string>(), It.Is<string>(p => p == "StringValue")), Times.Once);
 		}
 
 		[Test]
 		public async Task SaveAsync_ValidData_Success()
 		{
 			// #### Arrange ####
-			var provider = MockSettingsSourceProvider.CreateForWriteableSource(out var writeableSourceMock);
-			var service = new SettingsService(provider);
+			var factory = MockSettingsSourceProviderFactory.CreateForWriteableSource(out var writeableSourceMock);
+			var service = new SettingsService(factory);
 
 			var expectedResult = new MockProgramSettings
 			{
@@ -118,7 +118,6 @@ namespace AppSettingsMini.Test
 				.Returns(ValueTask.CompletedTask);
 
 			// #### Act ####
-
 			service.ProgramSettings.BytesValue = expectedResult.BytesValue;
 			service.ProgramSettings.IntValue = expectedResult.IntValue;
 			service.ProgramSettings.LongValue = expectedResult.LongValue;

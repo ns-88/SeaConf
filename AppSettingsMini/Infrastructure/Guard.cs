@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace AppSettingsMini.Infrastructure
 {
-	public static class Guard
+	internal static class Guard
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void ThrowIfNull<T>(T source, out T target, [CallerArgumentExpression("source")] string? paramName = null)
