@@ -2,7 +2,7 @@
 {
 	internal class ProgramSettings : SettingsModelBase, IProgramSettings
     {
-        public string? StringValue
+	    public string? StringValue
         {
             get => GetValue<string>();
             set => SetValue(value);

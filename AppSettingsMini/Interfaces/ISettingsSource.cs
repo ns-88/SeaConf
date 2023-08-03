@@ -7,8 +7,7 @@ namespace AppSettingsMini.Interfaces
     {
         ValueTask LoadAsync();
 	    ValueTask SaveAsync();
-	    ValueTask<bool> CollectionExistsAsync(string collectionName);
-        ValueTask<bool> PropertyExistsAsync(string collectionName, string propertyName);
+	    ValueTask<bool> PropertyExistsAsync(string collectionName, string propertyName);
     }
 
     public interface IReadableSettingsSource : ISettingsSource

@@ -4,7 +4,8 @@ namespace AppSettingsMini.Interfaces
 {
 	public interface ISettingsModel
 	{
-		internal IEnumerable<IPropertyData> GetModifiedProperties();
-		internal IReadOnlyDictionary<string, IPropertyData> GetPropertiesData();
+		internal void Init(SettingsServiceBase service);
+		internal IEnumerable<ISettingsPropertyData> GetModifiedProperties();
+		internal IReadOnlyDictionary<string, ISettingsPropertyData> GetPropertiesData();
 	}
 }

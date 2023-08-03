@@ -18,7 +18,7 @@ namespace AppSettingsMini.SettingsSources.XmlSource
 		private readonly FileStream _fs;
 		private XDocument? _document;
 		private DisposableHelper _disposableHelper;
-		
+
 		public XmlSettingsSource(string path, string rootElementName)
 		{
 			_fs = XmlSettingsSourceHelper.CreateFileStream(path);
@@ -41,6 +41,13 @@ namespace AppSettingsMini.SettingsSources.XmlSource
 
 				await new ValueTask();
 #endif
+
+				var rootElement = _document.GetRootElement(_rootElementName, false);
+
+				if (rootElement == null)
+				{
+					throw new InvalidOperationException(string.Format(Strings.RootCollectionElementNotExist, _rootElementName));
+				}
 			}
 			catch (XmlException ex) when (ex.Message == "Root element is missing.")
 			{
@@ -72,17 +79,6 @@ namespace AppSettingsMini.SettingsSources.XmlSource
 			{
 				throw new InvalidOperationException(Strings.FailedSaveSettingsToSource, ex);
 			}
-		}
-
-		public ValueTask<bool> CollectionExistsAsync(string collectionName)
-		{
-			Guard.ThrowIfEmptyString(collectionName);
-
-			XmlSettingsSourceHelper.ThrowIfNullOrDispose(_document, ref _disposableHelper);
-
-			var result = _document!.GetRootElement(_rootElementName).GetElement(collectionName, false) != null;
-
-			return new ValueTask<bool>(result);
 		}
 
 		public ValueTask<bool> PropertyExistsAsync(string collectionName, string propertyName)
@@ -146,7 +142,7 @@ namespace AppSettingsMini.SettingsSources.XmlSource
 		public ValueTask<double> GetDoubleValueAsync(string collectionName, string propertyName)
 		{
 			var rawValue = GetValueInternal(collectionName, propertyName);
-			
+
 			if (!double.TryParse(rawValue, out var value))
 			{
 				XmlSettingsSourceHelper.ThrowIfCannotConverted<double>(rawValue);
@@ -313,16 +309,22 @@ namespace AppSettingsMini.SettingsSources.XmlSource
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static XElement GetRootElement(this XDocument document, string elementName)
+		public static XElement? GetRootElement(this XDocument document, string elementName, bool throwIfNull = true)
 		{
-			return document.Element(elementName)
-				   ?? throw new InvalidOperationException(string.Format(Strings.RootCollectionElementNotExist, elementName));
+			var element = document.Element(elementName);
+
+			if (element == null && throwIfNull)
+			{
+				throw new InvalidOperationException(string.Format(Strings.RootCollectionElementNotExist, elementName));
+			}
+
+			return element;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static XElement GetCollectionElement(this XDocument document, string rootElementName, string collectionElementName, bool throwIfNull = true)
 		{
-			var rootElement = document.GetRootElement(rootElementName);
+			var rootElement = document.GetRootElement(rootElementName)!;
 			var collectionElement = rootElement.GetElement(collectionElementName, throwIfNull);
 
 			if (collectionElement == null)
