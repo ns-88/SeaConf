@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using AppSettingsMini.Infrastructure;
@@ -13,7 +12,7 @@ namespace AppSettingsMini.SettingsSources.RegistrySource
 #endif
 	internal class RegistrySettingsSource : SettingsSourceBase, IReadableSettingsSource, IWriteableSettingsSource
 	{
-		private readonly RegistryRootKeyFactory _rootKeyFactory;
+		private RegistryRootKeyFactory _rootKeyFactory;
 
 		public RegistrySettingsSource(string appPath, string rootKeyName)
 		{
@@ -34,27 +33,20 @@ namespace AppSettingsMini.SettingsSources.RegistrySource
 			return key ?? throw new InvalidOperationException($"Не удалось получить ключ реестра \"{keyName}\".");
 		}
 
-		private static void SetValueInternal<T>(T value,
-												string collectionName,
-												string propertyName,
-												RegistryValueKind registryValueKind,
-												RegistryRootKeyFactory rootKeyFactory)
-			where T : notnull
+		public ValueTask<bool> PropertyExistsAsync(string collectionName, string propertyName)
 		{
-			Guard.ThrowIfNull(value, nameof(value));
-			Guard.ThrowIfEmptyString(collectionName, nameof(collectionName));
-			Guard.ThrowIfEmptyString(propertyName, nameof(propertyName));
+			using var rootKey = _rootKeyFactory.CreateKey();
+			using var collectionKey = rootKey.OpenSubKey(collectionName);
 
-			using var rootKey = rootKeyFactory.CreateKey();
-			using var collectionKey = OpenOrCreateKey(rootKey, collectionName);
-
-			collectionKey.SetValue(propertyName, value, registryValueKind);
+			return new ValueTask<bool>(collectionKey?.GetValue(propertyName) != null);
 		}
 
-		private static T GetValueInternal<T>(string collectionName, string propertyName, RegistryRootKeyFactory rootKeyFactory)
+		#region Implementation of IReadableSettingsSource
+
+		private static T GetValueInternal<T>(string collectionName, string propertyName, ref RegistryRootKeyFactory rootKeyFactory)
 		{
-			Guard.ThrowIfEmptyString(collectionName, nameof(collectionName));
-			Guard.ThrowIfEmptyString(propertyName, nameof(propertyName));
+			Guard.ThrowIfEmptyString(collectionName);
+			Guard.ThrowIfEmptyString(propertyName);
 
 			using var rootKey = rootKeyFactory.CreateKey();
 			using var collectionKey = OpenOrCreateKey(rootKey, collectionName);
@@ -65,87 +57,89 @@ namespace AppSettingsMini.SettingsSources.RegistrySource
 				: (T)retValue;
 		}
 
-		public ValueTask<bool> CollectionExistsAsync(string collectionName)
-		{
-			using var rootKey = _rootKeyFactory.CreateKey();
-
-			var result = rootKey.GetSubKeyNames()
-								.FirstOrDefault(x => x.Equals(collectionName, StringComparison.Ordinal)) != null;
-
-			return new ValueTask<bool>(result);
-		}
-
-		public ValueTask<bool> PropertyExistsAsync(string collectionName, string propertyName)
-		{
-			using var rootKey = _rootKeyFactory.CreateKey();
-			using var collectionKey = rootKey.OpenSubKey(collectionName);
-
-			return new ValueTask<bool>(collectionKey?.GetValue(propertyName) != null);
-		}
-
-		#region Get/Set/Delete methods
-		public ValueTask SetStringValueAsync(string value, string collectionName, string propertyName)
-		{
-			SetValueInternal(value, collectionName, propertyName, RegistryValueKind.String, _rootKeyFactory);
-
-			return new ValueTask();
-		}
-
-		public ValueTask SetIntValueAsync(int value, string collectionName, string propertyName)
-		{
-			SetValueInternal(value, collectionName, propertyName, RegistryValueKind.DWord, _rootKeyFactory);
-
-			return new ValueTask();
-		}
-
-		public ValueTask SetLongValueAsync(long value, string collectionName, string propertyName)
-		{
-			SetValueInternal(value, collectionName, propertyName, RegistryValueKind.QWord, _rootKeyFactory);
-
-			return new ValueTask();
-		}
-
-		public ValueTask SetDoubleValueAsync(double value, string collectionName, string propertyName)
-		{
-			SetValueInternal(BitConverter.GetBytes(value), collectionName, propertyName, RegistryValueKind.Binary, _rootKeyFactory);
-
-			return new ValueTask();
-		}
-
-		public ValueTask SetBytesValueAsync(ReadOnlyMemory<byte> value, string collectionName, string propertyName)
-		{
-			SetValueInternal(value.ToArray(), collectionName, propertyName, RegistryValueKind.Binary, _rootKeyFactory);
-
-			return new ValueTask();
-		}
-
 		public ValueTask<string> GetStringValueAsync(string collectionName, string propertyName)
 		{
-			return new ValueTask<string>(GetValueInternal<string>(collectionName, propertyName, _rootKeyFactory));
+			return new ValueTask<string>(GetValueInternal<string>(collectionName, propertyName, ref _rootKeyFactory));
 		}
 
 		public ValueTask<int> GetIntValueAsync(string collectionName, string propertyName)
 		{
-			return new ValueTask<int>(GetValueInternal<int>(collectionName, propertyName, _rootKeyFactory));
+			return new ValueTask<int>(GetValueInternal<int>(collectionName, propertyName, ref _rootKeyFactory));
 		}
 
 		public ValueTask<long> GetLongValueAsync(string collectionName, string propertyName)
 		{
-			return new ValueTask<long>(GetValueInternal<long>(collectionName, propertyName, _rootKeyFactory));
+			return new ValueTask<long>(GetValueInternal<long>(collectionName, propertyName, ref _rootKeyFactory));
 		}
 
 		public ValueTask<double> GetDoubleValueAsync(string collectionName, string propertyName)
 		{
-			var bytes = GetValueInternal<byte[]>(collectionName, propertyName, _rootKeyFactory);
+			var bytes = GetValueInternal<byte[]>(collectionName, propertyName, ref _rootKeyFactory);
 
 			return new ValueTask<double>(BitConverter.ToDouble(bytes, 0));
 		}
 
 		public ValueTask<ReadOnlyMemory<byte>> GetBytesValueAsync(string collectionName, string propertyName)
 		{
-			var value = (ReadOnlyMemory<byte>)GetValueInternal<byte[]>(collectionName, propertyName, _rootKeyFactory);
+			var value = (ReadOnlyMemory<byte>)GetValueInternal<byte[]>(collectionName, propertyName, ref _rootKeyFactory);
 
 			return new ValueTask<ReadOnlyMemory<byte>>(value);
+		}
+
+		#endregion
+
+		#region Implementation of IWriteableSettingsSource
+
+		private static void SetValueInternal<T>(T value,
+												string collectionName,
+												string propertyName,
+												RegistryValueKind registryValueKind,
+												ref RegistryRootKeyFactory rootKeyFactory)
+			where T : notnull
+		{
+			Guard.ThrowIfNull(value);
+			Guard.ThrowIfEmptyString(collectionName);
+			Guard.ThrowIfEmptyString(propertyName);
+
+			using var rootKey = rootKeyFactory.CreateKey();
+			using var collectionKey = OpenOrCreateKey(rootKey, collectionName);
+
+			collectionKey.SetValue(propertyName, value, registryValueKind);
+		}
+
+		public ValueTask SetStringValueAsync(string value, string collectionName, string propertyName)
+		{
+			SetValueInternal(value, collectionName, propertyName, RegistryValueKind.String, ref _rootKeyFactory);
+
+			return new ValueTask();
+		}
+
+		public ValueTask SetIntValueAsync(int value, string collectionName, string propertyName)
+		{
+			SetValueInternal(value, collectionName, propertyName, RegistryValueKind.DWord, ref _rootKeyFactory);
+
+			return new ValueTask();
+		}
+
+		public ValueTask SetLongValueAsync(long value, string collectionName, string propertyName)
+		{
+			SetValueInternal(value, collectionName, propertyName, RegistryValueKind.QWord, ref _rootKeyFactory);
+
+			return new ValueTask();
+		}
+
+		public ValueTask SetDoubleValueAsync(double value, string collectionName, string propertyName)
+		{
+			SetValueInternal(BitConverter.GetBytes(value), collectionName, propertyName, RegistryValueKind.Binary, ref _rootKeyFactory);
+
+			return new ValueTask();
+		}
+
+		public ValueTask SetBytesValueAsync(ReadOnlyMemory<byte> value, string collectionName, string propertyName)
+		{
+			SetValueInternal(value.ToArray(), collectionName, propertyName, RegistryValueKind.Binary, ref _rootKeyFactory);
+
+			return new ValueTask();
 		}
 
 		public ValueTask DeletePropertyAsync(string collectionName, string propertyName)
@@ -164,11 +158,12 @@ namespace AppSettingsMini.SettingsSources.RegistrySource
 
 			return new ValueTask();
 		}
+
 		#endregion
 
 		#region Nested types
 
-		private class RegistryRootKeyFactory
+		private readonly struct RegistryRootKeyFactory
 		{
 			private readonly bool _onlyOpen;
 			private readonly string _path;

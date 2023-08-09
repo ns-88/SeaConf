@@ -8,20 +8,37 @@ using AppSettingsMini.Interfaces;
 
 namespace AppSettingsMini
 {
-	using PropertiesData = IReadOnlyDictionary<string, IPropertyData>;
+	using PropertiesData = IReadOnlyDictionary<string, ISettingsPropertyData>;
 
 	public class SettingsModelBase : ISettingsModel
 	{
-		private readonly PropertiesData _storage;
+		private PropertiesData _storage;
 
+#nullable disable
+		// ReSharper disable once NotNullMemberIsNotInitialized
 		protected SettingsModelBase()
 		{
-			_storage = CreatePropertiesData(GetType());
+		}
+#nullable restore
+
+		void ISettingsModel.Init(SettingsServiceBase service)
+		{
+			_storage = CreatePropertiesData(GetType(), this, service);
 		}
 
-		private static PropertiesData CreatePropertiesData(Type modelType)
+		IEnumerable<ISettingsPropertyData> ISettingsModel.GetModifiedProperties()
 		{
-			var propertiesData = new Dictionary<string, IPropertyData>();
+			return _storage.Values.Where(x => x.IsModified);
+		}
+
+		PropertiesData ISettingsModel.GetPropertiesData()
+		{
+			return _storage;
+		}
+
+		private static PropertiesData CreatePropertiesData(IReflect modelType, ISettingsModel model, SettingsServiceBase service)
+		{
+			var propertiesData = new Dictionary<string, ISettingsPropertyData>();
 			var properties = modelType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
 			foreach (var property in properties)
@@ -31,11 +48,22 @@ namespace AppSettingsMini
 					throw new InvalidOperationException();
 				}
 
-				var openGenericType = typeof(PropertyData<>);
+				var openGenericType = typeof(SettingsPropertyData<>);
 				var typeArgs = new[] { property.PropertyType };
 				var genericType = openGenericType.MakeGenericType(typeArgs);
 
-				var propertyData = (IPropertyData)Activator.CreateInstance(genericType, property.Name, property.PropertyType)!;
+				var ctor = genericType.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic,
+					null,
+					CallingConventions.Standard | CallingConventions.HasThis,
+					new[] { typeof(string), typeof(Type), typeof(ISettingsModel), typeof(SettingsServiceBase) },
+					null);
+
+				if (ctor == null)
+				{
+					throw new InvalidOperationException("");
+				}
+
+				var propertyData = (ISettingsPropertyData)ctor.Invoke(new object[] { property.Name, property.PropertyType, model, service });
 
 				propertiesData.Add(property.Name, propertyData);
 			}
@@ -81,16 +109,6 @@ namespace AppSettingsMini
 			{
 				throw new InvalidOperationException(string.Format(Strings.FailedGetPropertyValue, propertyName), ex);
 			}
-		}
-
-		IEnumerable<IPropertyData> ISettingsModel.GetModifiedProperties()
-		{
-			return _storage.Values.Where(x => x.IsModified);
-		}
-
-		PropertiesData ISettingsModel.GetPropertiesData()
-		{
-			return _storage;
 		}
 	}
 }

@@ -11,7 +11,7 @@ namespace AppSettingsMini.ValueProviders
 		{
 		}
 
-		public override async ValueTask<IPropertyData> GetAsync(string collectionName, string propertyName)
+		public override async ValueTask<ISettingsPropertyData> GetAsync(string collectionName, string propertyName)
 		{
 			var value = string.Empty;
 
@@ -20,10 +20,10 @@ namespace AppSettingsMini.ValueProviders
 				value = await ReadableStore.GetStringValueAsync(collectionName, propertyName).ConfigureAwait(false);
 			}
 
-			return new PropertyData<string>(value, propertyName);
+			return new SettingsPropertyData<string>(value, propertyName);
 		}
 
-		public override ValueTask SetAsync(string collectionName, IPropertyData propertyData)
+		public override ValueTask SetAsync(string collectionName, ISettingsPropertyData propertyData)
 		{
 			var typedData = propertyData.ToTyped<string>();
 
@@ -38,7 +38,7 @@ namespace AppSettingsMini.ValueProviders
 		{
 		}
 
-		public override async ValueTask<IPropertyData> GetAsync(string collectionName, string propertyName)
+		public override async ValueTask<ISettingsPropertyData> GetAsync(string collectionName, string propertyName)
 		{
 			var value = int.MinValue;
 
@@ -47,10 +47,10 @@ namespace AppSettingsMini.ValueProviders
 				value = await ReadableStore.GetIntValueAsync(collectionName, propertyName).ConfigureAwait(false);
 			}
 
-			return new PropertyData<int>(value, propertyName);
+			return new SettingsPropertyData<int>(value, propertyName);
 		}
 
-		public override ValueTask SetAsync(string collectionName, IPropertyData propertyData)
+		public override ValueTask SetAsync(string collectionName, ISettingsPropertyData propertyData)
 		{
 			var typedData = propertyData.ToTyped<int>();
 
@@ -65,7 +65,7 @@ namespace AppSettingsMini.ValueProviders
 		{
 		}
 
-		public override async ValueTask<IPropertyData> GetAsync(string collectionName, string propertyName)
+		public override async ValueTask<ISettingsPropertyData> GetAsync(string collectionName, string propertyName)
 		{
 			var value = long.MinValue;
 
@@ -74,10 +74,10 @@ namespace AppSettingsMini.ValueProviders
 				value = await ReadableStore.GetLongValueAsync(collectionName, propertyName).ConfigureAwait(false);
 			}
 
-			return new PropertyData<long>(value, propertyName);
+			return new SettingsPropertyData<long>(value, propertyName);
 		}
 
-		public override ValueTask SetAsync(string collectionName, IPropertyData propertyData)
+		public override ValueTask SetAsync(string collectionName, ISettingsPropertyData propertyData)
 		{
 			var typedData = propertyData.ToTyped<long>();
 
@@ -92,7 +92,7 @@ namespace AppSettingsMini.ValueProviders
 		{
 		}
 
-		public override async ValueTask<IPropertyData> GetAsync(string collectionName, string propertyName)
+		public override async ValueTask<ISettingsPropertyData> GetAsync(string collectionName, string propertyName)
 		{
 			var value = double.NaN;
 
@@ -101,10 +101,10 @@ namespace AppSettingsMini.ValueProviders
 				value = await ReadableStore.GetDoubleValueAsync(collectionName, propertyName).ConfigureAwait(false);
 			}
 
-			return new PropertyData<double>(value, propertyName);
+			return new SettingsPropertyData<double>(value, propertyName);
 		}
 
-		public override ValueTask SetAsync(string collectionName, IPropertyData propertyData)
+		public override ValueTask SetAsync(string collectionName, ISettingsPropertyData propertyData)
 		{
 			var typedData = propertyData.ToTyped<double>();
 
@@ -119,7 +119,7 @@ namespace AppSettingsMini.ValueProviders
 		{
 		}
 
-		public override async ValueTask<IPropertyData> GetAsync(string collectionName, string propertyName)
+		public override async ValueTask<ISettingsPropertyData> GetAsync(string collectionName, string propertyName)
 		{
 			var value = ReadOnlyMemory<byte>.Empty;
 
@@ -128,10 +128,10 @@ namespace AppSettingsMini.ValueProviders
 				value = await ReadableStore.GetBytesValueAsync(collectionName, propertyName).ConfigureAwait(false);
 			}
 
-			return new PropertyData<ReadOnlyMemory<byte>>(value, propertyName);
+			return new SettingsPropertyData<ReadOnlyMemory<byte>>(value, propertyName);
 		}
 
-		public override ValueTask SetAsync(string collectionName, IPropertyData propertyData)
+		public override ValueTask SetAsync(string collectionName, ISettingsPropertyData propertyData)
 		{
 			var typedData = propertyData.ToTyped<ReadOnlyMemory<byte>>();
 

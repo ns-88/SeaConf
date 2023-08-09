@@ -1,38 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using AppSettingsMini.Factories;
 using AppSettingsMini.Infrastructure;
 using AppSettingsMini.Interfaces;
 using AppSettingsMini.Interfaces.Factories;
+using AppSettingsMini.Models;
 
 namespace AppSettingsMini
 {
-	public abstract class SettingsServiceBase : ISettingsService
+    public abstract class SettingsServiceBase : ISettingsService
 	{
 		private readonly ISettingsSourceProviderFactory _sourceProviderFactory;
 		private readonly Dictionary<Type, ModelInfo> _models;
-		private readonly Dictionary<Type, IValueProviderFactory> _valueProviderFactories;
+		private readonly ValueProvidersManager _valueProvidersManager;
+
+		internal ComparersManager ComparersManager => _valueProvidersManager.ComparersManager;
+
+		public event EventHandler? Loaded;
+		public event EventHandler<IChangedModels>? Saved;
+		public event EventHandler<PropertyChangedEventArgs>? PropertyChanged;
 
 		protected SettingsServiceBase(ISettingsSourceProviderFactory sourceProviderFactory)
 		{
 			Guard.ThrowIfNull(sourceProviderFactory, out _sourceProviderFactory);
 
 			_models = new Dictionary<Type, ModelInfo>();
-			_valueProviderFactories = new Dictionary<Type, IValueProviderFactory>();
+			_valueProvidersManager = new ValueProvidersManager();
 		}
 
 		protected void RegisterValueProviderFactory(IValueProviderFactory factory)
 		{
-			Guard.ThrowIfNull(factory);
-			Guard.ThrowIfNull(factory.Type);
-
-			if (_valueProviderFactories.ContainsKey(factory.Type))
-			{
-				throw new InvalidOperationException(string.Format(Strings.ProviderAlreadyRegistered, factory.Type.Name));
-			}
-
-			_valueProviderFactories.Add(factory.Type, factory);
+			_valueProvidersManager.AddFactory(factory);
 		}
 
 		protected TImpl RegisterModel<T, TImpl>(bool isReadOnly = false)
@@ -47,9 +46,16 @@ namespace AppSettingsMini
 				throw new InvalidOperationException(string.Format(Strings.ModelAlreadyRegistered, type.Name));
 			}
 
-			_models.Add(type, new ModelInfo(model, type.Name, isReadOnly));
+			((ISettingsModel)model).Init(this);
+
+			_models.Add(type, new ModelInfo(model, type, isReadOnly));
 
 			return model;
+		}
+
+		internal void RaisePropertyChanged(string propertyName, ISettingsModel model)
+		{
+			Volatile.Read(ref PropertyChanged)?.Invoke(this, new PropertyChangedEventArgs(propertyName, model));
 		}
 
 		public async ValueTask LoadAsync()
@@ -63,7 +69,7 @@ namespace AppSettingsMini
 
 			await using (sourceProvider.ConfigureAwait(false))
 			{
-				using var valueProvidersFactory = new ValueProvidersFactory(_valueProviderFactories);
+				using var valueProvidersFactory = _valueProvidersManager.CreateFactory();
 
 				try
 				{
@@ -85,7 +91,7 @@ namespace AppSettingsMini
 							throw new SettingsSaveLoadFaultException(string.Format(Strings.ProviderNotFound, property.Type.Name));
 						}
 
-						IPropertyData value;
+						ISettingsPropertyData value;
 
 						try
 						{
@@ -107,6 +113,8 @@ namespace AppSettingsMini
 					}
 				}
 			}
+
+			Volatile.Read(ref Loaded)?.Invoke(this, EventArgs.Empty);
 		}
 
 		public async ValueTask SaveAsync()
@@ -116,11 +124,12 @@ namespace AppSettingsMini
 				throw new SettingsSaveLoadFaultException(Strings.NotFoundRegisteredModels);
 			}
 
+			var changedModels = new ChangedModels();
 			var sourceProvider = _sourceProviderFactory.Create();
 
 			await using (sourceProvider.ConfigureAwait(false))
 			{
-				using var valueProvidersFactory = new ValueProvidersFactory(_valueProviderFactories);
+				using var valueProvidersFactory = _valueProvidersManager.CreateFactory();
 
 				try
 				{
@@ -155,6 +164,8 @@ namespace AppSettingsMini
 						{
 							throw new SettingsSaveLoadFaultException(string.Format(Strings.FailedSavePropertyValue, property.Name, modelInfo.Name), ex);
 						}
+
+						changedModels.Add(modelInfo.Type, property.Name);
 					}
 				}
 
@@ -167,6 +178,8 @@ namespace AppSettingsMini
 					throw new SettingsSaveLoadFaultException(Strings.FailedSaveSettingsToSource, ex);
 				}
 			}
+
+			Volatile.Read(ref Saved)?.Invoke(this, changedModels);
 		}
 
 		public T GetModel<T>()
@@ -187,12 +200,14 @@ namespace AppSettingsMini
 		{
 			public readonly ISettingsModel Model;
 			public readonly string Name;
+			public readonly Type Type;
 			public readonly bool IsReadOnly;
 
-			public ModelInfo(ISettingsModel model, string name, bool isReadOnly)
+			public ModelInfo(ISettingsModel model, Type type, bool isReadOnly)
 			{
 				Model = Guard.ThrowIfNullRet(model);
-				Name = GetName(name);
+				Name = GetName(type.Name);
+				Type = type;
 				IsReadOnly = isReadOnly;
 			}
 
