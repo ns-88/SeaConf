@@ -1,4 +1,6 @@
-﻿namespace AppSettingsMini.Demo
+﻿using AppSettingsMini.Demo.Models;
+
+namespace AppSettingsMini.Demo
 {
 	internal class Program
 	{
@@ -15,6 +17,8 @@
 			model.DoubleValue = 1.151;
 			model.IntValue = 13451;
 			model.LongValue = 578902319;
+			model.BoolValue = true;
+			model.EnumValue = Regime.Auto;
 
 			await service.SaveAsync();
 		}

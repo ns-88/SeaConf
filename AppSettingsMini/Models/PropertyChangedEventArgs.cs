@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using AppSettingsMini.Infrastructure;
 using AppSettingsMini.Interfaces;
 
 namespace AppSettingsMini.Models
@@ -24,14 +25,14 @@ namespace AppSettingsMini.Models
 
             if (prop == null)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(string.Format(Strings.PropertyNotFoundInType, propertyName, _type.Name));
             }
 
             var value = prop.GetValue(Model);
 
             if (value == null)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(string.Format(Strings.PropertyValueNotSetInType, propertyName, _type.Name));
             }
 
             return value;
@@ -48,7 +49,7 @@ namespace AppSettingsMini.Models
 
             if (rawValue is not T value)
             {
-                throw new InvalidCastException("");
+                throw new InvalidCastException(string.Format(Strings.FailedToCastTypeValue, rawValue.GetType().Name, typeof(T).Name));
             }
 
             return value;

@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Reflection;
 using AppSettingsMini.Infrastructure;
 using AppSettingsMini.Interfaces;
 
-namespace AppSettingsMini
+namespace AppSettingsMini.Models
 {
 	public class SettingsPropertyData<T> : ISettingsPropertyData<T>
 	{
@@ -39,12 +40,22 @@ namespace AppSettingsMini
 			return _value!;
 		}
 
+		public TData Get<TData>()
+		{
+			if (_value is not TData data)
+			{
+				throw new InvalidCastException(string.Format(Strings.PropertyTypeNotCorrect, Type, typeof(TData)));
+			}
+
+			return data;
+		}
+
 		public void Set(T value)
 		{
 			Guard.ThrowIfNull(value);
 
 			var comparer = _settingsService.ComparersManager.Get<T>();
-			
+
 			if (comparer.Equals(_value!, value))
 			{
 				return;
@@ -61,10 +72,26 @@ namespace AppSettingsMini
 		{
 			if (this is not ISettingsPropertyData<TData> typedValue)
 			{
-				throw new InvalidCastException(string.Format(Strings.PropertyTypeNotCorrect, typeof(T), Type));
+				throw new InvalidCastException(string.Format(Strings.PropertyTypeNotCorrect, Type, typeof(TData)));
 			}
 
 			return typedValue;
+		}
+
+		ISettingsPropertyData ISettingsPropertyData.ToTyped(Type type)
+		{
+			const string methodName = "AppSettingsMini.Interfaces.ISettingsPropertyData.ToTyped";
+
+			var method = GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic, null, Array.Empty<Type>(), null);
+
+			if (method == null)
+			{
+				throw new InvalidOperationException(string.Format(Strings.MethodNotFound, methodName));
+			}
+
+			var genericMethod = method.MakeGenericMethod(type);
+
+			return (ISettingsPropertyData)genericMethod.Invoke(this, null)!;
 		}
 
 		void ISettingsPropertyData.Set(ISettingsPropertyData propertyData)

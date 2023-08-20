@@ -121,7 +121,7 @@ namespace AppSettingsMini.SettingsSources.XmlSource
 
 			if (!int.TryParse(rawValue, out var value))
 			{
-				XmlSettingsSourceHelper.ThrowIfCannotConverted<int>(rawValue);
+				SettingsSourceHelper.ThrowIfCannotConverted<int>(rawValue);
 			}
 
 			return new ValueTask<int>(value);
@@ -133,7 +133,7 @@ namespace AppSettingsMini.SettingsSources.XmlSource
 
 			if (!long.TryParse(rawValue, out var value))
 			{
-				XmlSettingsSourceHelper.ThrowIfCannotConverted<long>(rawValue);
+				SettingsSourceHelper.ThrowIfCannotConverted<long>(rawValue);
 			}
 
 			return new ValueTask<long>(value);
@@ -145,10 +145,22 @@ namespace AppSettingsMini.SettingsSources.XmlSource
 
 			if (!double.TryParse(rawValue, out var value))
 			{
-				XmlSettingsSourceHelper.ThrowIfCannotConverted<double>(rawValue);
+				SettingsSourceHelper.ThrowIfCannotConverted<double>(rawValue);
 			}
 
 			return new ValueTask<double>(value);
+		}
+
+		public ValueTask<bool> GetBooleanValueAsync(string collectionName, string propertyName)
+		{
+			var rawValue = GetValueInternal(collectionName, propertyName);
+
+			if (!bool.TryParse(rawValue, out var value))
+			{
+				SettingsSourceHelper.ThrowIfCannotConverted<bool>(rawValue);
+			}
+
+			return new ValueTask<bool>(value);
 		}
 
 		public ValueTask<ReadOnlyMemory<byte>> GetBytesValueAsync(string collectionName, string propertyName)
@@ -162,7 +174,7 @@ namespace AppSettingsMini.SettingsSources.XmlSource
 			}
 			catch
 			{
-				XmlSettingsSourceHelper.ThrowIfCannotConverted<ReadOnlyMemory<byte>>(rawValue);
+				SettingsSourceHelper.ThrowIfCannotConverted<ReadOnlyMemory<byte>>(rawValue);
 			}
 
 			var value = new ReadOnlyMemory<byte>(byteArray);
@@ -211,6 +223,13 @@ namespace AppSettingsMini.SettingsSources.XmlSource
 		public ValueTask SetDoubleValueAsync(double value, string collectionName, string propertyName)
 		{
 			SetValueInternal(value.ToString(CultureInfo.CurrentCulture), collectionName, propertyName);
+
+			return new ValueTask();
+		}
+
+		public ValueTask SetBooleanValueAsync(bool value, string collectionName, string propertyName)
+		{
+			SetValueInternal(value.ToString(), collectionName, propertyName);
 
 			return new ValueTask();
 		}
@@ -280,11 +299,6 @@ namespace AppSettingsMini.SettingsSources.XmlSource
 			}
 
 			helper.ThrowIfDisposed();
-		}
-
-		public static void ThrowIfCannotConverted<T>(string value)
-		{
-			throw new InvalidOperationException(string.Format(Strings.StringValueCannotConvertedToType, typeof(T).Name, value));
 		}
 
 		public static FileStream CreateFileStream(string path)

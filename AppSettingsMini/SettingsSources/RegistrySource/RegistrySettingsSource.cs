@@ -14,11 +14,12 @@ namespace AppSettingsMini.SettingsSources.RegistrySource
 	{
 		private RegistryRootKeyFactory _rootKeyFactory;
 
-		public RegistrySettingsSource(string appPath, string rootKeyName)
+		public RegistrySettingsSource(string companyName, string appName, string rootKeyName)
 		{
-			Guard.ThrowIfEmptyString(appPath);
+			Guard.ThrowIfEmptyString(companyName);
+			Guard.ThrowIfEmptyString(appName);
 
-			_rootKeyFactory = new RegistryRootKeyFactory($"Software\\{appPath}\\{rootKeyName}", false);
+			_rootKeyFactory = new RegistryRootKeyFactory($"Software\\{companyName}\\{appName}\\{rootKeyName}", false);
 		}
 
 		private static RegistryKey OpenOrCreateKey(RegistryKey parentKey, string keyName, bool create = true)
@@ -30,7 +31,7 @@ namespace AppSettingsMini.SettingsSources.RegistrySource
 				key = parentKey.CreateSubKey(keyName);
 			}
 
-			return key ?? throw new InvalidOperationException($"Не удалось получить ключ реестра \"{keyName}\".");
+			return key ?? throw new InvalidOperationException(string.Format(Strings.FailedGetRegistryKey, keyName));
 		}
 
 		public ValueTask<bool> PropertyExistsAsync(string collectionName, string propertyName)
@@ -52,9 +53,12 @@ namespace AppSettingsMini.SettingsSources.RegistrySource
 			using var collectionKey = OpenOrCreateKey(rootKey, collectionName);
 			var retValue = collectionKey.GetValue(propertyName);
 
-			return retValue == null
-				? throw new InvalidOperationException($"Значение не указано. Ключ реестра: \"{collectionName}\", свойство: \"{propertyName}\".")
-				: (T)retValue;
+			if (retValue == null)
+			{
+				throw new InvalidOperationException(string.Format(Strings.RegistryKeyValueNotSpecified, $"{collectionName}\\{propertyName}"));
+			}
+
+			return SettingsSourceHelper.ThrowIfFailedCastType<T>(retValue);
 		}
 
 		public ValueTask<string> GetStringValueAsync(string collectionName, string propertyName)
@@ -77,6 +81,18 @@ namespace AppSettingsMini.SettingsSources.RegistrySource
 			var bytes = GetValueInternal<byte[]>(collectionName, propertyName, ref _rootKeyFactory);
 
 			return new ValueTask<double>(BitConverter.ToDouble(bytes, 0));
+		}
+
+		public ValueTask<bool> GetBooleanValueAsync(string collectionName, string propertyName)
+		{
+			var rawValue = GetValueInternal<string>(collectionName, propertyName, ref _rootKeyFactory);
+
+			if (!bool.TryParse(rawValue, out var value))
+			{
+				SettingsSourceHelper.ThrowIfCannotConverted<bool>(rawValue);
+			}
+
+			return new ValueTask<bool>(value);
 		}
 
 		public ValueTask<ReadOnlyMemory<byte>> GetBytesValueAsync(string collectionName, string propertyName)
@@ -135,6 +151,13 @@ namespace AppSettingsMini.SettingsSources.RegistrySource
 			return new ValueTask();
 		}
 
+		public ValueTask SetBooleanValueAsync(bool value, string collectionName, string propertyName)
+		{
+			SetValueInternal(value.ToString(), collectionName, propertyName, RegistryValueKind.String, ref _rootKeyFactory);
+
+			return new ValueTask();
+		}
+
 		public ValueTask SetBytesValueAsync(ReadOnlyMemory<byte> value, string collectionName, string propertyName)
 		{
 			SetValueInternal(value.ToArray(), collectionName, propertyName, RegistryValueKind.Binary, ref _rootKeyFactory);
@@ -153,7 +176,7 @@ namespace AppSettingsMini.SettingsSources.RegistrySource
 			}
 			catch (Exception ex)
 			{
-				throw new InvalidOperationException($"Не удалось удалить значение. Ключ реестра: \"{collectionName}\", свойство: \"{propertyName}\".", ex);
+				throw new InvalidOperationException(string.Format(Strings.FailedDeleteRegistryKey, $"{collectionName}\\{propertyName}"), ex);
 			}
 
 			return new ValueTask();

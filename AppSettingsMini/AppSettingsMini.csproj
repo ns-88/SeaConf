@@ -10,7 +10,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>AppSettingsMini</Title>
-		<Description>Простая библиотека для работы с настройками приложения.</Description>
+		<Description>A simple library for working with application settings.</Description>
 		<Authors>ns-88</Authors>
 		<Copyright>MIT</Copyright>
 		<PackageProjectUrl>https://github.com/ns-88/AppSettingsMini</PackageProjectUrl>
@@ -18,7 +18,7 @@
 		<NeutralLanguage>en</NeutralLanguage>
 		<RepositoryType>git</RepositoryType>
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
-		<Version>1.0.3</Version>
+		<Version>1.0.4</Version>
 	</PropertyGroup>
 
 	<ItemGroup>

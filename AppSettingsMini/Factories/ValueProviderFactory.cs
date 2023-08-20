@@ -31,7 +31,7 @@ namespace AppSettingsMini.Factories
 
 			if (provider == null!)
 			{
-				throw new InvalidOperationException("");
+				throw new InvalidOperationException(string.Format(Strings.ValueProviderNotCreated, Type));
 			}
 
 			return provider;

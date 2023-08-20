@@ -18,7 +18,7 @@ namespace AppSettingsMini.ValueProviders
 			WriteableStore = sourceProvider.WriteableSettingsSource;
 		}
 
-		public abstract ValueTask<ISettingsPropertyData> GetAsync(string collectionName, string propertyName);
+		public abstract ValueTask<ISettingsPropertyData> GetAsync(string collectionName, ISettingsPropertyInfo propertyInfo);
 
 		public abstract ValueTask SetAsync(string collectionName, ISettingsPropertyData propertyData);
 	}

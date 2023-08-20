@@ -16,8 +16,9 @@ namespace AppSettingsMini.Interfaces
         ValueTask<int> GetIntValueAsync(string collectionName, string propertyName);
         ValueTask<long> GetLongValueAsync(string collectionName, string propertyName);
         ValueTask<double> GetDoubleValueAsync(string collectionName, string propertyName);
-        ValueTask<ReadOnlyMemory<byte>> GetBytesValueAsync(string collectionName, string propertyName);
-	}
+        ValueTask<bool> GetBooleanValueAsync(string collectionName, string propertyName);
+		ValueTask<ReadOnlyMemory<byte>> GetBytesValueAsync(string collectionName, string propertyName);
+    }
 
     public interface IWriteableSettingsSource : ISettingsSource
     {
@@ -25,7 +26,8 @@ namespace AppSettingsMini.Interfaces
         ValueTask SetIntValueAsync(int value, string collectionName, string propertyName);
         ValueTask SetLongValueAsync(long value, string collectionName, string propertyName);
 		ValueTask SetDoubleValueAsync(double value, string collectionName, string propertyName);
-        ValueTask SetBytesValueAsync(ReadOnlyMemory<byte> value, string collectionName, string propertyName);
+		ValueTask SetBooleanValueAsync(bool value, string collectionName, string propertyName);
+		ValueTask SetBytesValueAsync(ReadOnlyMemory<byte> value, string collectionName, string propertyName);
 		ValueTask DeletePropertyAsync(string collectionName, string propertyName);
     }
 }

@@ -61,11 +61,38 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Не найден конструктор с требуемыми аргументами в типе &quot;{0}&quot;..
+        /// </summary>
+        internal static string CtorWithRequiredArgsNotFound {
+            get {
+                return ResourceManager.GetString("CtorWithRequiredArgsNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось удалить ключ реестра. Наименование ключа: &quot;{0}&quot;..
+        /// </summary>
+        internal static string FailedDeleteRegistryKey {
+            get {
+                return ResourceManager.GetString("FailedDeleteRegistryKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Не удалось получить значение свойства &quot;{0}&quot;. Модель &quot;{1}&quot;..
         /// </summary>
         internal static string FailedGetPropertyValue {
             get {
                 return ResourceManager.GetString("FailedGetPropertyValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось получить ключ реестра &quot;{0}&quot;..
+        /// </summary>
+        internal static string FailedGetRegistryKey {
+            get {
+                return ResourceManager.GetString("FailedGetRegistryKey", resourceCulture);
             }
         }
         
@@ -133,11 +160,47 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось привести значение типа &quot;{0}&quot; к типу &quot;{1}&quot;..
+        /// </summary>
+        internal static string FailedToCastTypeValue {
+            get {
+                return ResourceManager.GetString("FailedToCastTypeValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Метод &quot;{0}&quot; не найден..
+        /// </summary>
+        internal static string MethodNotFound {
+            get {
+                return ResourceManager.GetString("MethodNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Модель настроек с типом &quot;{0}&quot; уже зарегистрирована..
         /// </summary>
         internal static string ModelAlreadyRegistered {
             get {
                 return ResourceManager.GetString("ModelAlreadyRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Инициализация модели &quot;{0}&quot; не выполнена..
+        /// </summary>
+        internal static string ModelInitializationFailed {
+            get {
+                return ResourceManager.GetString("ModelInitializationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Модель &quot;{0}&quot; не инициализирована..
+        /// </summary>
+        internal static string ModelNotInitialized {
+            get {
+                return ResourceManager.GetString("ModelNotInitialized", resourceCulture);
             }
         }
         
@@ -160,11 +223,29 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Свойство &quot;{0}&quot; не поддерживает чтение..
+        /// </summary>
+        internal static string PropertyIsNotReadable {
+            get {
+                return ResourceManager.GetString("PropertyIsNotReadable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Не найдено свойство в модели. Наименование свойства &quot;{0}&quot;..
         /// </summary>
         internal static string PropertyNotFound {
             get {
                 return ResourceManager.GetString("PropertyNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Свойство &quot;{0}&quot; не найдено в типе &quot;{1}&quot;..
+        /// </summary>
+        internal static string PropertyNotFoundInType {
+            get {
+                return ResourceManager.GetString("PropertyNotFoundInType", resourceCulture);
             }
         }
         
@@ -178,20 +259,20 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Провайдер чтения и записи значения для типа &quot;{0}&quot; уже зарегистрирован..
+        ///   Ищет локализованную строку, похожую на Не задано значение свойства &quot;{0}&quot; в типе &quot;{1}&quot;..
         /// </summary>
-        internal static string ProviderAlreadyRegistered {
+        internal static string PropertyValueNotSetInType {
             get {
-                return ResourceManager.GetString("ProviderAlreadyRegistered", resourceCulture);
+                return ResourceManager.GetString("PropertyValueNotSetInType", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Не найден провайдер чтения и записи значения для типа &quot;{0}&quot;..
+        ///   Ищет локализованную строку, похожую на Значение ключа реестра не указано. Наименование ключа: &quot;{0}&quot;..
         /// </summary>
-        internal static string ProviderNotFound {
+        internal static string RegistryKeyValueNotSpecified {
             get {
-                return ResourceManager.GetString("ProviderNotFound", resourceCulture);
+                return ResourceManager.GetString("RegistryKeyValueNotSpecified", resourceCulture);
             }
         }
         
@@ -219,6 +300,33 @@ namespace AppSettingsMini.Infrastructure {
         internal static string ValueAttributeNotFound {
             get {
                 return ResourceManager.GetString("ValueAttributeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Провайдер чтения и записи значения для типа &quot;{0}&quot; уже зарегистрирован..
+        /// </summary>
+        internal static string ValueProviderAlreadyRegistered {
+            get {
+                return ResourceManager.GetString("ValueProviderAlreadyRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Провайдер чтения и записи значения для типа &quot;{0}&quot; не был создан..
+        /// </summary>
+        internal static string ValueProviderNotCreated {
+            get {
+                return ResourceManager.GetString("ValueProviderNotCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Не найден провайдер чтения и записи значения для типа &quot;{0}&quot;..
+        /// </summary>
+        internal static string ValueProviderNotFound {
+            get {
+                return ResourceManager.GetString("ValueProviderNotFound", resourceCulture);
             }
         }
         
