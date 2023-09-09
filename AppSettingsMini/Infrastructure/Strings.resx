@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CtorWithRequiredArgsNotFound" xml:space="preserve">
+    <value>Не найден конструктор с требуемыми аргументами в типе "{0}".</value>
+  </data>
+  <data name="FailedDeleteRegistryKey" xml:space="preserve">
+    <value>Не удалось удалить ключ реестра. Наименование ключа: "{0}".</value>
+  </data>
   <data name="FailedGetPropertyValue" xml:space="preserve">
     <value>Не удалось получить значение свойства "{0}". Модель "{1}".</value>
+  </data>
+  <data name="FailedGetRegistryKey" xml:space="preserve">
+    <value>Не удалось получить ключ реестра "{0}".</value>
   </data>
   <data name="FailedLoadPropertyValue" xml:space="preserve">
     <value>Не удалось получить значение свойства "{0}". Модель "{1}".</value>
@@ -141,8 +150,20 @@
   <data name="FailedSetPropertyValue" xml:space="preserve">
     <value>Не удалось установить значение свойства "{0}". Модель "{1}".</value>
   </data>
+  <data name="FailedToCastTypeValue" xml:space="preserve">
+    <value>Не удалось привести значение типа "{0}" к типу "{1}".</value>
+  </data>
+  <data name="MethodNotFound" xml:space="preserve">
+    <value>Метод "{0}" не найден.</value>
+  </data>
   <data name="ModelAlreadyRegistered" xml:space="preserve">
     <value>Модель настроек с типом "{0}" уже зарегистрирована.</value>
+  </data>
+  <data name="ModelInitializationFailed" xml:space="preserve">
+    <value>Инициализация модели "{0}" не выполнена.</value>
+  </data>
+  <data name="ModelNotInitialized" xml:space="preserve">
+    <value>Модель "{0}" не инициализирована.</value>
   </data>
   <data name="ModelNotRegistered" xml:space="preserve">
     <value>Модель с типом "{0}" не зарегистрирована.</value>
@@ -150,17 +171,23 @@
   <data name="NotFoundRegisteredModels" xml:space="preserve">
     <value>Отсутствуют зарегистрированные модели настроек.</value>
   </data>
+  <data name="PropertyIsNotReadable" xml:space="preserve">
+    <value>Свойство "{0}" не поддерживает чтение.</value>
+  </data>
   <data name="PropertyNotFound" xml:space="preserve">
     <value>Не найдено свойство в модели. Наименование свойства "{0}".</value>
+  </data>
+  <data name="PropertyNotFoundInType" xml:space="preserve">
+    <value>Свойство "{0}" не найдено в типе "{1}".</value>
   </data>
   <data name="PropertyTypeNotCorrect" xml:space="preserve">
     <value>Тип свойства не является корректным. Ожидался тип "{0}", но был получен "{1}".</value>
   </data>
-  <data name="ProviderAlreadyRegistered" xml:space="preserve">
-    <value>Провайдер чтения и записи значения для типа "{0}" уже зарегистрирован.</value>
+  <data name="PropertyValueNotSetInType" xml:space="preserve">
+    <value>Не задано значение свойства "{0}" в типе "{1}".</value>
   </data>
-  <data name="ProviderNotFound" xml:space="preserve">
-    <value>Не найден провайдер чтения и записи значения для типа "{0}".</value>
+  <data name="RegistryKeyValueNotSpecified" xml:space="preserve">
+    <value>Значение ключа реестра не указано. Наименование ключа: "{0}".</value>
   </data>
   <data name="RootCollectionElementNotExist" xml:space="preserve">
     <value>Корневой элемент коллекции с именем "{0}" не существует.</value>
@@ -170,6 +197,15 @@
   </data>
   <data name="ValueAttributeNotFound" xml:space="preserve">
     <value>Атрибут "value" не найден. Родительский элемент: "{0}".</value>
+  </data>
+  <data name="ValueProviderAlreadyRegistered" xml:space="preserve">
+    <value>Провайдер чтения и записи значения для типа "{0}" уже зарегистрирован.</value>
+  </data>
+  <data name="ValueProviderNotCreated" xml:space="preserve">
+    <value>Провайдер чтения и записи значения для типа "{0}" не был создан.</value>
+  </data>
+  <data name="ValueProviderNotFound" xml:space="preserve">
+    <value>Не найден провайдер чтения и записи значения для типа "{0}".</value>
   </data>
   <data name="XmlDocumentElementNotExist" xml:space="preserve">
     <value>Элемент xml-документа с именем "{0}" не существует.</value>

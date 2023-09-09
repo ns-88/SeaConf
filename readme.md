@@ -1,1 +1,1 @@
-Простая библиотека для работы с настройками приложения.
+A simple library for working with application settings.

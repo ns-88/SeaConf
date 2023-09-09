@@ -1,4 +1,5 @@
-﻿using AppSettingsMini.Interfaces.Factories;
+﻿using AppSettingsMini.Demo.Models;
+using AppSettingsMini.Interfaces.Factories;
 
 namespace AppSettingsMini.Demo
 {

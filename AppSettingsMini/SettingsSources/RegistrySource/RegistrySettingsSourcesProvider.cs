@@ -7,8 +7,8 @@ namespace AppSettingsMini.SettingsSources.RegistrySource
 #endif
 	internal class RegistrySettingsSourcesProvider : SettingsSourceProviderBase
 	{
-		public RegistrySettingsSourcesProvider(string appPath, string rootKeyName)
-			: base(new RegistrySettingsSource(appPath, rootKeyName))
+		public RegistrySettingsSourcesProvider(string companyName, string appName, string rootKeyName)
+			: base(new RegistrySettingsSource(companyName, appName, rootKeyName))
 		{
 		}
 	}

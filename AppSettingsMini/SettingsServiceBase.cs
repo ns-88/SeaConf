@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using AppSettingsMini.Infrastructure;
@@ -9,7 +10,7 @@ using AppSettingsMini.Models;
 
 namespace AppSettingsMini
 {
-    public abstract class SettingsServiceBase : ISettingsService
+	public abstract class SettingsServiceBase : ISettingsService
 	{
 		private readonly ISettingsSourceProviderFactory _sourceProviderFactory;
 		private readonly Dictionary<Type, ModelInfo> _models;
@@ -34,10 +35,15 @@ namespace AppSettingsMini
 			_valueProvidersManager.AddFactory(factory);
 		}
 
-		protected TImpl RegisterModel<T, TImpl>(bool isReadOnly = false)
+		protected TImpl RegisterModel<T, TImpl>(bool isReadOnly = false, string? modelName = null)
 			where T : class
 			where TImpl : SettingsModelBase, T, new()
 		{
+			if (modelName == string.Empty || modelName?.Trim().Length == 0)
+			{
+				throw new ArgumentException(nameof(modelName));
+			}
+
 			var type = typeof(T);
 			var model = new TImpl();
 
@@ -46,9 +52,16 @@ namespace AppSettingsMini
 				throw new InvalidOperationException(string.Format(Strings.ModelAlreadyRegistered, type.Name));
 			}
 
-			((ISettingsModel)model).Init(this);
+			try
+			{
+				((ISettingsModel)model).Init(this);
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException(string.Format(Strings.ModelInitializationFailed, type.Name), ex);
+			}
 
-			_models.Add(type, new ModelInfo(model, type, isReadOnly));
+			_models.Add(type, new ModelInfo(model, type, isReadOnly, modelName));
 
 			return model;
 		}
@@ -88,14 +101,14 @@ namespace AppSettingsMini
 					{
 						if (!valueProvidersFactory.TryCreate(property.Type, sourceProvider, out var provider))
 						{
-							throw new SettingsSaveLoadFaultException(string.Format(Strings.ProviderNotFound, property.Type.Name));
+							throw new SettingsSaveLoadFaultException(string.Format(Strings.ValueProviderNotFound, property.Type.Name));
 						}
 
 						ISettingsPropertyData value;
 
 						try
 						{
-							value = await provider.GetAsync(modelInfo.Name, property.Name).ConfigureAwait(false);
+							value = await provider.GetAsync(modelInfo.Name, property).ConfigureAwait(false);
 						}
 						catch (Exception ex)
 						{
@@ -153,7 +166,7 @@ namespace AppSettingsMini
 					{
 						if (!valueProvidersFactory.TryCreate(property.Type, sourceProvider, out var provider))
 						{
-							throw new SettingsSaveLoadFaultException(string.Format(Strings.ProviderNotFound, property.Type.Name));
+							throw new SettingsSaveLoadFaultException(string.Format(Strings.ValueProviderNotFound, property.Type.Name));
 						}
 
 						try
@@ -203,29 +216,34 @@ namespace AppSettingsMini
 			public readonly Type Type;
 			public readonly bool IsReadOnly;
 
-			public ModelInfo(ISettingsModel model, Type type, bool isReadOnly)
+			public ModelInfo(ISettingsModel model, Type type, bool isReadOnly, string? modelName)
 			{
-				Model = Guard.ThrowIfNullRet(model);
-				Name = GetName(type.Name);
+				Model = model;
+				Name = GetName(type, modelName);
 				Type = type;
 				IsReadOnly = isReadOnly;
 			}
 
-			private static string GetName(string name)
+			private static string GetName(MemberInfo memberInfo, string? modelName)
 			{
-				Guard.ThrowIfEmptyString(name);
-
-				if (name.Length == 1)
+				if (modelName != null)
 				{
-					return name;
+					return modelName;
 				}
 
-				if (name.StartsWith("I"))
+				var typeName = memberInfo.Name;
+
+				if (typeName.Length == 1)
 				{
-					name = name.Substring(1, name.Length - 1);
+					return typeName;
 				}
 
-				return name;
+				if (typeName.StartsWith("I"))
+				{
+					typeName = typeName.Substring(1, typeName.Length - 1);
+				}
+
+				return typeName;
 			}
 
 			public override bool Equals(object? obj)

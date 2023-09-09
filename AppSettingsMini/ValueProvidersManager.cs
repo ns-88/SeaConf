@@ -28,12 +28,10 @@ namespace AppSettingsMini
 			if (type == typeof(string) ||
 				type == typeof(int) ||
 				type == typeof(long) ||
-				type == typeof(double))
-			{
-				return true;
-			}
-
-			if (type.IsReadOnlyMemory())
+				type == typeof(double) ||
+				type == typeof(bool) ||
+				type.IsEnum ||
+				type.IsReadOnlyByteMemory())
 			{
 				return true;
 			}
@@ -50,10 +48,10 @@ namespace AppSettingsMini
 		{
 			Guard.ThrowIfNull(factory);
 			Guard.ThrowIfNull(factory.Type);
-			
+
 			if (Contains(factory.Type))
 			{
-				throw new InvalidOperationException(string.Format(Strings.ProviderAlreadyRegistered, factory.Type.Name));
+				throw new InvalidOperationException(string.Format(Strings.ValueProviderAlreadyRegistered, factory.Type.Name));
 			}
 
 			_valueProviderFactories.Add(factory.Type, factory);
@@ -89,7 +87,7 @@ namespace AppSettingsMini
 
 				if (valueProvider == null!)
 				{
-					throw new InvalidOperationException("");
+					throw new InvalidOperationException(string.Format(Strings.ValueProviderNotCreated, type));
 				}
 
 				return true;
@@ -111,9 +109,17 @@ namespace AppSettingsMini
 			{
 				valueProvider = new DoubleValueProvider(sourceProvider);
 			}
+			else if (type == typeof(bool))
+			{
+				valueProvider = new BooleanValueProvider(sourceProvider);
+			}
 			else if (type == typeof(ReadOnlyMemory<byte>))
 			{
 				valueProvider = new BytesValueProvider(sourceProvider);
+			}
+			else if (type.IsEnum)
+			{
+				valueProvider = new EnumValueProvider(sourceProvider);
 			}
 
 			if (valueProvider == null)
@@ -155,7 +161,7 @@ namespace AppSettingsMini
 				return (IEqualityComparer<T>)comparer;
 			}
 
-			if (type.IsReadOnlyMemory())
+			if (type.IsReadOnlyByteMemory())
 			{
 				comparer = new ReadOnlyMemoryByteComparer();
 			}
@@ -170,9 +176,9 @@ namespace AppSettingsMini
 
 	file static class TypeExtension
 	{
-		public static bool IsReadOnlyMemory(this Type type)
+		public static bool IsReadOnlyByteMemory(this Type type)
 		{
-			return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ReadOnlyMemory<>);
+			return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ReadOnlyMemory<byte>);
 		}
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using AppSettingsMini.Factories;
 using AppSettingsMini.Infrastructure;
 using AppSettingsMini.Interfaces;
 
@@ -13,6 +14,7 @@ namespace AppSettingsMini
 	public class SettingsModelBase : ISettingsModel
 	{
 		private PropertiesData _storage;
+		private bool _isInit;
 
 #nullable disable
 		// ReSharper disable once NotNullMemberIsNotInitialized
@@ -24,15 +26,29 @@ namespace AppSettingsMini
 		void ISettingsModel.Init(SettingsServiceBase service)
 		{
 			_storage = CreatePropertiesData(GetType(), this, service);
+			_isInit = true;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void ThrowIfNoInit()
+		{
+			if (!_isInit)
+			{
+				throw new InvalidOperationException(string.Format(Strings.ModelNotInitialized, GetType().Name));
+			}
 		}
 
 		IEnumerable<ISettingsPropertyData> ISettingsModel.GetModifiedProperties()
 		{
+			ThrowIfNoInit();
+
 			return _storage.Values.Where(x => x.IsModified);
 		}
 
 		PropertiesData ISettingsModel.GetPropertiesData()
 		{
+			ThrowIfNoInit();
+
 			return _storage;
 		}
 
@@ -45,25 +61,10 @@ namespace AppSettingsMini
 			{
 				if (!property.CanRead)
 				{
-					throw new InvalidOperationException();
+					throw new InvalidOperationException(string.Format(Strings.PropertyIsNotReadable, property.Name));
 				}
 
-				var openGenericType = typeof(SettingsPropertyData<>);
-				var typeArgs = new[] { property.PropertyType };
-				var genericType = openGenericType.MakeGenericType(typeArgs);
-
-				var ctor = genericType.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic,
-					null,
-					CallingConventions.Standard | CallingConventions.HasThis,
-					new[] { typeof(string), typeof(Type), typeof(ISettingsModel), typeof(SettingsServiceBase) },
-					null);
-
-				if (ctor == null)
-				{
-					throw new InvalidOperationException("");
-				}
-
-				var propertyData = (ISettingsPropertyData)ctor.Invoke(new object[] { property.Name, property.PropertyType, model, service });
+				var propertyData = SettingsPropertyDataFactory.Create(new ArgsInfo(property.Name, property.PropertyType, model, service));
 
 				propertiesData.Add(property.Name, propertyData);
 			}
@@ -74,6 +75,7 @@ namespace AppSettingsMini
 		protected void SetValue<T>(T value, [CallerMemberName] string propertyName = "")
 		{
 			Guard.ThrowIfEmptyString(propertyName);
+			ThrowIfNoInit();
 
 			try
 			{
@@ -88,13 +90,14 @@ namespace AppSettingsMini
 			}
 			catch (Exception ex)
 			{
-				throw new InvalidOperationException(string.Format(Strings.FailedSetPropertyValue, propertyName), ex);
+				throw new InvalidOperationException(string.Format(Strings.FailedSetPropertyValue, propertyName, GetType().FullName), ex);
 			}
 		}
 
 		protected T GetValue<T>([CallerMemberName] string propertyName = "")
 		{
 			Guard.ThrowIfEmptyString(propertyName);
+			ThrowIfNoInit();
 
 			try
 			{
@@ -107,7 +110,7 @@ namespace AppSettingsMini
 			}
 			catch (Exception ex)
 			{
-				throw new InvalidOperationException(string.Format(Strings.FailedGetPropertyValue, propertyName), ex);
+				throw new InvalidOperationException(string.Format(Strings.FailedGetPropertyValue, propertyName, GetType().FullName), ex);
 			}
 		}
 	}

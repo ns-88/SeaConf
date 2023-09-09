@@ -8,6 +8,8 @@ namespace AppSettingsMini.Test.Infrastructure
 		public int IntValue { get; set; }
 		public long LongValue { get; set; }
 		public double DoubleValue { get; set; }
+		public bool BoolValue { get; set; }
+		public Regime EnumValue { get; set; }
 		public ReadOnlyMemory<byte> BytesValue { get; set; }
 	}
 }
