@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using AppSettingsMini.Infrastructure;
-using AppSettingsMini.Interfaces;
+using AppSettingsMini.Interfaces.Core;
 
 namespace AppSettingsMini.Models
 {
-    public class PropertyChangedEventArgs : EventArgs
+	public class PropertyChangedEventArgs : EventArgs
     {
         private readonly Type _type;
         public readonly string Name;
-        public readonly ISettingsModel Model;
+        public readonly IMemoryModel Model;
 
-        public PropertyChangedEventArgs(string name, ISettingsModel model)
+        public PropertyChangedEventArgs(string name, IMemoryModel model)
         {
             _type = model.GetType();
 

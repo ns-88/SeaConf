@@ -2,103 +2,58 @@
 using System.IO;
 using System.Reflection;
 using System.Runtime.Versioning;
+using AppSettingsMini.Infrastructure;
 using AppSettingsMini.Interfaces;
+using AppSettingsMini.Interfaces.Core;
 using AppSettingsMini.Interfaces.Factories;
-using AppSettingsMini.SettingsSources.RegistrySource;
-using AppSettingsMini.SettingsSources.XmlSource;
 
 namespace AppSettingsMini
 {
 	public static class Sources
 	{
-		private const string RootCollectionName = "AppSettings";
-		private const string SettingsFileName = "Settings";
-
-#if NET6_0
 		[SupportedOSPlatform("windows")]
-#endif
 		public static IRegistryPathBuilder Registry { get; } = new RegistryPathBuilder();
 
 		public static IXmlPathBuilder Xml { get; } = new XmlPathBuilder();
+	}
 
-		#region Nested types
-#if NET6_0
-		[SupportedOSPlatform("windows")]
-#endif
-		private class RegistryProviderFactory : ISettingsSourceProviderFactory
+	[SupportedOSPlatform("windows")]
+	file class RegistryPathBuilder : IRegistryPathBuilder
+	{
+		public ISourceFactory<IStorageModel> Path(string companyName, string appName)
 		{
-			private readonly string _companyName;
-			private readonly string _appName;
+			return new RegistrySourceFactory(companyName, appName);
+		}
+	}
 
-			public RegistryProviderFactory(string companyName, string appName)
-			{
-				_companyName = companyName;
-				_appName = appName;
-			}
-
-			public ISettingsSourceProvider Create()
-			{
-				return new RegistrySettingsSourcesProvider(_companyName, _appName, RootCollectionName);
-			}
+	file class XmlPathBuilder : IXmlPathBuilder
+	{
+		public ISourceFactory<IStorageModel> Path(string appPath)
+		{
+			return new XmlSourceFactory(appPath);
 		}
 
-		private class XmlProviderFactory : ISettingsSourceProviderFactory
+		public ISourceFactory<IStorageModel> LocalAppDataPath(string companyName, string appName)
 		{
-			private readonly string _path;
+			var sep = System.IO.Path.DirectorySeparatorChar;
 
-			public XmlProviderFactory(string path)
+			var path = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}{sep}{companyName}{sep}{appName}";
+
+			if (!Directory.Exists(path))
 			{
-				_path = path;
+				Directory.CreateDirectory(path);
 			}
 
-			public ISettingsSourceProvider Create()
-			{
-				return new XmlSettingsSourcesProvider(_path, RootCollectionName);
-			}
+			return new XmlSourceFactory($"{path}{sep}{Strings.SettingsFileName}.xml");
 		}
 
-#if NET6_0
-		[SupportedOSPlatform("windows")]
-#endif
-		private class RegistryPathBuilder : IRegistryPathBuilder
+		public ISourceFactory<IStorageModel> ExecutablePath()
 		{
-			public ISettingsSourceProviderFactory Path(string companyName, string appName)
-			{
-				return new RegistryProviderFactory(companyName, appName);
-			}
+			var sep = System.IO.Path.DirectorySeparatorChar;
+			var executingPath = Assembly.GetExecutingAssembly().Location;
+			var directoryPath = System.IO.Path.GetDirectoryName(executingPath);
+
+			return new XmlSourceFactory($"{directoryPath}{sep}{Strings.SettingsFileName}.xml");
 		}
-
-		private class XmlPathBuilder : IXmlPathBuilder
-		{
-			public ISettingsSourceProviderFactory Path(string appPath)
-			{
-				return new XmlProviderFactory(appPath);
-			}
-
-			public ISettingsSourceProviderFactory LocalAppDataPath(string companyName, string appName)
-			{
-				var sep = System.IO.Path.DirectorySeparatorChar;
-
-				var path = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}{sep}{companyName}{sep}{appName}";
-
-				if (!Directory.Exists(path))
-				{
-					Directory.CreateDirectory(path);
-				}
-
-				return new XmlProviderFactory($"{path}{sep}{SettingsFileName}.xml");
-			}
-
-			public ISettingsSourceProviderFactory ExecutablePath()
-			{
-				var sep = System.IO.Path.DirectorySeparatorChar;
-				var executingPath = Assembly.GetExecutingAssembly().Location;
-				var directoryPath = System.IO.Path.GetDirectoryName(executingPath);
-
-				return new XmlProviderFactory($"{directoryPath}{sep}{SettingsFileName}.xml");
-			}
-		}
-
-		#endregion
 	}
 }
