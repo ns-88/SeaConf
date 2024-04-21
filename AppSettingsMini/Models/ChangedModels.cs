@@ -7,13 +7,8 @@ namespace AppSettingsMini.Models
 {
     internal class ChangedModels : IChangedModels
     {
-        private readonly Dictionary<Type, HashSet<string>> _models;
+        private readonly Dictionary<Type, HashSet<string>> _models = new();
         public bool HasChanged => _models.Count != 0;
-
-        public ChangedModels()
-        {
-            _models = new Dictionary<Type, HashSet<string>>();
-        }
 
         public bool TryGetProperties<T>([MaybeNullWhen(false)] out IReadOnlyCollection<string> properties)
         {

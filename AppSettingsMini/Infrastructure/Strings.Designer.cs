@@ -61,7 +61,25 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Не найден конструктор с требуемыми аргументами в типе &quot;{0}&quot;..
+        ///   Ищет локализованную строку, похожую на Добавление новой модели не выполнено. Путь к модели - &quot;{0}&quot;, наименование модели - &quot;{1}&quot;..
+        /// </summary>
+        internal static string AddingNewModelFailed {
+            get {
+                return ResourceManager.GetString("AddingNewModelFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Добавление новой корневой модели не выполнено. Путь к модели - &quot;{0}&quot;, наименование модели - &quot;{1}&quot;..
+        /// </summary>
+        internal static string AddingNewRootModelFailed {
+            get {
+                return ResourceManager.GetString("AddingNewRootModelFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Не найден конструктор с требуемыми аргументами в типе - &quot;{0}&quot;..
         /// </summary>
         internal static string CtorWithRequiredArgsNotFound {
             get {
@@ -70,7 +88,25 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Не удалось удалить ключ реестра. Наименование ключа: &quot;{0}&quot;..
+        ///   Ищет локализованную строку, похожую на Удаление модели не выполнено. Путь к модели - &quot;{0}&quot;, наименование модели - &quot;{1}&quot;..
+        /// </summary>
+        internal static string DeletingModelFailed {
+            get {
+                return ResourceManager.GetString("DeletingModelFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Удаление корневой модели не выполнено. Путь к модели - &quot;{0}&quot;, наименование модели - &quot;{1}&quot;..
+        /// </summary>
+        internal static string DeletingRootModelFailed {
+            get {
+                return ResourceManager.GetString("DeletingRootModelFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось удалить ключ реестра. Наименование ключа - &quot;{0}&quot;..
         /// </summary>
         internal static string FailedDeleteRegistryKey {
             get {
@@ -79,7 +115,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Не удалось получить значение свойства &quot;{0}&quot;. Модель &quot;{1}&quot;..
+        ///   Ищет локализованную строку, похожую на Не удалось получить значение свойства - &quot;{0}&quot;. Модель - &quot;{1}&quot;..
         /// </summary>
         internal static string FailedGetPropertyValue {
             get {
@@ -88,7 +124,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Не удалось получить ключ реестра &quot;{0}&quot;..
+        ///   Ищет локализованную строку, похожую на Не удалось получить ключ реестра - &quot;{0}&quot;..
         /// </summary>
         internal static string FailedGetRegistryKey {
             get {
@@ -97,7 +133,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Не удалось получить значение свойства &quot;{0}&quot;. Модель &quot;{1}&quot;..
+        ///   Ищет локализованную строку, похожую на Не удалось получить значение свойства - &quot;{0}&quot;. Модель - &quot;{1}&quot;..
         /// </summary>
         internal static string FailedLoadPropertyValue {
             get {
@@ -115,16 +151,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Не удалось загрузить xml документ..
-        /// </summary>
-        internal static string FailedLoadXmlDocument {
-            get {
-                return ResourceManager.GetString("FailedLoadXmlDocument", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Не удалось сохранить значение свойства &quot;{0}&quot;. Модель &quot;{1}&quot;..
+        ///   Ищет локализованную строку, похожую на Не удалось сохранить значение свойства - &quot;{0}&quot;. Модель - &quot;{1}&quot;..
         /// </summary>
         internal static string FailedSavePropertyValue {
             get {
@@ -142,16 +169,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Не удалось сохранить xml документ..
-        /// </summary>
-        internal static string FailedSaveXmlDocument {
-            get {
-                return ResourceManager.GetString("FailedSaveXmlDocument", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Не удалось установить значение свойства &quot;{0}&quot;. Модель &quot;{1}&quot;..
+        ///   Ищет локализованную строку, похожую на Не удалось установить значение свойства - &quot;{0}&quot;. Модель - &quot;{1}&quot;..
         /// </summary>
         internal static string FailedSetPropertyValue {
             get {
@@ -160,7 +178,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Не удалось привести значение типа &quot;{0}&quot; к типу &quot;{1}&quot;..
+        ///   Ищет локализованную строку, похожую на Не удалось привести значение типа - &quot;{0}&quot; к типу - &quot;{1}&quot;..
         /// </summary>
         internal static string FailedToCastTypeValue {
             get {
@@ -169,7 +187,34 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Метод &quot;{0}&quot; не найден..
+        ///   Ищет локализованную строку, похожую на Получение моделей из памяти и хранилища не выполнено..
+        /// </summary>
+        internal static string GetModelsFromMemoryAndStorageFailed {
+            get {
+                return ResourceManager.GetString("GetModelsFromMemoryAndStorageFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось получить корневой ключ реестра с именем - &quot;{0}&quot;..
+        /// </summary>
+        internal static string GetRegistryRootKeyFailed {
+            get {
+                return ResourceManager.GetString("GetRegistryRootKeyFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Неверный тип вложенной модели - тип помеченный атрибутом - &quot;{0}&quot; не реализует интерфейс - &quot;{1}&quot;. Тип модели - &quot;{2}&quot;, тип родительской модели - &quot;{3}&quot;..
+        /// </summary>
+        internal static string InvalidNestedModelType {
+            get {
+                return ResourceManager.GetString("InvalidNestedModelType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Метод - &quot;{0}&quot; не найден..
         /// </summary>
         internal static string MethodNotFound {
             get {
@@ -178,7 +223,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Модель настроек с типом &quot;{0}&quot; уже зарегистрирована..
+        ///   Ищет локализованную строку, похожую на Модель настроек с именем - &quot;{0}&quot; и типом - &quot;{1}&quot; уже зарегистрирована..
         /// </summary>
         internal static string ModelAlreadyRegistered {
             get {
@@ -187,7 +232,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Инициализация модели &quot;{0}&quot; не выполнена..
+        ///   Ищет локализованную строку, похожую на Инициализация модели - &quot;{0}&quot; не выполнена..
         /// </summary>
         internal static string ModelInitializationFailed {
             get {
@@ -196,7 +241,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Модель &quot;{0}&quot; не инициализирована..
+        ///   Ищет локализованную строку, похожую на Модель - &quot;{0}&quot; не инициализирована..
         /// </summary>
         internal static string ModelNotInitialized {
             get {
@@ -205,11 +250,47 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Модель с типом &quot;{0}&quot; не зарегистрирована..
+        ///   Ищет локализованную строку, похожую на Модель с типом - &quot;{0}&quot; и именем - &quot;{1}&quot; не зарегистрирована..
         /// </summary>
         internal static string ModelNotRegistered {
             get {
                 return ResourceManager.GetString("ModelNotRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Регистрация и инициализация моделей не выполнена..
+        /// </summary>
+        internal static string ModelRegistrationFailed {
+            get {
+                return ResourceManager.GetString("ModelRegistrationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Отсутствуют модели для регистрации..
+        /// </summary>
+        internal static string ModelsForRegistrationNotFound {
+            get {
+                return ResourceManager.GetString("ModelsForRegistrationNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Значение вложенной модели не задано. Тип модели - &quot;{0}&quot;, тип родительской модели - &quot;{1}&quot;..
+        /// </summary>
+        internal static string NestedModelValueNotSet {
+            get {
+                return ResourceManager.GetString("NestedModelValueNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Отсутствуют элементы пути к модели..
+        /// </summary>
+        internal static string NotFoundModelPathElements {
+            get {
+                return ResourceManager.GetString("NotFoundModelPathElements", resourceCulture);
             }
         }
         
@@ -223,7 +304,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Свойство &quot;{0}&quot; не поддерживает чтение..
+        ///   Ищет локализованную строку, похожую на Свойство - &quot;{0}&quot; не поддерживает чтение..
         /// </summary>
         internal static string PropertyIsNotReadable {
             get {
@@ -232,7 +313,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Не найдено свойство в модели. Наименование свойства &quot;{0}&quot;..
+        ///   Ищет локализованную строку, похожую на Не найдено свойство в модели. Наименование свойства - &quot;{0}&quot;..
         /// </summary>
         internal static string PropertyNotFound {
             get {
@@ -241,7 +322,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Свойство &quot;{0}&quot; не найдено в типе &quot;{1}&quot;..
+        ///   Ищет локализованную строку, похожую на Свойство - &quot;{0}&quot; не найдено в типе - &quot;{1}&quot;..
         /// </summary>
         internal static string PropertyNotFoundInType {
             get {
@@ -250,7 +331,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Тип свойства не является корректным. Ожидался тип &quot;{0}&quot;, но был получен &quot;{1}&quot;..
+        ///   Ищет локализованную строку, похожую на Тип свойства не является корректным. Ожидался тип - &quot;{0}&quot;, но был получен - &quot;{1}&quot;..
         /// </summary>
         internal static string PropertyTypeNotCorrect {
             get {
@@ -259,7 +340,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Не задано значение свойства &quot;{0}&quot; в типе &quot;{1}&quot;..
+        ///   Ищет локализованную строку, похожую на Не задано значение свойства - &quot;{0}&quot; в типе - &quot;{1}&quot;..
         /// </summary>
         internal static string PropertyValueNotSetInType {
             get {
@@ -268,7 +349,16 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Значение ключа реестра не указано. Наименование ключа: &quot;{0}&quot;..
+        ///   Ищет локализованную строку, похожую на Ключ реестра по пути &quot;{0}&quot; уже существует..
+        /// </summary>
+        internal static string RegistryKeyAlreadyExists {
+            get {
+                return ResourceManager.GetString("RegistryKeyAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Значение ключа реестра не указано. Наименование ключа - &quot;{0}&quot;..
         /// </summary>
         internal static string RegistryKeyValueNotSpecified {
             get {
@@ -277,16 +367,43 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Корневой элемент коллекции с именем &quot;{0}&quot; не существует..
+        ///   Ищет локализованную строку, похожую на Корневой ключ реестра с именем - &quot;{0}&quot; не существует..
         /// </summary>
-        internal static string RootCollectionElementNotExist {
+        internal static string RegistryRootKeyNotExist {
             get {
-                return ResourceManager.GetString("RootCollectionElementNotExist", resourceCulture);
+                return ResourceManager.GetString("RegistryRootKeyNotExist", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Строковое значение не может быть преобразовано к типу &quot;{0}&quot;. Значение &quot;{1}&quot;..
+        ///   Ищет локализованную строку, похожую на AppSettings.
+        /// </summary>
+        internal static string RootCollectionName {
+            get {
+                return ResourceManager.GetString("RootCollectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Settings.
+        /// </summary>
+        internal static string SettingsFileName {
+            get {
+                return ResourceManager.GetString("SettingsFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Источник не был загружен..
+        /// </summary>
+        internal static string SourceNotLoaded {
+            get {
+                return ResourceManager.GetString("SourceNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Строковое значение не может быть преобразовано к типу - &quot;{0}&quot;. Значение - &quot;{1}&quot;..
         /// </summary>
         internal static string StringValueCannotConvertedToType {
             get {
@@ -295,16 +412,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Атрибут &quot;value&quot; не найден. Родительский элемент: &quot;{0}&quot;..
-        /// </summary>
-        internal static string ValueAttributeNotFound {
-            get {
-                return ResourceManager.GetString("ValueAttributeNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Провайдер чтения и записи значения для типа &quot;{0}&quot; уже зарегистрирован..
+        ///   Ищет локализованную строку, похожую на Провайдер чтения и записи значения для типа - &quot;{0}&quot; уже зарегистрирован..
         /// </summary>
         internal static string ValueProviderAlreadyRegistered {
             get {
@@ -313,7 +421,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Провайдер чтения и записи значения для типа &quot;{0}&quot; не был создан..
+        ///   Ищет локализованную строку, похожую на Провайдер чтения и записи значения для типа - &quot;{0}&quot; не был создан..
         /// </summary>
         internal static string ValueProviderNotCreated {
             get {
@@ -322,7 +430,7 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Не найден провайдер чтения и записи значения для типа &quot;{0}&quot;..
+        ///   Ищет локализованную строку, похожую на Не найден провайдер чтения и записи значения для типа - &quot;{0}&quot;..
         /// </summary>
         internal static string ValueProviderNotFound {
             get {
@@ -331,7 +439,61 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Элемент xml-документа с именем &quot;{0}&quot; не существует..
+        ///   Ищет локализованную строку, похожую на Нарушение структуры хранения - для модели из источника в памяти, не найдена соответствующая модель из источника в хранилище. Путь к модели в хранилище - &quot;{0}&quot;, наименование модели в хранилище - &quot;{1}&quot;..
+        /// </summary>
+        internal static string ViolationStorageStructureModelFromStorageNotFound {
+            get {
+                return ResourceManager.GetString("ViolationStorageStructureModelFromStorageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Нарушение структуры хранения - количество моделей из источника в памяти и в хранилище не совпадает. Количество моделей в памяти - &quot;{0}&quot;, количество моделей в хранилище - &quot;{1}&quot;..
+        /// </summary>
+        internal static string ViolationStorageStructureModelsNumberDoesNotMatch {
+            get {
+                return ResourceManager.GetString("ViolationStorageStructureModelsNumberDoesNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Нарушение структуры хранения - отсутствуют модели из источника в памяти..
+        /// </summary>
+        internal static string ViolationStorageStructureNoModelsInMemory {
+            get {
+                return ResourceManager.GetString("ViolationStorageStructureNoModelsInMemory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Нарушение структуры хранения - отсутствуют модели из источника в хранилище..
+        /// </summary>
+        internal static string ViolationStorageStructureNoModelsInStorage {
+            get {
+                return ResourceManager.GetString("ViolationStorageStructureNoModelsInStorage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Нарушение структуры хранения - количество корневых моделей из источника в памяти и в хранилище не совпадает. Количество моделей в памяти - &quot;{0}&quot;, количество моделей в хранилище - &quot;{1}&quot;..
+        /// </summary>
+        internal static string ViolationStorageStructureRootModelsNumberDoesNotMatch {
+            get {
+                return ResourceManager.GetString("ViolationStorageStructureRootModelsNumberDoesNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Элемент xml-документа по пути &quot;{0}&quot; уже существует..
+        /// </summary>
+        internal static string XmlDocumentElementAlreadyExists {
+            get {
+                return ResourceManager.GetString("XmlDocumentElementAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Элемент xml-документа с именем - &quot;{0}&quot; не существует..
         /// </summary>
         internal static string XmlDocumentElementNotExist {
             get {
@@ -345,6 +507,24 @@ namespace AppSettingsMini.Infrastructure {
         internal static string XmlDocumentRootElementIsMissing {
             get {
                 return ResourceManager.GetString("XmlDocumentRootElementIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Корневой элемент xml-документа с именем - &quot;{0}&quot; не существует..
+        /// </summary>
+        internal static string XmlRootElementNotExist {
+            get {
+                return ResourceManager.GetString("XmlRootElementNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Атрибут &quot;value&quot; не найден. Родительский элемент - &quot;{0}&quot;..
+        /// </summary>
+        internal static string XmlValueAttributeNotFound {
+            get {
+                return ResourceManager.GetString("XmlValueAttributeNotFound", resourceCulture);
             }
         }
     }

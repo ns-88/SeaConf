@@ -1,4 +1,5 @@
-﻿using AppSettingsMini.Interfaces.Factories;
+﻿using AppSettingsMini.Interfaces.Core;
+using AppSettingsMini.Interfaces.Factories;
 using AppSettingsMini.Test.Infrastructure.Models;
 
 namespace AppSettingsMini.Test.Infrastructure
@@ -7,10 +8,11 @@ namespace AppSettingsMini.Test.Infrastructure
 	{
 		public IProgramSettings ProgramSettings { get; }
 
-		public SettingsService(ISettingsSourceProviderFactory sourceProviderFactory)
-			: base(sourceProviderFactory)
+		public SettingsService(ISourceFactory<IStorageModel> sourceFactory)
+			: base(sourceFactory)
 		{
-			ProgramSettings = RegisterModel<IProgramSettings, ProgramSettings>();
+			Register(x => x.RegisterModel<IProgramSettings, ProgramSettings>());
+			ProgramSettings = GetModel<IProgramSettings>();
 		}
 	}
 }

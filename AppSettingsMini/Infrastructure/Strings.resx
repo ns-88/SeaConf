@@ -117,100 +117,170 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddingNewModelFailed" xml:space="preserve">
+    <value>Добавление новой модели не выполнено. Путь к модели - "{0}", наименование модели - "{1}".</value>
+  </data>
+  <data name="AddingNewRootModelFailed" xml:space="preserve">
+    <value>Добавление новой корневой модели не выполнено. Путь к модели - "{0}", наименование модели - "{1}".</value>
+  </data>
   <data name="CtorWithRequiredArgsNotFound" xml:space="preserve">
-    <value>Не найден конструктор с требуемыми аргументами в типе "{0}".</value>
+    <value>Не найден конструктор с требуемыми аргументами в типе - "{0}".</value>
+  </data>
+  <data name="DeletingModelFailed" xml:space="preserve">
+    <value>Удаление модели не выполнено. Путь к модели - "{0}", наименование модели - "{1}".</value>
+  </data>
+  <data name="DeletingRootModelFailed" xml:space="preserve">
+    <value>Удаление корневой модели не выполнено. Путь к модели - "{0}", наименование модели - "{1}".</value>
   </data>
   <data name="FailedDeleteRegistryKey" xml:space="preserve">
-    <value>Не удалось удалить ключ реестра. Наименование ключа: "{0}".</value>
+    <value>Не удалось удалить ключ реестра. Наименование ключа - "{0}".</value>
   </data>
   <data name="FailedGetPropertyValue" xml:space="preserve">
-    <value>Не удалось получить значение свойства "{0}". Модель "{1}".</value>
+    <value>Не удалось получить значение свойства - "{0}". Модель - "{1}".</value>
   </data>
   <data name="FailedGetRegistryKey" xml:space="preserve">
-    <value>Не удалось получить ключ реестра "{0}".</value>
+    <value>Не удалось получить ключ реестра - "{0}".</value>
+    <comment>Registry</comment>
   </data>
   <data name="FailedLoadPropertyValue" xml:space="preserve">
-    <value>Не удалось получить значение свойства "{0}". Модель "{1}".</value>
+    <value>Не удалось получить значение свойства - "{0}". Модель - "{1}".</value>
   </data>
   <data name="FailedLoadSettingsFromSource" xml:space="preserve">
     <value>Не удалось загрузить настройки из источника.</value>
   </data>
-  <data name="FailedLoadXmlDocument" xml:space="preserve">
-    <value>Не удалось загрузить xml документ.</value>
-  </data>
   <data name="FailedSavePropertyValue" xml:space="preserve">
-    <value>Не удалось сохранить значение свойства "{0}". Модель "{1}".</value>
+    <value>Не удалось сохранить значение свойства - "{0}". Модель - "{1}".</value>
   </data>
   <data name="FailedSaveSettingsToSource" xml:space="preserve">
     <value>Не удалось сохранить настройки в источник.</value>
   </data>
-  <data name="FailedSaveXmlDocument" xml:space="preserve">
-    <value>Не удалось сохранить xml документ.</value>
-  </data>
   <data name="FailedSetPropertyValue" xml:space="preserve">
-    <value>Не удалось установить значение свойства "{0}". Модель "{1}".</value>
+    <value>Не удалось установить значение свойства - "{0}". Модель - "{1}".</value>
   </data>
   <data name="FailedToCastTypeValue" xml:space="preserve">
-    <value>Не удалось привести значение типа "{0}" к типу "{1}".</value>
+    <value>Не удалось привести значение типа - "{0}" к типу - "{1}".</value>
+  </data>
+  <data name="GetModelsFromMemoryAndStorageFailed" xml:space="preserve">
+    <value>Получение моделей из памяти и хранилища не выполнено.</value>
+  </data>
+  <data name="InvalidNestedModelType" xml:space="preserve">
+    <value>Неверный тип вложенной модели - тип помеченный атрибутом - "{0}" не реализует интерфейс - "{1}". Тип модели - "{2}", тип родительской модели - "{3}".</value>
   </data>
   <data name="MethodNotFound" xml:space="preserve">
-    <value>Метод "{0}" не найден.</value>
+    <value>Метод - "{0}" не найден.</value>
   </data>
   <data name="ModelAlreadyRegistered" xml:space="preserve">
-    <value>Модель настроек с типом "{0}" уже зарегистрирована.</value>
+    <value>Модель настроек с именем - "{0}" и типом - "{1}" уже зарегистрирована.</value>
   </data>
   <data name="ModelInitializationFailed" xml:space="preserve">
-    <value>Инициализация модели "{0}" не выполнена.</value>
+    <value>Инициализация модели - "{0}" не выполнена.</value>
   </data>
   <data name="ModelNotInitialized" xml:space="preserve">
-    <value>Модель "{0}" не инициализирована.</value>
+    <value>Модель - "{0}" не инициализирована.</value>
   </data>
   <data name="ModelNotRegistered" xml:space="preserve">
-    <value>Модель с типом "{0}" не зарегистрирована.</value>
+    <value>Модель с типом - "{0}" и именем - "{1}" не зарегистрирована.</value>
+  </data>
+  <data name="ModelRegistrationFailed" xml:space="preserve">
+    <value>Регистрация и инициализация моделей не выполнена.</value>
+  </data>
+  <data name="NestedModelValueNotSet" xml:space="preserve">
+    <value>Значение вложенной модели не задано. Тип модели - "{0}", тип родительской модели - "{1}".</value>
   </data>
   <data name="NotFoundRegisteredModels" xml:space="preserve">
     <value>Отсутствуют зарегистрированные модели настроек.</value>
   </data>
   <data name="PropertyIsNotReadable" xml:space="preserve">
-    <value>Свойство "{0}" не поддерживает чтение.</value>
+    <value>Свойство - "{0}" не поддерживает чтение.</value>
   </data>
   <data name="PropertyNotFound" xml:space="preserve">
-    <value>Не найдено свойство в модели. Наименование свойства "{0}".</value>
+    <value>Не найдено свойство в модели. Наименование свойства - "{0}".</value>
   </data>
   <data name="PropertyNotFoundInType" xml:space="preserve">
-    <value>Свойство "{0}" не найдено в типе "{1}".</value>
+    <value>Свойство - "{0}" не найдено в типе - "{1}".</value>
   </data>
   <data name="PropertyTypeNotCorrect" xml:space="preserve">
-    <value>Тип свойства не является корректным. Ожидался тип "{0}", но был получен "{1}".</value>
+    <value>Тип свойства не является корректным. Ожидался тип - "{0}", но был получен - "{1}".</value>
   </data>
   <data name="PropertyValueNotSetInType" xml:space="preserve">
-    <value>Не задано значение свойства "{0}" в типе "{1}".</value>
+    <value>Не задано значение свойства - "{0}" в типе - "{1}".</value>
   </data>
   <data name="RegistryKeyValueNotSpecified" xml:space="preserve">
-    <value>Значение ключа реестра не указано. Наименование ключа: "{0}".</value>
+    <value>Значение ключа реестра не указано. Наименование ключа - "{0}".</value>
+    <comment>Registry</comment>
   </data>
-  <data name="RootCollectionElementNotExist" xml:space="preserve">
-    <value>Корневой элемент коллекции с именем "{0}" не существует.</value>
+  <data name="XmlRootElementNotExist" xml:space="preserve">
+    <value>Корневой элемент xml-документа с именем - "{0}" не существует.</value>
+    <comment>Xml</comment>
+  </data>
+  <data name="RootCollectionName" xml:space="preserve">
+    <value>AppSettings</value>
+  </data>
+  <data name="SettingsFileName" xml:space="preserve">
+    <value>Settings</value>
   </data>
   <data name="StringValueCannotConvertedToType" xml:space="preserve">
-    <value>Строковое значение не может быть преобразовано к типу "{0}". Значение "{1}".</value>
+    <value>Строковое значение не может быть преобразовано к типу - "{0}". Значение - "{1}".</value>
   </data>
-  <data name="ValueAttributeNotFound" xml:space="preserve">
-    <value>Атрибут "value" не найден. Родительский элемент: "{0}".</value>
+  <data name="XmlValueAttributeNotFound" xml:space="preserve">
+    <value>Атрибут "value" не найден. Родительский элемент - "{0}".</value>
+    <comment>Xml</comment>
   </data>
   <data name="ValueProviderAlreadyRegistered" xml:space="preserve">
-    <value>Провайдер чтения и записи значения для типа "{0}" уже зарегистрирован.</value>
+    <value>Провайдер чтения и записи значения для типа - "{0}" уже зарегистрирован.</value>
   </data>
   <data name="ValueProviderNotCreated" xml:space="preserve">
-    <value>Провайдер чтения и записи значения для типа "{0}" не был создан.</value>
+    <value>Провайдер чтения и записи значения для типа - "{0}" не был создан.</value>
   </data>
   <data name="ValueProviderNotFound" xml:space="preserve">
-    <value>Не найден провайдер чтения и записи значения для типа "{0}".</value>
+    <value>Не найден провайдер чтения и записи значения для типа - "{0}".</value>
+  </data>
+  <data name="ViolationStorageStructureNoModelsInMemory" xml:space="preserve">
+    <value>Нарушение структуры хранения - отсутствуют модели из источника в памяти.</value>
+  </data>
+  <data name="ViolationStorageStructureNoModelsInStorage" xml:space="preserve">
+    <value>Нарушение структуры хранения - отсутствуют модели из источника в хранилище.</value>
+  </data>
+  <data name="ViolationStorageStructureRootModelsNumberDoesNotMatch" xml:space="preserve">
+    <value>Нарушение структуры хранения - количество корневых моделей из источника в памяти и в хранилище не совпадает. Количество моделей в памяти - "{0}", количество моделей в хранилище - "{1}".</value>
   </data>
   <data name="XmlDocumentElementNotExist" xml:space="preserve">
-    <value>Элемент xml-документа с именем "{0}" не существует.</value>
+    <value>Элемент xml-документа с именем - "{0}" не существует.</value>
+    <comment>Xml</comment>
   </data>
   <data name="XmlDocumentRootElementIsMissing" xml:space="preserve">
     <value>Отсутствует корневой элемент xml-документа.</value>
+    <comment>Xml</comment>
+  </data>
+  <data name="SourceNotLoaded" xml:space="preserve">
+    <value>Источник не был загружен.</value>
+  </data>
+  <data name="RegistryRootKeyNotExist" xml:space="preserve">
+    <value>Корневой ключ реестра с именем - "{0}" не существует.</value>
+    <comment>Registry</comment>
+  </data>
+  <data name="GetRegistryRootKeyFailed" xml:space="preserve">
+    <value>Не удалось получить корневой ключ реестра с именем - "{0}".</value>
+    <comment>Registry</comment>
+  </data>
+  <data name="ViolationStorageStructureModelFromStorageNotFound" xml:space="preserve">
+    <value>Нарушение структуры хранения - для модели из источника в памяти, не найдена соответствующая модель из источника в хранилище. Путь к модели в хранилище - "{0}", наименование модели в хранилище - "{1}".</value>
+  </data>
+  <data name="ViolationStorageStructureModelsNumberDoesNotMatch" xml:space="preserve">
+    <value>Нарушение структуры хранения - количество моделей из источника в памяти и в хранилище не совпадает. Количество моделей в памяти - "{0}", количество моделей в хранилище - "{1}".</value>
+  </data>
+  <data name="NotFoundModelPathElements" xml:space="preserve">
+    <value>Отсутствуют элементы пути к модели.</value>
+  </data>
+  <data name="RegistryKeyAlreadyExists" xml:space="preserve">
+    <value>Ключ реестра по пути "{0}" уже существует.</value>
+    <comment>Registry</comment>
+  </data>
+  <data name="ModelsForRegistrationNotFound" xml:space="preserve">
+    <value>Отсутствуют модели для регистрации.</value>
+  </data>
+  <data name="XmlDocumentElementAlreadyExists" xml:space="preserve">
+    <value>Элемент xml-документа по пути "{0}" уже существует.</value>
+    <comment>Xml</comment>
   </data>
 </root>

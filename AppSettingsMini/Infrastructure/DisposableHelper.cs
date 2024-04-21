@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace AppSettingsMini.Infrastructure
 {
@@ -10,7 +11,6 @@ namespace AppSettingsMini.Infrastructure
 		public DisposableHelper(string objectName)
 		{
 			_objectName = objectName;
-			IsDisposed = false;
 		}
 
 		public void SetIsDisposed()
@@ -18,7 +18,8 @@ namespace AppSettingsMini.Infrastructure
 			IsDisposed = true;
 		}
 
-		public void ThrowIfDisposed()
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public readonly void ThrowIfDisposed()
 		{
 			if (IsDisposed)
 			{
