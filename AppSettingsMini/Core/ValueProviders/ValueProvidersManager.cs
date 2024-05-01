@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using AppSettingsMini.Infrastructure;
 using AppSettingsMini.Interfaces;
 using AppSettingsMini.Interfaces.Factories;
@@ -22,27 +21,6 @@ namespace AppSettingsMini.Core.ValueProviders
 			ComparersManager = new ComparersManager();
 		}
 
-		private bool Contains(Type type)
-		{
-			if (type == typeof(string) ||
-				type == typeof(int) ||
-				type == typeof(long) ||
-				type == typeof(double) ||
-				type == typeof(bool) ||
-				type == typeof(decimal) ||
-				type == typeof(DateTime) ||
-				type == typeof(DateOnly) ||
-				type == typeof(TimeOnly) ||
-				type == typeof(IPEndPoint) ||
-				type.IsEnum ||
-				type.IsReadOnlyByteMemory())
-			{
-				return true;
-			}
-
-			return _valueProviderFactories.ContainsKey(type);
-		}
-
 		public ValueProvidersFactory CreateFactory()
 		{
 			return new ValueProvidersFactory(_valueProviderFactories);
@@ -53,7 +31,7 @@ namespace AppSettingsMini.Core.ValueProviders
 			Guard.ThrowIfNull(factory);
 			Guard.ThrowIfNull(factory.Type);
 
-			if (Contains(factory.Type))
+			if (ValueProviderBase.IsSupportedType(factory.Type) || _valueProviderFactories.ContainsKey(factory.Type))
 			{
 				throw new InvalidOperationException(string.Format(Strings.ValueProviderAlreadyRegistered, factory.Type.Name));
 			}
@@ -79,7 +57,7 @@ namespace AppSettingsMini.Core.ValueProviders
 		{
 			Guard.ThrowIfNull(type);
 
-			if (_providers.TryGetValue(type, out valueProvider))
+			if (_providers.TryGetValue(ValueProviderBase.GetKeyType(type), out valueProvider))
 			{
 				return true;
 			}
@@ -96,61 +74,14 @@ namespace AppSettingsMini.Core.ValueProviders
 				return true;
 			}
 
-			if (type == typeof(string))
-			{
-				valueProvider = new StringValueProvider();
-			}
-			else if (type == typeof(int))
-			{
-				valueProvider = new IntValueProvider();
-			}
-			else if (type == typeof(long))
-			{
-				valueProvider = new LongValueProvider();
-			}
-			else if (type == typeof(double))
-			{
-				valueProvider = new DoubleValueProvider();
-			}
-			else if (type == typeof(decimal))
-			{
-				valueProvider = new DecimalValueProvider();
-			}
-			else if (type == typeof(bool))
-			{
-				valueProvider = new BooleanValueProvider();
-			}
-			else if (type == typeof(ReadOnlyMemory<byte>))
-			{
-				valueProvider = new BytesValueProvider();
-			}
-			else if (type == typeof(DateTime))
-			{
-				valueProvider = new DateTimeValueProvider();
-			}
-			else if (type == typeof(DateOnly))
-			{
-				valueProvider = new DateOnlyValueProvider();
-			}
-			else if (type == typeof(TimeOnly))
-			{
-				valueProvider = new TimeOnlyValueProvider();
-			}
-			else if (type == typeof(IPEndPoint))
-			{
-				valueProvider = new IpEndPointValueProvider();
-			}
-			else if (type.IsEnum)
-			{
-				valueProvider = new EnumValueProvider();
-			}
+			valueProvider = ValueProviderBase.Create(type, out var keyType);
 
 			if (valueProvider == null)
 			{
 				return false;
 			}
 
-			_providers.Add(type, valueProvider);
+			_providers.Add(keyType, valueProvider);
 
 			return true;
 		}
@@ -189,14 +120,6 @@ namespace AppSettingsMini.Core.ValueProviders
 			}
 
 			return (IEqualityComparer<T>)comparer;
-		}
-	}
-
-	file static class TypeExtension
-	{
-		public static bool IsReadOnlyByteMemory(this Type type)
-		{
-			return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ReadOnlyMemory<byte>);
 		}
 	}
 }

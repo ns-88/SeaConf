@@ -184,9 +184,6 @@
   <data name="ModelRegistrationFailed" xml:space="preserve">
     <value>Регистрация и инициализация моделей не выполнена.</value>
   </data>
-  <data name="NestedModelValueNotSet" xml:space="preserve">
-    <value>Значение вложенной модели не задано. Тип модели - "{0}", тип родительской модели - "{1}".</value>
-  </data>
   <data name="NotFoundRegisteredModels" xml:space="preserve">
     <value>Отсутствуют зарегистрированные модели настроек.</value>
   </data>
@@ -282,5 +279,14 @@
   <data name="XmlDocumentElementAlreadyExists" xml:space="preserve">
     <value>Элемент xml-документа по пути "{0}" уже существует.</value>
     <comment>Xml</comment>
+  </data>
+  <data name="FailedCreateNestedModelInstance" xml:space="preserve">
+    <value>Не удалось создать экземпляр вложенной модели. Наименование модели: "{0}".</value>
+  </data>
+  <data name="FailedGetBackingField" xml:space="preserve">
+    <value>Не удалось получить backing field поле "{0}" для задания значения свойства "{1}".</value>
+  </data>
+  <data name="TypeAlreadyRegistered" xml:space="preserve">
+    <value>Тип "{0}" для реализации "{1}" уже зарегистрирован.</value>
   </data>
 </root>

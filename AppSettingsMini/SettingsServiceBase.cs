@@ -51,7 +51,7 @@ namespace AppSettingsMini
 				register(context);
 
 				var models = (Dictionary<ModelData, IModelInfo>)_models;
-				var source = new ModelInfoSource(context.Models);
+				var source = new ModelInfoSource(context.Models, context.KnownTypes);
 				var rootNodes = source.GetRootNodes().Result;
 				var infoModels = source.GetModelsAsync(rootNodes).ToBlockingEnumerable();
 
@@ -259,7 +259,7 @@ namespace AppSettingsMini
 			{
 				throw new ArgumentException(nameof(name));
 			}
-			
+
 			var modelType = typeof(T);
 			var modelName = name ?? IModelInfo.GetName(modelType);
 
@@ -277,18 +277,19 @@ namespace AppSettingsMini
 		{
 			private readonly ValueProvidersManager _valueProvidersManager;
 			private readonly Dictionary<ModelData, IModel> _models;
+			private readonly Dictionary<Type, Type> _knownTypes;
 
 			internal IReadOnlyDictionary<ModelData, IModel> Models => _models;
+			internal IReadOnlyDictionary<Type, Type> KnownTypes => _knownTypes;
 
 			internal RegisterContext(ValueProvidersManager valueProvidersManager)
 			{
 				_valueProvidersManager = valueProvidersManager;
 				_models = new Dictionary<ModelData, IModel>();
+				_knownTypes = new Dictionary<Type, Type>();
 			}
 
-			public void RegisterModel<T, TImpl>(string? name = null)
-				where T : class
-				where TImpl : ModelBase, T, new()
+			public void RegisterModel<T, TImpl>(string? name = null) where T : class where TImpl : ModelBase, T, new()
 			{
 				if (name != null && name.Trim().Length == 0)
 				{
@@ -311,6 +312,18 @@ namespace AppSettingsMini
 			{
 				_valueProvidersManager.AddFactory(factory);
 			}
+
+			public void RegisterType<T, TImpl>() where T : class where TImpl : class, T
+			{
+				var key = typeof(T);
+
+				if (_knownTypes.ContainsKey(key))
+				{
+					throw new InvalidOperationException(string.Format(Strings.TypeAlreadyRegistered, key, typeof(TImpl)));
+				}
+
+				_knownTypes.Add(key, typeof(TImpl));
+			}
 		}
 
 		#endregion
@@ -321,10 +334,12 @@ namespace AppSettingsMini
 	file class ModelInfoSource : SourceBase<IModelInfo>
 	{
 		private readonly IReadOnlyDictionary<ModelData, IModel> _models;
+		private readonly IReadOnlyDictionary<Type, Type> _knownTypes;
 
-		public ModelInfoSource(IReadOnlyDictionary<ModelData, IModel> models)
+		public ModelInfoSource(IReadOnlyDictionary<ModelData, IModel> models, IReadOnlyDictionary<Type, Type> knownTypes)
 		{
 			_models = models;
+			_knownTypes = knownTypes;
 		}
 
 		public override ValueTask<IReadOnlyList<INode>> GetRootNodes()
@@ -333,7 +348,7 @@ namespace AppSettingsMini
 
 			foreach (var model in _models)
 			{
-				nodes.Add(new ModelInfoNode(model.Key.Name, model.Key.Type, model.Value, true));
+				nodes.Add(new ModelInfoNode(model.Key.Name, model.Key.Type, model.Value, true, _knownTypes));
 			}
 
 			return ValueTask.FromResult((IReadOnlyList<INode>)nodes);
@@ -343,29 +358,70 @@ namespace AppSettingsMini
 
 		private class ModelInfoNode : INode, IModelInfo
 		{
+			private readonly List<IModelInfo> _innerModels;
+			private readonly IReadOnlyDictionary<Type, Type> _knownTypes;
+
 			public string Name { get; }
 			public IMemoryModel Model { get; }
 			public Type Type { get; }
 			public bool IsRoot { get; }
 
-			#region InnerModels
+			public IEnumerable<IModelInfo> InnerModels => _innerModels;
 
-			private IEnumerable<IModelInfo>? _innerModels;
-			public IEnumerable<IModelInfo> InnerModels => _innerModels ??= GetInnerModels();
-
-			#endregion
-
-			public ModelInfoNode(string name, Type type, IModel model, bool isRoot)
+			public ModelInfoNode(string name, Type type, IModel model, bool isRoot, IReadOnlyDictionary<Type, Type> knownTypes)
 			{
+				_innerModels = new List<IModelInfo>();
+				_knownTypes = knownTypes;
+
 				Model = (IMemoryModel)model;
 				Name = name;
 				Type = type;
 				IsRoot = isRoot;
 			}
 
-			private IEnumerable<IModelInfo> GetInnerModels()
+			private void CreateAndSetInnerModel(PropertyInfo property)
 			{
-				return GetDescendantNodesAsync().Result.Cast<IModelInfo>();
+				object? innerModel;
+
+				if (!_knownTypes.TryGetValue(property.PropertyType, out var activatedType))
+				{
+					activatedType = property.PropertyType;
+				}
+
+				try
+				{
+					innerModel = Activator.CreateInstance(activatedType);
+				}
+				catch (Exception ex)
+				{
+					throw new InvalidOperationException(string.Format(Strings.FailedCreateNestedModelInstance, IModelInfo.GetName(property.PropertyType)), ex);
+				}
+
+				try
+				{
+					if (property.CanWrite)
+					{
+						property.SetValue(Model, innerModel);
+					}
+					else
+					{
+						var backingFieldName = $"<{property.Name}>k__BackingField";
+						var backingField = Model.GetType().GetField(backingFieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+
+						if (backingField != null)
+						{
+							backingField.SetValue(Model, innerModel);
+						}
+						else
+						{
+							throw new InvalidOperationException(string.Format(Strings.FailedGetBackingField, backingFieldName, property.Name));
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					throw new InvalidOperationException(string.Format(Strings.FailedSetPropertyValue, property.Name, Name), ex);
+				}
 			}
 
 			public ValueTask<IReadOnlyList<INode>> GetDescendantNodesAsync()
@@ -386,7 +442,7 @@ namespace AppSettingsMini
 
 					if (innerModelRaw == null)
 					{
-						throw new InvalidOperationException(string.Format(Strings.NestedModelValueNotSet, property.PropertyType, Type));
+						CreateAndSetInnerModel(property);
 					}
 
 					if (innerModelRaw is not IMemoryModel innerModel)
@@ -396,8 +452,9 @@ namespace AppSettingsMini
 					}
 
 					var innerModelName = IModelInfo.GetName(property.PropertyType, attribute);
-					var node = new ModelInfoNode(innerModelName, property.PropertyType, innerModel, false);
+					var node = new ModelInfoNode(innerModelName, property.PropertyType, innerModel, false, _knownTypes);
 
+					_innerModels.Add(node);
 					nodes.Add(node);
 				}
 
@@ -406,7 +463,7 @@ namespace AppSettingsMini
 
 			public override string ToString()
 			{
-				return $"Name = {Name}, Type = {Type.Name}, InnerModels = {InnerModels.ToList().Count}";
+				return $"Name = {Name}, Type = {Type.Name}, InnerModels = {InnerModels.Count()}";
 			}
 		}
 
@@ -578,21 +635,21 @@ namespace AppSettingsMini
 			}
 
 			// Добавление моделей.
-			foreach (var memoryModel in models.Memory)
+			foreach (var (path, model) in models.Memory)
 			{
-				if (!models.Storage.TryGetValue(memoryModel.Key, out var storageModel))
+				if (!models.Storage.TryGetValue(path, out var storageModel))
 				{
 					try
 					{
-						storageModel = ((IWritableSource<IStorageModel>)_storageSource).AddModel(memoryModel.Key);
+						storageModel = ((IWritableSource<IStorageModel>)_storageSource).AddModel(path);
 					}
 					catch (Exception ex)
 					{
-						throw new InvalidOperationException(string.Format(Strings.AddingNewModelFailed, memoryModel.Key, memoryModel.Value.Name), ex);
+						throw new InvalidOperationException(string.Format(Strings.AddingNewModelFailed, path, model.Name), ex);
 					}
 				}
 
-				yield return new CompositeModel(memoryModel.Value, storageModel);
+				yield return new CompositeModel(model, storageModel);
 			}
 		}
 

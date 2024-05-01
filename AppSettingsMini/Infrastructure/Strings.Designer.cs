@@ -106,11 +106,29 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось создать экземпляр вложенной модели. Наименование модели: &quot;{0}&quot;..
+        /// </summary>
+        internal static string FailedCreateNestedModelInstance {
+            get {
+                return ResourceManager.GetString("FailedCreateNestedModelInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Не удалось удалить ключ реестра. Наименование ключа - &quot;{0}&quot;..
         /// </summary>
         internal static string FailedDeleteRegistryKey {
             get {
                 return ResourceManager.GetString("FailedDeleteRegistryKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось получить backing field поле &quot;{0}&quot; для задания значения свойства &quot;{1}&quot;..
+        /// </summary>
+        internal static string FailedGetBackingField {
+            get {
+                return ResourceManager.GetString("FailedGetBackingField", resourceCulture);
             }
         }
         
@@ -277,15 +295,6 @@ namespace AppSettingsMini.Infrastructure {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Значение вложенной модели не задано. Тип модели - &quot;{0}&quot;, тип родительской модели - &quot;{1}&quot;..
-        /// </summary>
-        internal static string NestedModelValueNotSet {
-            get {
-                return ResourceManager.GetString("NestedModelValueNotSet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Ищет локализованную строку, похожую на Отсутствуют элементы пути к модели..
         /// </summary>
         internal static string NotFoundModelPathElements {
@@ -408,6 +417,15 @@ namespace AppSettingsMini.Infrastructure {
         internal static string StringValueCannotConvertedToType {
             get {
                 return ResourceManager.GetString("StringValueCannotConvertedToType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Тип &quot;{0}&quot; для реализации &quot;{1}&quot; уже зарегистрирован..
+        /// </summary>
+        internal static string TypeAlreadyRegistered {
+            get {
+                return ResourceManager.GetString("TypeAlreadyRegistered", resourceCulture);
             }
         }
         

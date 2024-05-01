@@ -11,6 +11,105 @@ using AppSettingsMini.Models;
 
 namespace AppSettingsMini.Core.ValueProviders
 {
+	public abstract class ValueProviderBase : IValueProvider
+	{
+		public abstract Type Type { get; }
+		public abstract ValueTask<IPropertyData> GetAsync(IReader reader, IPropertyInfo propertyInfo);
+		public abstract ValueTask SetAsync(IWriter writer, IPropertyData propertyData);
+
+		internal static bool IsSupportedType(Type type)
+		{
+			return type == typeof(string) ||
+			       type == typeof(int) ||
+			       type == typeof(long) ||
+			       type == typeof(double) ||
+			       type == typeof(bool) ||
+			       type == typeof(decimal) ||
+			       type == typeof(DateTime) ||
+			       type == typeof(DateOnly) ||
+			       type == typeof(TimeOnly) ||
+			       type == typeof(IPEndPoint) ||
+			       type.IsEnum ||
+			       type.IsReadOnlyByteMemory();
+		}
+
+		internal static Type GetKeyType(Type type)
+		{
+			var keyType = type;
+
+			if (type.IsEnum)
+			{
+				keyType = typeof(Enum);
+			}
+
+			return keyType;
+		}
+
+		internal static IValueProvider? Create(Type type, out Type keyType)
+		{
+			IValueProvider? valueProvider = null;
+
+			keyType = type;
+
+			if (type == typeof(string))
+			{
+				valueProvider = new StringValueProvider();
+			}
+			else if (type == typeof(int))
+			{
+				valueProvider = new IntValueProvider();
+			}
+			else if (type == typeof(long))
+			{
+				valueProvider = new LongValueProvider();
+			}
+			else if (type == typeof(double))
+			{
+				valueProvider = new DoubleValueProvider();
+			}
+			else if (type == typeof(decimal))
+			{
+				valueProvider = new DecimalValueProvider();
+			}
+			else if (type == typeof(bool))
+			{
+				valueProvider = new BooleanValueProvider();
+			}
+			else if (type == typeof(ReadOnlyMemory<byte>))
+			{
+				valueProvider = new BytesValueProvider();
+			}
+			else if (type == typeof(DateTime))
+			{
+				valueProvider = new DateTimeValueProvider();
+			}
+			else if (type == typeof(DateOnly))
+			{
+				valueProvider = new DateOnlyValueProvider();
+			}
+			else if (type == typeof(TimeOnly))
+			{
+				valueProvider = new TimeOnlyValueProvider();
+			}
+			else if (type == typeof(IPEndPoint))
+			{
+				valueProvider = new IpEndPointValueProvider();
+			}
+			else if (type.IsEnum)
+			{
+				valueProvider = new EnumValueProvider();
+				keyType = typeof(Enum);
+			}
+
+			return valueProvider;
+		}
+	}
+
+	public abstract class ValueProviderBase<T> : ValueProviderBase
+	{
+		public override Type Type { get; } = typeof(T);
+	}
+
 	internal class StringValueProvider : ValueProviderBase<string>
 	{
 		public override async ValueTask<IPropertyData> GetAsync(IReader reader, IPropertyInfo propertyInfo)
