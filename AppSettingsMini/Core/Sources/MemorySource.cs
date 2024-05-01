@@ -77,7 +77,7 @@ namespace AppSettingsMini.Core.Sources
 			return _modelInfo.Model.GetModifiedProperties();
 		}
 
-		public IReadOnlyCollection<IPropertyData> GetPropertiesData()
+		public IEnumerable<IPropertyData> GetPropertiesData()
 		{
 			return _modelInfo.Model.GetPropertiesData();
 		}

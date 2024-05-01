@@ -62,6 +62,6 @@ namespace AppSettingsMini.Interfaces.Core
 	{
 		Type Type { get; }
 		internal IEnumerable<IPropertyData> GetModifiedProperties();
-		internal IReadOnlyCollection<IPropertyData> GetPropertiesData();
+		internal IEnumerable<IPropertyData> GetPropertiesData();
 	}
 }

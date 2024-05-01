@@ -17,8 +17,32 @@ namespace AppSettingsMini.Models
 		private PropertiesData _storage;
 		private bool _isInit;
 
-		public string Name { get; private set; }
-		public Type Type { get; private set; }
+		#region Name
+		private string _name;
+		public string Name
+		{
+			get
+			{
+				ThrowIfNoInit();
+				return _name;
+			}
+			private set => _name = value;
+		}
+
+		#endregion
+
+		#region Type
+		private Type _type;
+		public Type Type
+		{
+			get
+			{
+				ThrowIfNoInit();
+				return _type;
+			}
+			private set => _type = value;
+		}
+		#endregion
 
 #nullable disable
 		// ReSharper disable once NotNullMemberIsNotInitialized
@@ -73,15 +97,13 @@ namespace AppSettingsMini.Models
 		IEnumerable<IPropertyData> IMemoryModel.GetModifiedProperties()
 		{
 			ThrowIfNoInit();
-
 			return _storage.Values.Where(x => x.IsModified);
 		}
 
-		IReadOnlyCollection<IPropertyData> IMemoryModel.GetPropertiesData()
+		IEnumerable<IPropertyData> IMemoryModel.GetPropertiesData()
 		{
 			ThrowIfNoInit();
-			
-			return (IReadOnlyCollection<IPropertyData>)_storage.Values;
+			return _storage.Values;
 		}
 
 		protected void SetValue<T>(T value, [CallerMemberName] string propertyName = "")
@@ -102,7 +124,7 @@ namespace AppSettingsMini.Models
 			}
 			catch (Exception ex)
 			{
-				throw new InvalidOperationException(string.Format(Strings.FailedSetPropertyValue, propertyName, GetType().FullName), ex);
+				throw new InvalidOperationException(string.Format(Strings.FailedSetPropertyValue, propertyName, Name), ex);
 			}
 		}
 
@@ -122,7 +144,7 @@ namespace AppSettingsMini.Models
 			}
 			catch (Exception ex)
 			{
-				throw new InvalidOperationException(string.Format(Strings.FailedGetPropertyValue, propertyName, GetType().FullName), ex);
+				throw new InvalidOperationException(string.Format(Strings.FailedGetPropertyValue, propertyName, Name), ex);
 			}
 		}
 	}
