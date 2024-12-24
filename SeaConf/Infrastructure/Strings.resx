@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddingNewModelFailed" xml:space="preserve">
+    <value>Добавление новой модели не выполнено. Путь к модели - "{0}", наименование модели - "{1}".</value>
+  </data>
+  <data name="AddingNewRootModelFailed" xml:space="preserve">
+    <value>Добавление новой корневой модели не выполнено. Путь к модели - "{0}", наименование модели - "{1}".</value>
+  </data>
+  <data name="CtorWithRequiredArgsNotFound" xml:space="preserve">
+    <value>Не найден конструктор с требуемыми аргументами в типе - "{0}".</value>
+  </data>
+  <data name="DeletingModelFailed" xml:space="preserve">
+    <value>Удаление модели не выполнено. Путь к модели - "{0}", наименование модели - "{1}".</value>
+  </data>
+  <data name="DeletingRootModelFailed" xml:space="preserve">
+    <value>Удаление корневой модели не выполнено. Путь к модели - "{0}", наименование модели - "{1}".</value>
+  </data>
+  <data name="FailedDeleteRegistryKey" xml:space="preserve">
+    <value>Не удалось удалить ключ реестра. Наименование ключа - "{0}".</value>
+  </data>
+  <data name="FailedGetPropertyValue" xml:space="preserve">
+    <value>Не удалось получить значение свойства - "{0}". Модель - "{1}".</value>
+  </data>
+  <data name="FailedGetRegistryKey" xml:space="preserve">
+    <value>Не удалось получить ключ реестра - "{0}".</value>
+    <comment>Registry</comment>
+  </data>
+  <data name="FailedLoadPropertyValue" xml:space="preserve">
+    <value>Не удалось получить значение свойства - "{0}". Модель - "{1}".</value>
+  </data>
+  <data name="FailedLoadSettingsFromSource" xml:space="preserve">
+    <value>Не удалось загрузить настройки из источника.</value>
+  </data>
+  <data name="FailedSavePropertyValue" xml:space="preserve">
+    <value>Не удалось сохранить значение свойства - "{0}". Модель - "{1}".</value>
+  </data>
+  <data name="FailedSaveSettingsToSource" xml:space="preserve">
+    <value>Не удалось сохранить настройки в источник.</value>
+  </data>
+  <data name="FailedSetPropertyValue" xml:space="preserve">
+    <value>Не удалось установить значение свойства - "{0}". Модель - "{1}".</value>
+  </data>
+  <data name="FailedToCastTypeValue" xml:space="preserve">
+    <value>Не удалось привести значение типа - "{0}" к типу - "{1}".</value>
+  </data>
+  <data name="GetModelsFromMemoryAndStorageFailed" xml:space="preserve">
+    <value>Получение моделей из памяти и хранилища не выполнено.</value>
+  </data>
+  <data name="InvalidNestedModelType" xml:space="preserve">
+    <value>Неверный тип вложенной модели - тип помеченный атрибутом - "{0}" не реализует интерфейс - "{1}". Тип модели - "{2}", тип родительской модели - "{3}".</value>
+  </data>
+  <data name="MethodNotFound" xml:space="preserve">
+    <value>Метод - "{0}" не найден.</value>
+  </data>
+  <data name="ModelAlreadyAdded" xml:space="preserve">
+    <value>Модель настроек с именем - "{0}" и типом - "{1}" уже добавлена.</value>
+  </data>
+  <data name="ModelInitializationFailed" xml:space="preserve">
+    <value>Инициализация модели - "{0}" не выполнена.</value>
+  </data>
+  <data name="ModelNotInitialized" xml:space="preserve">
+    <value>Модель - "{0}" не инициализирована.</value>
+  </data>
+  <data name="ModelNotRegistered" xml:space="preserve">
+    <value>Модель с типом - "{0}" и именем - "{1}" не зарегистрирована.</value>
+  </data>
+  <data name="ModelRegistrationFailed" xml:space="preserve">
+    <value>Регистрация и инициализация моделей не выполнена.</value>
+  </data>
+  <data name="NotFoundRegisteredModels" xml:space="preserve">
+    <value>Отсутствуют зарегистрированные модели настроек.</value>
+  </data>
+  <data name="PropertyIsNotReadable" xml:space="preserve">
+    <value>Свойство - "{0}" не поддерживает чтение.</value>
+  </data>
+  <data name="PropertyNotFound" xml:space="preserve">
+    <value>Не найдено свойство в модели. Наименование свойства - "{0}".</value>
+  </data>
+  <data name="PropertyNotFoundInType" xml:space="preserve">
+    <value>Свойство - "{0}" не найдено в типе - "{1}".</value>
+  </data>
+  <data name="PropertyTypeNotCorrect" xml:space="preserve">
+    <value>Тип свойства не является корректным. Ожидался тип - "{0}", но был получен - "{1}".</value>
+  </data>
+  <data name="PropertyValueNotSetInType" xml:space="preserve">
+    <value>Не задано значение свойства - "{0}" в типе - "{1}".</value>
+  </data>
+  <data name="RegistryKeyValueNotSpecified" xml:space="preserve">
+    <value>Значение ключа реестра не указано. Наименование ключа - "{0}".</value>
+    <comment>Registry</comment>
+  </data>
+  <data name="XmlRootElementNotExist" xml:space="preserve">
+    <value>Корневой элемент xml-документа с именем - "{0}" не существует.</value>
+    <comment>Xml</comment>
+  </data>
+  <data name="RootCollectionName" xml:space="preserve">
+    <value>AppSettings</value>
+  </data>
+  <data name="SettingsFileName" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="StringValueCannotConvertedToType" xml:space="preserve">
+    <value>Строковое значение не может быть преобразовано к типу - "{0}". Значение - "{1}".</value>
+  </data>
+  <data name="XmlValueAttributeNotFound" xml:space="preserve">
+    <value>Атрибут "value" не найден. Родительский элемент - "{0}".</value>
+    <comment>Xml</comment>
+  </data>
+  <data name="ValueProviderAlreadyRegistered" xml:space="preserve">
+    <value>Провайдер чтения и записи значения для типа - "{0}" уже зарегистрирован.</value>
+  </data>
+  <data name="ValueProviderNotCreated" xml:space="preserve">
+    <value>Провайдер чтения и записи значения для типа - "{0}" не был создан.</value>
+  </data>
+  <data name="ValueProviderNotFound" xml:space="preserve">
+    <value>Не найден провайдер чтения и записи значения для типа - "{0}".</value>
+  </data>
+  <data name="ViolationStorageStructureNoModelsInMemory" xml:space="preserve">
+    <value>Нарушение структуры хранения - отсутствуют модели из источника в памяти.</value>
+  </data>
+  <data name="ViolationStorageStructureNoModelsInStorage" xml:space="preserve">
+    <value>Нарушение структуры хранения - отсутствуют модели из источника в хранилище.</value>
+  </data>
+  <data name="ViolationStorageStructureRootModelsNumberDoesNotMatch" xml:space="preserve">
+    <value>Нарушение структуры хранения - количество корневых моделей из источника в памяти и в хранилище не совпадает. Количество моделей в памяти - "{0}", количество моделей в хранилище - "{1}".</value>
+  </data>
+  <data name="XmlDocumentElementNotExist" xml:space="preserve">
+    <value>Элемент xml-документа с именем - "{0}" не существует.</value>
+    <comment>Xml</comment>
+  </data>
+  <data name="XmlDocumentRootElementIsMissing" xml:space="preserve">
+    <value>Отсутствует корневой элемент xml-документа.</value>
+    <comment>Xml</comment>
+  </data>
+  <data name="SourceNotLoaded" xml:space="preserve">
+    <value>Источник не был загружен.</value>
+  </data>
+  <data name="RegistryRootKeyNotExist" xml:space="preserve">
+    <value>Корневой ключ реестра с именем - "{0}" не существует.</value>
+    <comment>Registry</comment>
+  </data>
+  <data name="GetRegistryRootKeyFailed" xml:space="preserve">
+    <value>Не удалось получить корневой ключ реестра с именем - "{0}".</value>
+    <comment>Registry</comment>
+  </data>
+  <data name="ViolationStorageStructureModelFromStorageNotFound" xml:space="preserve">
+    <value>Нарушение структуры хранения - для модели из источника в памяти, не найдена соответствующая модель из источника в хранилище. Путь к модели в хранилище - "{0}", наименование модели в хранилище - "{1}".</value>
+  </data>
+  <data name="ViolationStorageStructureModelsNumberDoesNotMatch" xml:space="preserve">
+    <value>Нарушение структуры хранения - количество моделей из источника в памяти и в хранилище не совпадает. Количество моделей в памяти - "{0}", количество моделей в хранилище - "{1}".</value>
+  </data>
+  <data name="NotFoundModelPathElements" xml:space="preserve">
+    <value>Отсутствуют элементы пути к модели.</value>
+  </data>
+  <data name="RegistryKeyAlreadyExists" xml:space="preserve">
+    <value>Ключ реестра по пути "{0}" уже существует.</value>
+    <comment>Registry</comment>
+  </data>
+  <data name="ModelsNotSet" xml:space="preserve">
+    <value>Модели настроек не заданы.</value>
+  </data>
+  <data name="XmlDocumentElementAlreadyExists" xml:space="preserve">
+    <value>Элемент xml-документа по пути "{0}" уже существует.</value>
+    <comment>Xml</comment>
+  </data>
+  <data name="FailedCreateNestedModelInstance" xml:space="preserve">
+    <value>Не удалось создать экземпляр вложенной модели. Наименование модели: "{0}".</value>
+  </data>
+  <data name="FailedGetBackingField" xml:space="preserve">
+    <value>Не удалось получить backing field поле "{0}" для задания значения свойства "{1}".</value>
+  </data>
+  <data name="TypeAlreadyAdded" xml:space="preserve">
+    <value>Тип "{0}" для реализации "{1}" уже был добавлен.</value>
+  </data>
+  <data name="ConfigurationLoadFailed" xml:space="preserve">
+    <value>Загрузка конфигурации не выполнена.</value>
+  </data>
+  <data name="ConfigurationSaveFailed" xml:space="preserve">
+    <value>Сохранение конфигурации не выполнено.</value>
+  </data>
+  <data name="ConfigurationSourceNotSet" xml:space="preserve">
+    <value>Источник данных конфигурации не задан.</value>
+  </data>
+  <data name="TypeNotSupported" xml:space="preserve">
+    <value>Тип не поддерживается. Наименование типа: "{0}".</value>
+  </data>
+  <data name="MemorySourceNotCreated" xml:space="preserve">
+    <value>Источник конфигурационных данных в памяти не создан.</value>
+  </data>
+  <data name="MemorySourceInitializationFailed" xml:space="preserve">
+    <value>Инициализация источника конфигурационных данных в памяти не выполнена.</value>
+  </data>
+  <data name="ModelLoadFailed" xml:space="preserve">
+    <value>Загрузка модели не выполнена. Наименование модели - "{0}", путь к модели - "{1}".</value>
+  </data>
+  <data name="ModelSaveFailed" xml:space="preserve">
+    <value>Сохранение модели не выполнено. Наименование модели - "{0}", путь к модели - "{1}".</value>
+  </data>
+  <data name="SynchronizingDataModelsFailed" xml:space="preserve">
+    <value>Синхронизация моделей данных не выполнена.</value>
+  </data>
+</root>
