@@ -2,6 +2,7 @@
 using SeaConf.Demo.Models;
 using SeaConf.Infrastructure;
 using SeaConf.Interfaces.Core;
+using SeaConf.Models;
 
 namespace SeaConf.Demo
 {
@@ -16,11 +17,15 @@ namespace SeaConf.Demo
                 .WithValueProviderFactory(new EmailValueProviderFactory())
                 .Build();
 
+            configuration.Loaded += ConfigurationLoaded;
+            configuration.Saved += ConfigurationSaved;
+            configuration.PropertyChanged += ConfigurationPropertyChanged;
+
             var programSettings = configuration.GetModel<IProgramSettings>();
             var streetSettings = configuration.GetModel<IStreetSettings>();
-
-            await configuration.LoadAsync();
             
+            await configuration.LoadAsync();
+
             programSettings.StringValue = "test1 test2 test3 test4";
             programSettings.BytesValue = new ReadOnlyMemory<byte>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11]);
             programSettings.DoubleValue = 1.151;
@@ -86,6 +91,21 @@ namespace SeaConf.Demo
             }
 
             await configuration.SaveAsync();
+        }
+
+        private static void ConfigurationLoaded(object? sender, EventArgs e)
+        {
+
+        }
+
+        private static void ConfigurationSaved(object? sender, SavedEventArgs e)
+        {
+
+        }
+
+        private static void ConfigurationPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+
         }
     }
 }

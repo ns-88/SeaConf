@@ -31,7 +31,7 @@ namespace SeaConf.Test.Infrastructure
 
 			#region ProgramSettings
 
-			programSettingsMock
+            programSettingsMock
 				.As<IModel>()
 				.SetupGet(x => x.Path)
 				.Returns(new ModelPath("ProgramSettings"));
@@ -48,11 +48,11 @@ namespace SeaConf.Test.Infrastructure
 				.Setup(x => x.CreateWriter())
 				.Returns(writerMocks.Program.Object);
 
-			#endregion
+            #endregion
 
-			#region ProgramSettings\UserSettings
+            #region ProgramSettings\UserSettings
 
-			userSettingsMock
+            userSettingsMock
 				.As<IModel>()
 				.SetupGet(x => x.Path)
 				.Returns(new ModelPath("UserSettings", new ModelPath("ProgramSettings")));

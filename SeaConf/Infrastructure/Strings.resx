@@ -316,4 +316,13 @@
   <data name="SynchronizingDataModelsFailed" xml:space="preserve">
     <value>Синхронизация моделей данных не выполнена.</value>
   </data>
+  <data name="AddingPropertyFailed" xml:space="preserve">
+    <value>Добавление свойства не выполнено. Наименование свойства: "{0}".</value>
+  </data>
+  <data name="DeletingPropertyFailed" xml:space="preserve">
+    <value>Удаление свойства не выполнено. Наименование свойства: "{0}".</value>
+  </data>
+  <data name="SynchronizingPropertiesFailed" xml:space="preserve">
+    <value>Синхронизация свойств между моделями из источника в памяти и в хранилище не выполнена. Наименование модели из источника в памяти - "{0}", наименование модели из источника в хранилище - "{1}".</value>
+  </data>
 </root>

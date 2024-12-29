@@ -83,15 +83,15 @@ namespace SeaConf.Demo.Models
 			set => SetValue(value);
 		}
 
-        public Email Email
+		public Email Email
         {
             get => GetValue<Email>();
             set => SetValue(value);
         }
 
-		public IUserSettings UserSettings { get; } = new UserSettings();
+        public IUserSettings UserSettings { get; } = new UserSettings();
 
-		public IAddressSettings AddressSettings { get; } = new AddressSettings();
+        public IAddressSettings AddressSettings { get; } = new AddressSettings();
 
 		public IPressureSettings PressureSettings { get; } = new PressureSettings();
 	}

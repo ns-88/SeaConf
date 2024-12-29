@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 using SeaConf.Core.Sources;
-using SeaConf.Infrastructure;
 using SeaConf.Interfaces;
 using SeaConf.Interfaces.Core;
 
@@ -146,9 +145,14 @@ namespace SeaConf.Core.ValueProviders
 		{
 			var value = string.Empty;
 
-			if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
+			if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
 			{
-				value = await reader.ReadStringAsync(propertyInfo.Name).ConfigureAwait(false);
+				var rawValue = await reader.ReadStringAsync(propertyInfo, value).ConfigureAwait(false);
+
+                if (!string.IsNullOrWhiteSpace(rawValue))
+                {
+                    value = rawValue;
+                }
 			}
 
             return PropertyData<string>.Create(value, propertyInfo.Name);
@@ -161,8 +165,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
 		public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
 		{
-			writer.WriteStringAsync(propertyData.ToTyped<string>().Get(), propertyData.Name);
-			return ValueTask.CompletedTask;
+			return writer.WriteStringAsync(propertyData.ToTyped<string>().Get(), propertyData);
 		}
 	}
 
@@ -181,9 +184,9 @@ namespace SeaConf.Core.ValueProviders
 		{
 			var value = int.MinValue;
 
-			if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
+			if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
 			{
-				value = await reader.ReadIntAsync(propertyInfo.Name).ConfigureAwait(false);
+				value = await reader.ReadIntAsync(propertyInfo, value).ConfigureAwait(false);
 			}
 
             return PropertyData<int>.Create(value, propertyInfo.Name);
@@ -196,8 +199,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
 		public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
 		{
-			writer.WriteIntAsync(propertyData.ToTyped<int>().Get(), propertyData.Name);
-            return ValueTask.CompletedTask;
+			return writer.WriteIntAsync(propertyData.ToTyped<int>().Get(), propertyData);
         }
 	}
 
@@ -216,9 +218,9 @@ namespace SeaConf.Core.ValueProviders
         {
             var value = ulong.MinValue;
 
-            if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
+            if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
             {
-                value = await reader.ReadUlongAsync(propertyInfo.Name).ConfigureAwait(false);
+                value = await reader.ReadUlongAsync(propertyInfo, value).ConfigureAwait(false);
             }
 
             return PropertyData<ulong>.Create(value, propertyInfo.Name);
@@ -231,8 +233,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
         public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
         {
-            writer.WriteUlongAsync(propertyData.ToTyped<ulong>().Get(), propertyData.Name);
-			return ValueTask.CompletedTask;
+            return writer.WriteUlongAsync(propertyData.ToTyped<ulong>().Get(), propertyData);
         }
     }
 
@@ -251,9 +252,9 @@ namespace SeaConf.Core.ValueProviders
 		{
 			var value = long.MinValue;
 
-			if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
+			if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
 			{
-				value = await reader.ReadLongAsync(propertyInfo.Name).ConfigureAwait(false);
+				value = await reader.ReadLongAsync(propertyInfo, value).ConfigureAwait(false);
 			}
 
             return PropertyData<long>.Create(value, propertyInfo.Name);
@@ -266,8 +267,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
 		public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
 		{
-			writer.WriteLongAsync(propertyData.ToTyped<long>().Get(), propertyData.Name);
-			return ValueTask.CompletedTask;
+			return writer.WriteLongAsync(propertyData.ToTyped<long>().Get(), propertyData);
         }
 	}
 
@@ -286,9 +286,9 @@ namespace SeaConf.Core.ValueProviders
 		{
 			var value = double.NaN;
 
-			if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
+			if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
 			{
-				value = await reader.ReadDoubleAsync(propertyInfo.Name).ConfigureAwait(false);
+				value = await reader.ReadDoubleAsync(propertyInfo, value).ConfigureAwait(false);
 			}
 
             return PropertyData<double>.Create(value, propertyInfo.Name);
@@ -301,8 +301,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
 		public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
 		{
-			writer.WriteDoubleAsync(propertyData.ToTyped<double>().Get(), propertyData.Name);
-			return ValueTask.CompletedTask;
+			return writer.WriteDoubleAsync(propertyData.ToTyped<double>().Get(), propertyData);
 		}
 	}
 
@@ -321,9 +320,9 @@ namespace SeaConf.Core.ValueProviders
 		{
 			var value = false;
 
-			if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
+			if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
 			{
-				value = await reader.ReadBooleanAsync(propertyInfo.Name).ConfigureAwait(false);
+				value = await reader.ReadBooleanAsync(propertyInfo, value).ConfigureAwait(false);
 			}
             
             return PropertyData<bool>.Create(value, propertyInfo.Name);
@@ -336,8 +335,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
 		public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
 		{
-            writer.WriteBooleanAsync(propertyData.ToTyped<bool>().Get(), propertyData.Name);
-			return ValueTask.CompletedTask;
+            return writer.WriteBooleanAsync(propertyData.ToTyped<bool>().Get(), propertyData);
 		}
 	}
 
@@ -353,25 +351,24 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyInfo">Property info.</param>
         /// <returns>Value.</returns>
         public override async ValueTask<IPropertyData> GetAsync(IReader reader, IPropertyInfo propertyInfo)
-		{
-			Enum value;
+        {
+            var value = (Enum)Enum.ToObject(propertyInfo.Type, -1);
 
-			if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
-			{
-				var rawValue = await reader.ReadStringAsync(propertyInfo.Name);
+            if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
+            {
+                var rawValue = await reader.ReadStringAsync(propertyInfo, string.Empty).ConfigureAwait(false);
 
-				try
-				{
-					value = (Enum)Enum.Parse(propertyInfo.Type, rawValue);
-				}
-				catch
-				{
-					throw new InvalidOperationException(string.Format(Strings.StringValueCannotConvertedToType, propertyInfo.Type, rawValue));
-				}
-			}
-			else
-			{
-				value = (Enum)Enum.ToObject(propertyInfo.Type, -1);
+                if (!string.IsNullOrWhiteSpace(rawValue))
+                {
+                    try
+                    {
+                        value = (Enum)Enum.Parse(propertyInfo.Type, rawValue);
+                    }
+                    catch
+                    {
+                        SourceHelper.ThrowCannotConverted(rawValue, propertyInfo.Type);
+                    }
+                }
 			}
 
             return PropertyData.Create(value, propertyInfo.Name);
@@ -384,8 +381,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
 		public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
         {
-            writer.WriteStringAsync(propertyData.Get<Enum>().ToString(), propertyData.Name);
-			return ValueTask.CompletedTask;
+            return writer.WriteStringAsync(propertyData.Get<Enum>().ToString(), propertyData);
 		}
 	}
 
@@ -413,9 +409,9 @@ namespace SeaConf.Core.ValueProviders
 		{
 			var value = ReadOnlyMemory<byte>.Empty;
 
-			if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
+			if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
             {
-                value = await reader.ReadBytesAsync(propertyInfo.Name).ConfigureAwait(false);
+                value = await reader.ReadBytesAsync(propertyInfo, ReadOnlyMemory<byte>.Empty).ConfigureAwait(false);
             }
 
             return PropertyData<ReadOnlyMemory<byte>>.Create(value, propertyInfo.Name);
@@ -428,8 +424,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
 		public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
 		{
-            writer.WriteBytesAsync(propertyData.ToTyped<ReadOnlyMemory<byte>>().Get(), propertyData.Name);
-			return ValueTask.CompletedTask;
+            return writer.WriteBytesAsync(propertyData.ToTyped<ReadOnlyMemory<byte>>().Get(), propertyData);
 		}
 
         #region Nested types
@@ -480,9 +475,9 @@ namespace SeaConf.Core.ValueProviders
 		{
 			var value = decimal.MinValue;
 
-			if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
+			if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
 			{
-				value = await reader.ReadDecimalAsync(propertyInfo.Name).ConfigureAwait(false);
+				value = await reader.ReadDecimalAsync(propertyInfo, value).ConfigureAwait(false);
 			}
             
             return PropertyData<decimal>.Create(value, propertyInfo.Name);
@@ -495,8 +490,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
 		public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
 		{
-            writer.WriteDecimalAsync(propertyData.ToTyped<decimal>().Get(), propertyData.Name);
-			return ValueTask.CompletedTask;
+            return writer.WriteDecimalAsync(propertyData.ToTyped<decimal>().Get(), propertyData);
 		}
 	}
 
@@ -515,14 +509,17 @@ namespace SeaConf.Core.ValueProviders
 		{
 			var value = DateTime.MinValue;
 
-			if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
-			{
-				var rawValue = await reader.ReadStringAsync(propertyInfo.Name);
+			if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
+            {
+                var rawValue = await reader.ReadStringAsync(propertyInfo, string.Empty).ConfigureAwait(false);
 
-				if (!DateTime.TryParse(rawValue, out value))
-				{
-					SourceHelper.ThrowCannotConverted<DateTime>(rawValue);
-				}
+                if (!string.IsNullOrWhiteSpace(rawValue))
+                {
+                    if (!DateTime.TryParse(rawValue, out value))
+                    {
+                        SourceHelper.ThrowCannotConverted<DateTime>(rawValue);
+                    }
+                }
 			}
             
             return PropertyData<DateTime>.Create(value, propertyInfo.Name);
@@ -535,8 +532,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
 		public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
 		{
-			writer.WriteStringAsync(propertyData.ToTyped<DateTime>().Get().ToString(CultureInfo.CurrentCulture), propertyData.Name);
-			return ValueTask.CompletedTask;
+			return writer.WriteStringAsync(propertyData.ToTyped<DateTime>().Get().ToString(CultureInfo.CurrentCulture), propertyData);
 		}
 	}
 
@@ -555,15 +551,18 @@ namespace SeaConf.Core.ValueProviders
 		{
 			var value = DateOnly.MinValue;
 
-			if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
-			{
-				var rawValue = await reader.ReadStringAsync(propertyInfo.Name);
+			if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
+            {
+                var rawValue = await reader.ReadStringAsync(propertyInfo, string.Empty).ConfigureAwait(false);
 
-				if (!DateOnly.TryParse(rawValue, out value))
-				{
-					SourceHelper.ThrowCannotConverted<DateOnly>(rawValue);
-				}
-			}
+                if (!string.IsNullOrWhiteSpace(rawValue))
+                {
+                    if (!DateOnly.TryParse(rawValue, out value))
+                    {
+                        SourceHelper.ThrowCannotConverted<DateOnly>(rawValue);
+                    }
+                }
+            }
             
             return PropertyData<DateOnly>.Create(value, propertyInfo.Name);
 		}
@@ -575,8 +574,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
 		public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
 		{
-			writer.WriteStringAsync(propertyData.ToTyped<DateOnly>().Get().ToString(CultureInfo.CurrentCulture), propertyData.Name);
-			return ValueTask.CompletedTask;
+			return writer.WriteStringAsync(propertyData.ToTyped<DateOnly>().Get().ToString(CultureInfo.CurrentCulture), propertyData);
 		}
 	}
 
@@ -595,15 +593,18 @@ namespace SeaConf.Core.ValueProviders
 		{
 			var value = TimeOnly.MinValue;
 
-			if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
-			{
-				var rawValue = await reader.ReadStringAsync(propertyInfo.Name);
+			if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
+            {
+                var rawValue = await reader.ReadStringAsync(propertyInfo, string.Empty).ConfigureAwait(false);
 
-				if (!TimeOnly.TryParse(rawValue, out value))
-				{
-					SourceHelper.ThrowCannotConverted<TimeOnly>(rawValue);
-				}
-			}
+                if (!string.IsNullOrWhiteSpace(rawValue))
+                {
+                    if (!TimeOnly.TryParse(rawValue, out value))
+                    {
+                        SourceHelper.ThrowCannotConverted<TimeOnly>(rawValue);
+                    }
+                }
+            }
             
             return PropertyData<TimeOnly>.Create(value, propertyInfo.Name);
 		}
@@ -615,8 +616,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
 		public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
 		{
-			writer.WriteStringAsync(propertyData.ToTyped<TimeOnly>().Get().ToLongTimeString(), propertyData.Name);
-			return ValueTask.CompletedTask;
+			return writer.WriteStringAsync(propertyData.ToTyped<TimeOnly>().Get().ToLongTimeString(), propertyData);
         }
 	}
 
@@ -635,15 +635,18 @@ namespace SeaConf.Core.ValueProviders
 		{
 			var value = new IPEndPoint(IPAddress.None, IPEndPoint.MinPort);
 
-			if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
-			{
-				var rawValue = await reader.ReadStringAsync(propertyInfo.Name);
+			if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
+            {
+                var rawValue = await reader.ReadStringAsync(propertyInfo, string.Empty).ConfigureAwait(false);
 
-				if (!IPEndPoint.TryParse(rawValue, out value))
-				{
-					SourceHelper.ThrowCannotConverted<IPEndPoint>(rawValue);
-				}
-			}
+                if (!string.IsNullOrWhiteSpace(rawValue))
+                {
+                    if (!IPEndPoint.TryParse(rawValue, out value))
+                    {
+                        SourceHelper.ThrowCannotConverted<IPEndPoint>(rawValue);
+                    }
+                }
+            }
 
             return PropertyData<IPEndPoint>.Create(value, propertyInfo.Name);
 		}
@@ -655,8 +658,7 @@ namespace SeaConf.Core.ValueProviders
         /// <param name="propertyData">Stored property.</param>
 		public override ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
 		{
-			writer.WriteStringAsync(propertyData.ToTyped<IPEndPoint>().Get().ToString(), propertyData.Name);
-			return ValueTask.CompletedTask;
+			return writer.WriteStringAsync(propertyData.ToTyped<IPEndPoint>().Get().ToString(), propertyData);
 		}
 	}
 }

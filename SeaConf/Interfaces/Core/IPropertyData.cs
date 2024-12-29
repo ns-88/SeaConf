@@ -3,19 +3,25 @@
 namespace SeaConf.Interfaces.Core
 {
     /// <summary>
-	/// Information about the stored property.
-	/// </summary>
-	public interface IPropertyInfo
+    /// Information about the stored property.
+    /// </summary>
+    public interface IProperty
+    {
+        /// <summary>
+        /// Name.
+        /// </summary>
+        string Name { get; }
+    }
+
+    /// <summary>
+    /// Information about the stored property with specifying the type and parent model.
+    /// </summary>
+    public interface IPropertyInfo : IProperty
     {
         /// <summary>
         /// Parent model.
         /// </summary>
         IMemoryModel Model { get; }
-
-        /// <summary>
-        /// Name.
-        /// </summary>
-        string Name { get; }
 
         /// <summary>
         /// Type.

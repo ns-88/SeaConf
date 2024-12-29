@@ -49,59 +49,59 @@ namespace SeaConf.Test
             #region ProgramSettings
 
             readerMocks.Program
-                .Setup(x => x.PropertyExistsAsync(It.IsAny<string>()))
+                .Setup(x => x.PropertyExistsAsync(It.IsAny<IPropertyInfo>()))
                 .ReturnsAsync(true);
 
             readerMocks.Program
-                .Setup(x => x.ReadBytesAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadBytesAsync(It.IsAny<IPropertyInfo>(), ReadOnlyMemory<byte>.Empty))
                 .ReturnsAsync(expectedResult.BytesValue);
 
             readerMocks.Program
-                .Setup(x => x.ReadIntAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadIntAsync(It.IsAny<IPropertyInfo>(), It.IsAny<int>()))
                 .ReturnsAsync(expectedResult.IntValue);
 
             readerMocks.Program
-                .Setup(x => x.ReadLongAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadLongAsync(It.IsAny<IPropertyInfo>(), It.IsAny<long>()))
                 .ReturnsAsync(expectedResult.LongValue);
 
             readerMocks.Program
-                .Setup(x => x.ReadUlongAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadUlongAsync(It.IsAny<IPropertyInfo>(), It.IsAny<ulong>()))
                 .ReturnsAsync(expectedResult.UlongValue);
 
             readerMocks.Program
-                .Setup(x => x.ReadDecimalAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadDecimalAsync(It.IsAny<IPropertyInfo>(), It.IsAny<decimal>()))
                 .ReturnsAsync(expectedResult.DecimalValue);
 
             readerMocks.Program
-                .Setup(x => x.ReadDoubleAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadDoubleAsync(It.IsAny<IPropertyInfo>(), It.IsAny<double>()))
                 .ReturnsAsync(expectedResult.DoubleValue);
 
             readerMocks.Program
-                .Setup(x => x.ReadStringAsync(nameof(IProgramSettings.StringValue)))
+                .Setup(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.StringValue)), It.IsAny<string>()))
                 .ReturnsAsync(expectedResult.StringValue!);
 
             readerMocks.Program
-                .Setup(x => x.ReadStringAsync(nameof(IProgramSettings.EnumValue)))
+                .Setup(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.EnumValue)), It.IsAny<string>()))
                 .ReturnsAsync(enumValueText);
 
             readerMocks.Program
-                .Setup(x => x.ReadStringAsync(nameof(IProgramSettings.DateTimeValue)))
+                .Setup(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.DateTimeValue)), It.IsAny<string>()))
                 .ReturnsAsync(expectedResult.DateTimeValue.ToString);
 
             readerMocks.Program
-                .Setup(x => x.ReadStringAsync(nameof(IProgramSettings.DateOnlyValue)))
+                .Setup(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.DateOnlyValue)), It.IsAny<string>()))
                 .ReturnsAsync(expectedResult.DateOnlyValue.ToString);
 
             readerMocks.Program
-                .Setup(x => x.ReadStringAsync(nameof(IProgramSettings.TimeOnlyValue)))
+                .Setup(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.TimeOnlyValue)), It.IsAny<string>()))
                 .ReturnsAsync(expectedResult.TimeOnlyValue.ToString);
 
             readerMocks.Program
-                .Setup(x => x.ReadStringAsync(nameof(IProgramSettings.IpEndPointValue)))
+                .Setup(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.IpEndPointValue)), It.IsAny<string>()))
                 .ReturnsAsync(expectedResult.IpEndPointValue!.ToString);
 
             readerMocks.Program
-                .Setup(x => x.ReadBooleanAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadBooleanAsync(It.IsAny<IPropertyData>(), It.IsAny<bool>()))
                 .ReturnsAsync(expectedResult.BoolValue);
 
             #endregion
@@ -109,19 +109,19 @@ namespace SeaConf.Test
             #region ProgramSettings\UserSettings
 
             readerMocks.User
-                .Setup(x => x.PropertyExistsAsync(It.IsAny<string>()))
+                .Setup(x => x.PropertyExistsAsync(It.IsAny<IPropertyData>()))
                 .ReturnsAsync(true);
 
             readerMocks.User
-                .Setup(x => x.ReadIntAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadIntAsync(It.IsAny<IPropertyData>(), It.IsAny<int>()))
                 .ReturnsAsync(expectedResult.UserSettings.IntValue);
 
             readerMocks.User
-                .Setup(x => x.ReadLongAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadLongAsync(It.IsAny<IPropertyData>(), It.IsAny<long>()))
                 .ReturnsAsync(expectedResult.UserSettings.LongValue);
 
             readerMocks.User
-                .Setup(x => x.ReadStringAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadStringAsync(It.IsAny<IPropertyData>(), It.IsAny<string>()))
                 .ReturnsAsync(expectedResult.UserSettings.StringValue!);
 
             #endregion
@@ -129,19 +129,19 @@ namespace SeaConf.Test
             #region ProgramSettings\UserSettings\AddressSettings
 
             readerMocks.Address
-                .Setup(x => x.PropertyExistsAsync(It.IsAny<string>()))
+                .Setup(x => x.PropertyExistsAsync(It.IsAny<IPropertyData>()))
                 .ReturnsAsync(true);
 
             readerMocks.Address
-                .Setup(x => x.ReadIntAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadIntAsync(It.IsAny<IPropertyData>(), It.IsAny<int>()))
                 .ReturnsAsync(expectedResult.UserSettings.AddressSettings.IntValue);
 
             readerMocks.Address
-                .Setup(x => x.ReadLongAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadLongAsync(It.IsAny<IPropertyData>(), It.IsAny<long>()))
                 .ReturnsAsync(expectedResult.UserSettings.AddressSettings.LongValue);
 
             readerMocks.Address
-                .Setup(x => x.ReadStringAsync(It.IsAny<string>()))
+                .Setup(x => x.ReadStringAsync(It.IsAny<IPropertyData>(), It.IsAny<string>()))
                 .ReturnsAsync(expectedResult.UserSettings.AddressSettings.StringValue!);
 
             #endregion
@@ -154,46 +154,46 @@ namespace SeaConf.Test
             #region ProgramSettings
 
             readerMocks.Program
-                .Verify(x => x.PropertyExistsAsync(It.IsAny<string>()), Times.Exactly(13));
+                .Verify(x => x.PropertyExistsAsync(It.IsAny<IPropertyInfo>()), Times.Exactly(13));
 
             readerMocks.Program
-                .Verify(x => x.ReadBytesAsync(nameof(IProgramSettings.BytesValue)), Times.Once);
+                .Verify(x => x.ReadBytesAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.BytesValue)), ReadOnlyMemory<byte>.Empty), Times.Once);
 
             readerMocks.Program
-                .Verify(x => x.ReadIntAsync(nameof(IProgramSettings.IntValue)), Times.Once);
+                .Verify(x => x.ReadIntAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.IntValue)), int.MinValue), Times.Once);
 
             readerMocks.Program
-                .Verify(x => x.ReadLongAsync(nameof(IProgramSettings.LongValue)), Times.Once);
+                .Verify(x => x.ReadLongAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.LongValue)), long.MinValue), Times.Once);
 
             readerMocks.Program
-                .Verify(x => x.ReadUlongAsync(nameof(IProgramSettings.UlongValue)), Times.Once);
+                .Verify(x => x.ReadUlongAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.UlongValue)), ulong.MinValue), Times.Once);
 
             readerMocks.Program
-                .Verify(x => x.ReadDoubleAsync(nameof(IProgramSettings.DoubleValue)), Times.Once);
+                .Verify(x => x.ReadDoubleAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.DoubleValue)), double.NaN), Times.Once);
 
             readerMocks.Program
-                .Verify(x => x.ReadDecimalAsync(nameof(IProgramSettings.DecimalValue)), Times.Exactly(1));
+                .Verify(x => x.ReadDecimalAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.DecimalValue)), decimal.MinValue), Times.Once);
 
             readerMocks.Program
-                .Verify(x => x.ReadStringAsync(nameof(IProgramSettings.StringValue)), Times.Exactly(1));
+                .Verify(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.StringValue)), string.Empty), Times.Once);
 
             readerMocks.Program
-                .Verify(x => x.ReadStringAsync(nameof(IProgramSettings.DateTimeValue)), Times.Exactly(1));
+                .Verify(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.DateTimeValue)), string.Empty), Times.Once);
 
             readerMocks.Program
-                .Verify(x => x.ReadStringAsync(nameof(IProgramSettings.DateOnlyValue)), Times.Exactly(1));
+                .Verify(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.DateOnlyValue)), string.Empty), Times.Once);
 
             readerMocks.Program
-                .Verify(x => x.ReadStringAsync(nameof(IProgramSettings.TimeOnlyValue)), Times.Exactly(1));
+                .Verify(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.TimeOnlyValue)), string.Empty), Times.Once);
 
             readerMocks.Program
-                .Verify(x => x.ReadStringAsync(nameof(IProgramSettings.IpEndPointValue)), Times.Exactly(1));
+                .Verify(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.IpEndPointValue)), string.Empty), Times.Once);
 
             readerMocks.Program
-                .Verify(x => x.ReadStringAsync(nameof(IProgramSettings.EnumValue)), Times.Exactly(1));
+                .Verify(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.EnumValue)), string.Empty), Times.Once);
 
             readerMocks.Program
-                .Verify(x => x.ReadBooleanAsync(nameof(IProgramSettings.BoolValue)), Times.Once);
+                .Verify(x => x.ReadBooleanAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.BoolValue)), false), Times.Once);
 
             readerMocks.Program.VerifyNoOtherCalls();
 
@@ -202,16 +202,16 @@ namespace SeaConf.Test
             #region ProgramSettings\UserSettings
 
             readerMocks.User
-                .Verify(x => x.PropertyExistsAsync(It.IsAny<string>()), Times.Exactly(3));
+                .Verify(x => x.PropertyExistsAsync(It.IsAny<IPropertyInfo>()), Times.Exactly(3));
 
             readerMocks.User
-                .Verify(x => x.ReadIntAsync(It.IsAny<string>()), Times.Once);
+                .Verify(x => x.ReadIntAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IUserSettings.IntValue)), int.MinValue), Times.Once);
 
             readerMocks.User
-                .Verify(x => x.ReadLongAsync(It.IsAny<string>()), Times.Once);
+                .Verify(x => x.ReadLongAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IUserSettings.LongValue)), long.MinValue), Times.Once);
 
             readerMocks.User
-                .Verify(x => x.ReadStringAsync(It.IsAny<string>()), Times.Once);
+                .Verify(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IUserSettings.StringValue)), string.Empty), Times.Once);
 
             readerMocks.User.VerifyNoOtherCalls();
 
@@ -220,16 +220,16 @@ namespace SeaConf.Test
             #region ProgramSettings\UserSettings\AddressSettings
 
             readerMocks.Address
-                .Verify(x => x.PropertyExistsAsync(It.IsAny<string>()), Times.Exactly(3));
+                .Verify(x => x.PropertyExistsAsync(It.IsAny<IPropertyInfo>()), Times.Exactly(3));
 
             readerMocks.Address
-                .Verify(x => x.ReadIntAsync(It.IsAny<string>()), Times.Once);
+                .Verify(x => x.ReadIntAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IAddressSettings.IntValue)), int.MinValue), Times.Once);
 
             readerMocks.Address
-                .Verify(x => x.ReadLongAsync(It.IsAny<string>()), Times.Once);
+                .Verify(x => x.ReadLongAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IAddressSettings.LongValue)), long.MinValue), Times.Once);
 
             readerMocks.Address
-                .Verify(x => x.ReadStringAsync(It.IsAny<string>()), Times.Once);
+                .Verify(x => x.ReadStringAsync(It.Is<IPropertyInfo>(p => p.Name == nameof(IAddressSettings.StringValue)), string.Empty), Times.Once);
 
             readerMocks.Address.VerifyNoOtherCalls();
 
@@ -293,67 +293,67 @@ namespace SeaConf.Test
             #region ProgramSettings
 
             mockWriter.Program
-                .Setup(x => x.WriteBytesAsync(It.IsAny<ReadOnlyMemory<byte>>(), It.IsAny<string>()))
+                .Setup(x => x.WriteBytesAsync(It.IsAny<ReadOnlyMemory<byte>>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
             mockWriter.Program
-                .Setup(x => x.WriteIntAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .Setup(x => x.WriteIntAsync(It.IsAny<int>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
             mockWriter.Program
-                .Setup(x => x.WriteLongAsync(It.IsAny<long>(), It.IsAny<string>()))
+                .Setup(x => x.WriteLongAsync(It.IsAny<long>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
             mockWriter.Program
-                .Setup(x => x.WriteUlongAsync(It.IsAny<ulong>(), It.IsAny<string>()))
+                .Setup(x => x.WriteUlongAsync(It.IsAny<ulong>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
             mockWriter.Program
-                .Setup(x => x.WriteDecimalAsync(It.IsAny<decimal>(), It.IsAny<string>()))
+                .Setup(x => x.WriteDecimalAsync(It.IsAny<decimal>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
             mockWriter.Program
-                .Setup(x => x.WriteDoubleAsync(It.IsAny<double>(), It.IsAny<string>()))
+                .Setup(x => x.WriteDoubleAsync(It.IsAny<double>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
             mockWriter.Program
-                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), nameof(IProgramSettings.StringValue)))
+                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.StringValue))))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
             mockWriter.Program
-                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), nameof(IProgramSettings.EnumValue)))
+                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.EnumValue))))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
             mockWriter.Program
-                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), nameof(IProgramSettings.DateTimeValue)))
+                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.DateTimeValue))))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
             mockWriter.Program
-                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), nameof(IProgramSettings.DateOnlyValue)))
+                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.DateOnlyValue))))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
             mockWriter.Program
-                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), nameof(IProgramSettings.TimeOnlyValue)))
+                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.TimeOnlyValue))))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
             mockWriter.Program
-                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), nameof(IProgramSettings.IpEndPointValue)))
+                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.IpEndPointValue))))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
             mockWriter.Program
-                .Setup(x => x.WriteBooleanAsync(It.IsAny<bool>(), It.IsAny<string>()))
+                .Setup(x => x.WriteBooleanAsync(It.IsAny<bool>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IProgramSettings))));
 
@@ -362,17 +362,17 @@ namespace SeaConf.Test
             #region ProgramSettings\UserSettings
 
             mockWriter.User
-                .Setup(x => x.WriteIntAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .Setup(x => x.WriteIntAsync(It.IsAny<int>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IUserSettings))));
 
             mockWriter.User
-                .Setup(x => x.WriteLongAsync(It.IsAny<long>(), It.IsAny<string>()))
+                .Setup(x => x.WriteLongAsync(It.IsAny<long>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IUserSettings))));
 
             mockWriter.User
-                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IUserSettings))));
 
@@ -381,17 +381,17 @@ namespace SeaConf.Test
             #region ProgramSettings\UserSettings\AddressSettings
 
             mockWriter.Address
-                .Setup(x => x.WriteIntAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .Setup(x => x.WriteIntAsync(It.IsAny<int>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IAddressSettings))));
 
             mockWriter.Address
-                .Setup(x => x.WriteLongAsync(It.IsAny<long>(), It.IsAny<string>()))
+                .Setup(x => x.WriteLongAsync(It.IsAny<long>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IAddressSettings))));
 
             mockWriter.Address
-                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(x => x.WriteStringAsync(It.IsAny<string>(), It.IsAny<IPropertyInfo>()))
                 .Returns(ValueTask.CompletedTask)
                 .Callback(new InvocationAction(x => AddArgs(x, nameof(IAddressSettings))));
 
@@ -441,43 +441,43 @@ namespace SeaConf.Test
             #region ProgramSettings
 
             mockWriter.Program
-                .Verify(x => x.WriteBytesAsync(It.IsAny<ReadOnlyMemory<byte>>(), nameof(IProgramSettings.BytesValue)), Times.Once);
+                .Verify(x => x.WriteBytesAsync(It.IsAny<ReadOnlyMemory<byte>>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.BytesValue))), Times.Once);
 
             mockWriter.Program
-                .Verify(x => x.WriteIntAsync(It.IsAny<int>(), nameof(IProgramSettings.IntValue)), Times.Once);
+                .Verify(x => x.WriteIntAsync(It.IsAny<int>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.IntValue))), Times.Once);
 
             mockWriter.Program
-                .Verify(x => x.WriteLongAsync(It.IsAny<long>(), nameof(IProgramSettings.LongValue)), Times.Once);
+                .Verify(x => x.WriteLongAsync(It.IsAny<long>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.LongValue))), Times.Once);
 
             mockWriter.Program
-                .Verify(x => x.WriteUlongAsync(It.IsAny<ulong>(), nameof(IProgramSettings.UlongValue)), Times.Once);
+                .Verify(x => x.WriteUlongAsync(It.IsAny<ulong>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.UlongValue))), Times.Once);
 
             mockWriter.Program
-                .Verify(x => x.WriteDoubleAsync(It.IsAny<double>(), nameof(IProgramSettings.DoubleValue)), Times.Once);
+                .Verify(x => x.WriteDoubleAsync(It.IsAny<double>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.DoubleValue))), Times.Once);
 
             mockWriter.Program
-                .Verify(x => x.WriteDecimalAsync(It.IsAny<decimal>(), nameof(IProgramSettings.DecimalValue)), Times.Exactly(1));
+                .Verify(x => x.WriteDecimalAsync(It.IsAny<decimal>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.DecimalValue))), Times.Once);
 
             mockWriter.Program
-                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), nameof(IProgramSettings.StringValue)), Times.Exactly(1));
+                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.StringValue))), Times.Once);
 
             mockWriter.Program
-                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), nameof(IProgramSettings.DateTimeValue)), Times.Exactly(1));
+                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.DateTimeValue))), Times.Once);
 
             mockWriter.Program
-                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), nameof(IProgramSettings.DateOnlyValue)), Times.Exactly(1));
+                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.DateOnlyValue))), Times.Once);
 
             mockWriter.Program
-                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), nameof(IProgramSettings.TimeOnlyValue)), Times.Exactly(1));
+                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.TimeOnlyValue))), Times.Once);
 
             mockWriter.Program
-                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), nameof(IProgramSettings.IpEndPointValue)), Times.Exactly(1));
+                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.IpEndPointValue))), Times.Once);
 
             mockWriter.Program
-                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), nameof(IProgramSettings.EnumValue)), Times.Exactly(1));
+                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.EnumValue))), Times.Once);
 
             mockWriter.Program
-                .Verify(x => x.WriteBooleanAsync(It.IsAny<bool>(), nameof(IProgramSettings.BoolValue)), Times.Once);
+                .Verify(x => x.WriteBooleanAsync(It.IsAny<bool>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IProgramSettings.BoolValue))), Times.Once);
 
             mockWriter.Program.VerifyNoOtherCalls();
 
@@ -486,13 +486,13 @@ namespace SeaConf.Test
             #region ProgramSettings\UserSettings
 
             mockWriter.User
-                .Verify(x => x.WriteIntAsync(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
+                .Verify(x => x.WriteIntAsync(It.IsAny<int>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IUserSettings.IntValue))), Times.Once);
 
             mockWriter.User
-                .Verify(x => x.WriteLongAsync(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
+                .Verify(x => x.WriteLongAsync(It.IsAny<long>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IUserSettings.LongValue))), Times.Once);
 
             mockWriter.User
-                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IUserSettings.StringValue))), Times.Once);
 
             mockWriter.User.VerifyNoOtherCalls();
 
@@ -501,13 +501,13 @@ namespace SeaConf.Test
             #region ProgramSettings\UserSettings\AddressSettings
 
             mockWriter.Address
-                .Verify(x => x.WriteIntAsync(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
+                .Verify(x => x.WriteIntAsync(It.IsAny<int>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IAddressSettings.IntValue))), Times.Once);
 
             mockWriter.Address
-                .Verify(x => x.WriteLongAsync(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
+                .Verify(x => x.WriteLongAsync(It.IsAny<long>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IAddressSettings.LongValue))), Times.Once);
 
             mockWriter.Address
-                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+                .Verify(x => x.WriteStringAsync(It.IsAny<string>(), It.Is<IPropertyInfo>(p => p.Name == nameof(IAddressSettings.StringValue))), Times.Once);
 
             mockWriter.Address.VerifyNoOtherCalls();
 
@@ -519,11 +519,11 @@ namespace SeaConf.Test
             {
                 if (methodArgs.TryGetValue(modelName, out var modelArgs))
                 {
-                    modelArgs.Add((string)invocation.Arguments[1], invocation.Arguments[0]);
+                    modelArgs.Add(((IPropertyInfo)invocation.Arguments[1]).Name, invocation.Arguments[0]);
                 }
                 else
                 {
-                    modelArgs = new Dictionary<string, object> { { (string)invocation.Arguments[1], invocation.Arguments[0] } };
+                    modelArgs = new Dictionary<string, object> { { ((IPropertyInfo)invocation.Arguments[1]).Name, invocation.Arguments[0] } };
                     methodArgs.Add(modelName, modelArgs);
                 }
             }
@@ -726,6 +726,84 @@ namespace SeaConf.Test
             Assert.That(actualStorageModels.Count == expectedStorageModels.Count);
             Assert.That(rootNodesCount == expectedRootNodes.Count);
             Assert.That(storageModelsCount == expectedStorageModels.Count);
+        }
+
+        [Test]
+        public async Task SynchronizationProperties_WithSave_Success()
+        {
+            // #### Arrange ####
+            var factory = MockSourceFactory.CreateFactory();
+            var storageSource = factory.StorageSource;
+            var configuration = ConfigurationBuilder.New
+                .WithSource(factory)
+                .WithModel<IProgramSettings, ProgramSettings>()
+                .WithSyncMode(SyncMode.Enable)
+                .Build();
+
+            var expectedProperties = new List<string>
+            {
+                nameof(IProgramSettings.StringValue),
+                nameof(IProgramSettings.IntValue),
+                nameof(IProgramSettings.LongValue),
+                nameof(IProgramSettings.UlongValue),
+                nameof(IProgramSettings.DoubleValue),
+                nameof(IProgramSettings.BoolValue),
+                nameof(IProgramSettings.EnumValue),
+                nameof(IProgramSettings.BytesValue),
+                nameof(IProgramSettings.DecimalValue),
+                nameof(IProgramSettings.DateTimeValue),
+                nameof(IProgramSettings.DateOnlyValue),
+                nameof(IProgramSettings.TimeOnlyValue),
+                nameof(IProgramSettings.IpEndPointValue)
+            };
+
+            // #### Act/Assert ####
+            Assert.DoesNotThrowAsync(async () => await configuration.SaveAsync());
+
+            var rootNodes = await storageSource.GetRootNodesAsync();
+            var storageModels = await storageSource.GetModelsAsync(rootNodes).ToListAsync();
+            var actualProperties = storageModels[0].GetProperties();
+
+            Assert.That(expectedProperties, Is.EquivalentTo(actualProperties.Select(x => x.Name)));
+        }
+
+        [Test]
+        public async Task SynchronizationProperties_WithLoad_Success()
+        {
+            // #### Arrange ####
+            var factory = MockSourceFactory.CreateFactory();
+            var storageSource = factory.StorageSource;
+            var configuration = ConfigurationBuilder.New
+                .WithSource(factory)
+                .WithModel<IProgramSettings, ProgramSettings>()
+                .WithSyncMode(SyncMode.Enable)
+                .Build();
+
+            var expectedProperties = new List<string>
+            {
+                nameof(IProgramSettings.StringValue),
+                nameof(IProgramSettings.IntValue),
+                nameof(IProgramSettings.LongValue),
+                nameof(IProgramSettings.UlongValue),
+                nameof(IProgramSettings.DoubleValue),
+                nameof(IProgramSettings.BoolValue),
+                nameof(IProgramSettings.EnumValue),
+                nameof(IProgramSettings.BytesValue),
+                nameof(IProgramSettings.DecimalValue),
+                nameof(IProgramSettings.DateTimeValue),
+                nameof(IProgramSettings.DateOnlyValue),
+                nameof(IProgramSettings.TimeOnlyValue),
+                nameof(IProgramSettings.IpEndPointValue)
+            };
+
+            // #### Act/Assert ####
+            Assert.DoesNotThrowAsync(async () => await configuration.LoadAsync());
+
+            var rootNodes = await storageSource.GetRootNodesAsync();
+            var storageModels = await storageSource.GetModelsAsync(rootNodes).ToListAsync();
+            var actualProperties = storageModels[0].GetProperties();
+
+            Assert.That(expectedProperties, Is.EquivalentTo(actualProperties.Select(x => x.Name)));
         }
     }
 }

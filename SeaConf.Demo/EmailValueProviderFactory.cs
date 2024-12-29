@@ -47,10 +47,14 @@ namespace SeaConf.Demo
             {
                 var email = new Email(string.Empty);
                 
-                if (await reader.PropertyExistsAsync(propertyInfo.Name).ConfigureAwait(false))
+                if (await reader.PropertyExistsAsync(propertyInfo).ConfigureAwait(false))
                 {
-                    var rawValue = await reader.ReadStringAsync(propertyInfo.Name);
-                    email = new Email(rawValue);
+                    var rawValue = await reader.ReadStringAsync(propertyInfo, string.Empty).ConfigureAwait(false);
+
+                    if (!string.IsNullOrWhiteSpace(rawValue))
+                    {
+                        email = new Email(rawValue);
+                    }
                 }
 
                 return PropertyData<Email>.Create(email, propertyInfo.Name);
@@ -63,7 +67,7 @@ namespace SeaConf.Demo
             /// <param name="propertyData">Stored property.</param>
             public ValueTask SetAsync(IWriter writer, IPropertyData propertyData)
             {
-                writer.WriteStringAsync(propertyData.ToTyped<Email>().Get().Value, propertyData.Name);
+                writer.WriteStringAsync(propertyData.ToTyped<Email>().Get().ToString(), propertyData).ConfigureAwait(false);
                 return ValueTask.CompletedTask;
             }
         }

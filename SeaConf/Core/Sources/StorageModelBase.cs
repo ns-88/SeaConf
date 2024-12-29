@@ -57,6 +57,24 @@ namespace SeaConf.Core.Sources
             return ValueTask.CompletedTask;
         }
 
+        /// <summary>
+        /// Adding property.
+        /// </summary>
+        /// <param name="propertyInfo">Information about the stored property.</param>
+        public abstract ValueTask AddPropertyAsync(IProperty propertyInfo);
+
+        /// <summary>
+        /// Deleting property.
+        /// </summary>
+        /// <param name="propertyInfo">Information about the stored property.</param>
+        public abstract ValueTask DeletePropertyAsync(IProperty propertyInfo);
+
+        /// <summary>
+        /// Getting all properties.
+        /// </summary>
+        /// <returns>All properties.</returns>
+        public abstract IEnumerable<IProperty> GetProperties();
+
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources asynchronously.</summary>
         /// <returns>A task that represents the asynchronous dispose operation.</returns>
         public virtual ValueTask DisposeAsync()

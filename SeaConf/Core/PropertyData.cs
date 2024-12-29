@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using SeaConf.Infrastructure;
 using SeaConf.Interfaces;
 using SeaConf.Interfaces.Core;
@@ -8,13 +9,35 @@ using SeaConf.Interfaces.Core;
 namespace SeaConf.Core
 {
     /// <summary>
-    /// Stored property.
+    /// Information about the stored property.
     /// </summary>
-    public abstract class PropertyData : IPropertyData
+    public class Property : IProperty
     {
-        protected PropertyData(string name, Type type, IMemoryModel memoryModel)
+        /// <summary>
+        /// Name.
+        /// </summary>
+        public string Name { get; }
+
+        public Property(string name)
         {
             Name = name;
+        }
+
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString()
+        {
+            return $"Name = {Name}";
+        }
+    }
+
+    /// <summary>
+    /// Stored property.
+    /// </summary>
+    public abstract class PropertyData : Property, IPropertyData
+    {
+        protected PropertyData(string name, Type type, IMemoryModel memoryModel) : base(name)
+        {
             Type = type;
             Model = memoryModel;
         }
@@ -67,11 +90,6 @@ namespace SeaConf.Core
         /// Parent model.
         /// </summary>
         public IMemoryModel Model { get; }
-
-        /// <summary>
-        /// Name.
-        /// </summary>
-        public string Name { get; }
 
         /// <summary>
         /// Type.

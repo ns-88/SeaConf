@@ -3,11 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using SeaConf.Core;
 using SeaConf.Infrastructure;
-using SeaConf.Interfaces;
 using SeaConf.Interfaces.Core;
 
 namespace SeaConf.Models
@@ -19,7 +17,7 @@ namespace SeaConf.Models
     /// </summary>
     public class PropertiesModel : ModelBase, IMemoryModel, IMemoryInitializedModel, IReadOnlyList<IPropertyData>, PropertiesData
     {
-        private PropertiesData _storage;
+        private PropertiesData _propertiesData;
 
         #region ElementsCount
         private ElementsCount _elementsCount;
@@ -35,6 +33,16 @@ namespace SeaConf.Models
                 return _elementsCount;
             }
         }
+
+        #endregion
+
+        #region IsInitialized
+
+        /// <summary>
+        /// Initialization sign.
+        /// </summary>
+        bool IMemoryModel.IsInitialized => IsInitialized;
+
         #endregion
 
         #region Name
@@ -96,59 +104,17 @@ namespace SeaConf.Models
         /// <summary>
         /// Initialization.
         /// </summary>
-        /// <param name="name">Name.</param>
-        /// <param name="path">Path.</param>
-        /// <param name="type">Type.</param>
-        /// <param name="components">Components.</param>
-        void IMemoryInitializedModel.Initialize(string name, ModelPath path, Type type, IComponents components)
+        /// <param name="memoryModel">Data model in memory.</param>
+        /// <param name="propertiesData">Properties data.</param>
+        void IMemoryInitializedModel.Initialize(IMemoryModel memoryModel, PropertiesData propertiesData)
         {
-            _storage = CreatePropertiesData(type, this, components, out var elementsCount);
-            _name = name;
-            _path = path;
-            _type = type;
-            _elementsCount = elementsCount;
+            _propertiesData = Guard.ThrowIfNull(propertiesData);
+            _name = memoryModel.Name;
+            _path = memoryModel.Path;
+            _type = memoryModel.Type;
+            _elementsCount = memoryModel.ElementsCount;
             
             SetInit();
-        }
-
-        /// <summary>
-        /// Creating an internal data storage.
-        /// </summary>
-        /// <param name="modelType">Model type.</param>
-        /// <param name="model">Model.</param>
-        /// <param name="components">Configuration components.</param>
-        /// <param name="elementsCount">Elements number in model.</param>
-        /// <returns>Data storage.</returns>
-        private static PropertiesData CreatePropertiesData(IReflect modelType, IMemoryModel model, IComponents components, out ElementsCount elementsCount)
-        {
-            var propertiesCount = 0;
-            var modelsCount = 0;
-            var propertiesData = new Dictionary<string, IPropertyData>();
-            var properties = modelType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-            foreach (var property in properties)
-            {
-                if (!property.CanRead)
-                {
-                    throw new InvalidOperationException(string.Format(Strings.PropertyIsNotReadable, property.Name));
-                }
-
-                if (property.GetCustomAttribute<ModelAttribute>() != null)
-                {
-                    modelsCount++;
-                    continue;
-                }
-
-                var propertyData = PropertyData.Create(property.Name, property.PropertyType, model, components);
-
-                propertiesCount++;
-
-                propertiesData.Add(property.Name, propertyData);
-            }
-
-            elementsCount = new ElementsCount(propertiesCount, modelsCount);
-
-            return propertiesData;
         }
 
         /// <summary>
@@ -158,7 +124,7 @@ namespace SeaConf.Models
         IEnumerable<IPropertyData> IMemoryModel.GetModifiedProperties()
         {
             ThrowIfNoInit();
-            return _storage.Values.Where(x => x.IsModified);
+            return _propertiesData.Values.Where(x => x.IsModified);
         }
 
         /// <summary>
@@ -168,7 +134,7 @@ namespace SeaConf.Models
         IEnumerable<IPropertyData> IMemoryModel.GetProperties()
         {
             ThrowIfNoInit();
-            return _storage.Values;
+            return _propertiesData.Values;
         }
 
         /// <summary>
@@ -184,7 +150,7 @@ namespace SeaConf.Models
 
             try
             {
-                if (_storage.TryGetValue(propertyName, out var rawValue))
+                if (_propertiesData.TryGetValue(propertyName, out var rawValue))
                 {
                     rawValue.ToTyped<T>().Set(value);
                 }
@@ -212,7 +178,7 @@ namespace SeaConf.Models
 
             try
             {
-                if (_storage.TryGetValue(propertyName, out var rawValue))
+                if (_propertiesData.TryGetValue(propertyName, out var rawValue))
                 {
                     return rawValue.ToTyped<T>().Get();
                 }
@@ -232,7 +198,7 @@ namespace SeaConf.Models
         IEnumerator<KeyValuePair<string, IPropertyData>> IEnumerable<KeyValuePair<string, IPropertyData>>.GetEnumerator()
         {
             ThrowIfNoInit();
-            return _storage.GetEnumerator();
+            return _propertiesData.GetEnumerator();
         }
 
         /// <summary>Returns an enumerator that iterates through the collection.</summary>
@@ -240,7 +206,7 @@ namespace SeaConf.Models
         IEnumerator<IPropertyData> IEnumerable<IPropertyData>.GetEnumerator()
         {
             ThrowIfNoInit();
-            return _storage.Values.GetEnumerator();
+            return _propertiesData.Values.GetEnumerator();
         }
 
         /// <summary>Returns an enumerator that iterates through a collection.</summary>
@@ -248,7 +214,7 @@ namespace SeaConf.Models
         IEnumerator IEnumerable.GetEnumerator()
         {
             ThrowIfNoInit();
-            return _storage.GetEnumerator();
+            return _propertiesData.GetEnumerator();
         }
 
         #endregion
@@ -262,7 +228,7 @@ namespace SeaConf.Models
             get
             {
                 ThrowIfNoInit();
-                return _storage.Count;
+                return _propertiesData.Count;
             }
         }
 
@@ -278,7 +244,7 @@ namespace SeaConf.Models
             get
             {
                 ThrowIfNoInit();
-                return _storage.Values.ElementAt(index);
+                return _propertiesData.Values.ElementAt(index);
             }
         }
 
@@ -293,7 +259,7 @@ namespace SeaConf.Models
             get
             {
                 ThrowIfNoInit();
-                return _storage.Count;
+                return _propertiesData.Count;
             }
         }
 
@@ -310,7 +276,7 @@ namespace SeaConf.Models
         bool PropertiesData.ContainsKey(string key)
         {
             ThrowIfNoInit();
-            return _storage.ContainsKey(key);
+            return _propertiesData.ContainsKey(key);
         }
 
         /// <summary>Gets the value that is associated with the specified key.</summary>
@@ -323,7 +289,7 @@ namespace SeaConf.Models
         bool PropertiesData.TryGetValue(string key, [MaybeNullWhen(false)] out IPropertyData value)
         {
             ThrowIfNoInit();
-            return _storage.TryGetValue(key, out value);
+            return _propertiesData.TryGetValue(key, out value);
         }
 
         /// <summary>Gets the element that has the specified key in the read-only dictionary.</summary>
@@ -337,7 +303,7 @@ namespace SeaConf.Models
             get
             {
                 ThrowIfNoInit();
-                return _storage[key];
+                return _propertiesData[key];
             }
         }
 
@@ -348,7 +314,7 @@ namespace SeaConf.Models
             get
             {
                 ThrowIfNoInit();
-                return _storage.Keys;
+                return _propertiesData.Keys;
             }
         }
 
@@ -359,7 +325,7 @@ namespace SeaConf.Models
             get
             {
                 ThrowIfNoInit();
-                return _storage.Values;
+                return _propertiesData.Values;
             }
         }
 
