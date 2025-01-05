@@ -57,7 +57,7 @@ namespace SeaConf.Core.Sources
         /// <param name="components">Configuration components.</param>
         public void Initialize(IComponents components)
         {
-            var source = new MemoryModelInfoSource(components.RegisteredModels, components.KnownTypes);
+            var source = new MemoryModelInfoSource(components);
             var rootNodes = source.GetRootNodesAsync().Result;
             var infoModels = source.GetModelsAsync(rootNodes).ToBlockingEnumerable();
             var models = (Dictionary<ModelData, IMemoryModel>)Models;
@@ -73,7 +73,7 @@ namespace SeaConf.Core.Sources
 
                 try
                 {
-                    ((IMemoryInitializedModel)modelInfo.Model).Initialize(modelInfo.Name, modelInfo.Path, modelInfo.Type, components);
+                    ((IMemoryInitializedModel)modelInfo.Model).Initialize(modelInfo, modelInfo.PropertiesData);
                 }
                 catch (Exception ex)
                 {
@@ -101,12 +101,12 @@ namespace SeaConf.Core.Sources
         private class MemoryModelInfoSource : SourceBase<MemoryModelInfo>
         {
             private readonly IReadOnlyDictionary<ModelData, IModel> _registeredModels;
-            private readonly IReadOnlyDictionary<Type, Type> _knownTypes;
+            private readonly IComponents _components;
 
-            public MemoryModelInfoSource(IReadOnlyDictionary<ModelData, IModel> registeredModels, IReadOnlyDictionary<Type, Type> knownTypes)
+            public MemoryModelInfoSource(IComponents components)
             {
-                _registeredModels = registeredModels;
-                _knownTypes = knownTypes;
+                _registeredModels = components.RegisteredModels;
+                _components = components;
             }
 
             public override ValueTask<IReadOnlyList<INode>> GetRootNodesAsync()
@@ -115,7 +115,7 @@ namespace SeaConf.Core.Sources
 
                 foreach (var (modelData, model) in _registeredModels)
                 {
-                    nodes.Add(new MemoryModelInfo(_knownTypes)
+                    nodes.Add(new MemoryModelInfo(_components)
                     {
                         Model = (IMemoryModel)model,
                         Name = modelData.Name,
@@ -130,20 +130,25 @@ namespace SeaConf.Core.Sources
 
         private class MemoryModelInfo : INode, IMemoryModel
         {
-            private bool _isInitialized;
             private readonly List<INode> _innerModels;
             private readonly IReadOnlyDictionary<Type, Type> _knownTypes;
+            private readonly IComponents _components;
+            private readonly Dictionary<string, IPropertyData> _propertiesData;
 
+            public IReadOnlyDictionary<string, IPropertyData> PropertiesData => _propertiesData;
             public required string Name { get; init; }
             public required IMemoryModel Model { get; init; }
             public required Type Type { get; init; }
-            public ElementsCount ElementsCount => Model.ElementsCount;
+            public ElementsCount ElementsCount { get; private set; }
+            public bool IsInitialized { get; private set; }
             public required ModelPath Path { get; init; }
 
-            public MemoryModelInfo(IReadOnlyDictionary<Type, Type> knownTypes)
+            public MemoryModelInfo(IComponents components)
             {
+                _components = components;
+                _knownTypes = components.KnownTypes;
                 _innerModels = new List<INode>();
-                _knownTypes = knownTypes;
+                _propertiesData = new Dictionary<string, IPropertyData>();
             }
 
             private bool TryCreatePropertiesNode(PropertyInfo property, [MaybeNullWhen(false)] out INode node)
@@ -214,7 +219,7 @@ namespace SeaConf.Core.Sources
 
                 var name = IMemoryModel.GetName(property.PropertyType, attribute);
 
-                node = new MemoryModelInfo(_knownTypes)
+                node = new MemoryModelInfo(_components)
                 {
                     Model = innerMemoryModel,
                     Name = name,
@@ -227,29 +232,36 @@ namespace SeaConf.Core.Sources
 
             public ValueTask<IReadOnlyList<INode>> GetDescendantNodesAsync()
             {
-                if (_isInitialized)
+                if (IsInitialized)
                 {
                     return ValueTask.FromResult((IReadOnlyList<INode>)_innerModels);
                 }
 
-                var nodes = new List<INode>();
                 var properties = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
                 foreach (var property in properties)
                 {
-                    if (!TryCreatePropertiesNode(property, out var node))
+                    if (!property.CanRead)
                     {
-                        continue;
+                        throw new InvalidOperationException(string.Format(Strings.PropertyIsNotReadable, property.Name));
                     }
 
-                    _innerModels.Add(node);
+                    if (TryCreatePropertiesNode(property, out var node))
+                    {
+                        _innerModels.Add(node);
+                    }
+                    else
+                    {
+                        var propertyData = PropertyData.Create(property.Name, property.PropertyType, Model, _components);
 
-                    nodes.Add(node);
+                        _propertiesData.Add(property.Name, propertyData);
+                    }
                 }
 
-                _isInitialized = true;
+                IsInitialized = true;
+                ElementsCount = new ElementsCount(_propertiesData.Count, _innerModels.Count);
 
-                return ValueTask.FromResult((IReadOnlyList<INode>)nodes);
+                return ValueTask.FromResult((IReadOnlyList<INode>)_innerModels);
             }
 
             public IEnumerable<IPropertyData> GetModifiedProperties()

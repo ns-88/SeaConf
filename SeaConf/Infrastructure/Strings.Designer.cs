@@ -79,6 +79,15 @@ namespace SeaConf.Infrastructure {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Добавление свойства не выполнено. Наименование свойства: &quot;{0}&quot;..
+        /// </summary>
+        internal static string AddingPropertyFailed {
+            get {
+                return ResourceManager.GetString("AddingPropertyFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Загрузка конфигурации не выполнена..
         /// </summary>
         internal static string ConfigurationLoadFailed {
@@ -120,6 +129,15 @@ namespace SeaConf.Infrastructure {
         internal static string DeletingModelFailed {
             get {
                 return ResourceManager.GetString("DeletingModelFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Удаление свойства не выполнено. Наименование свойства: &quot;{0}&quot;..
+        /// </summary>
+        internal static string DeletingPropertyFailed {
+            get {
+                return ResourceManager.GetString("DeletingPropertyFailed", resourceCulture);
             }
         }
         
@@ -489,6 +507,15 @@ namespace SeaConf.Infrastructure {
         internal static string SynchronizingDataModelsFailed {
             get {
                 return ResourceManager.GetString("SynchronizingDataModelsFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Синхронизация свойств между моделями из источника в памяти и в хранилище не выполнена. Наименование модели из источника в памяти - &quot;{0}&quot;, наименование модели из источника в хранилище - &quot;{1}&quot;..
+        /// </summary>
+        internal static string SynchronizingPropertiesFailed {
+            get {
+                return ResourceManager.GetString("SynchronizingPropertiesFailed", resourceCulture);
             }
         }
         

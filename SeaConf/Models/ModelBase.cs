@@ -11,14 +11,14 @@ namespace SeaConf.Models
     /// </summary>
     public abstract class ModelBase
     {
-        private bool _isInit;
+        protected bool IsInitialized { get; private set; }
 
         /// <summary>
         /// Setting the "initialized" flag.
         /// </summary>
         protected void SetInit()
         {
-            _isInit = true;
+            IsInitialized = true;
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace SeaConf.Models
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void ThrowIfNoInit()
         {
-            if (!_isInit)
+            if (!IsInitialized)
             {
                 throw new InvalidOperationException(string.Format(Strings.ModelNotInitialized, GetType().Name));
             }

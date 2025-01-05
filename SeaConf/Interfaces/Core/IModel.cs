@@ -13,13 +13,11 @@ namespace SeaConf.Interfaces.Core
     internal interface IMemoryInitializedModel
     {
         /// <summary>
-        /// Initializing.
+        /// Initialization.
         /// </summary>
-        /// <param name="name">Name.</param>
-        /// <param name="path">Path.</param>
-        /// <param name="type">Type.</param>
-        /// <param name="components">Components.</param>
-        void Initialize(string name, ModelPath path, Type type, IComponents components);
+        /// <param name="memoryModel">Data model in memory.</param>
+        /// <param name="propertiesData">Properties data.</param>
+        void Initialize(IMemoryModel memoryModel, IReadOnlyDictionary<string, IPropertyData> propertiesData);
     }
 
     /// <summary>
@@ -54,6 +52,24 @@ namespace SeaConf.Interfaces.Core
         ValueTask SaveAsync();
 
         /// <summary>
+        /// Adding property.
+        /// </summary>
+        /// <param name="property">Information about the stored property.</param>
+        ValueTask AddPropertyAsync(IProperty property);
+
+        /// <summary>
+        /// Deleting property.
+        /// </summary>
+        /// <param name="property">Information about the stored property.</param>
+        ValueTask DeletePropertyAsync(IProperty property);
+
+        /// <summary>
+        /// Getting all properties.
+        /// </summary>
+        /// <returns>All properties.</returns>
+        IEnumerable<IProperty> GetProperties();
+
+        /// <summary>
         /// Creating a writer.
         /// </summary>
         IWriter CreateWriter();
@@ -75,21 +91,26 @@ namespace SeaConf.Interfaces.Core
         Type Type { get; }
 
         /// <summary>
+        /// Initialization sign.
+        /// </summary>
+        bool IsInitialized { get; }
+
+        /// <summary>
         /// Number of elements.
         /// </summary>
         ElementsCount ElementsCount { get; }
-
-        /// <summary>
-        /// Getting modified properties.
-        /// </summary>
-        /// <returns>Modified properties.</returns>
-        IEnumerable<IPropertyData> GetModifiedProperties();
 
         /// <summary>
         /// Getting all properties.
         /// </summary>
         /// <returns>All properties.</returns>
         IEnumerable<IPropertyData> GetProperties();
+
+        /// <summary>
+        /// Getting modified properties.
+        /// </summary>
+        /// <returns>Modified properties.</returns>
+        IEnumerable<IPropertyData> GetModifiedProperties();
 
         internal static string GetName(MemberInfo memberInfo)
         {

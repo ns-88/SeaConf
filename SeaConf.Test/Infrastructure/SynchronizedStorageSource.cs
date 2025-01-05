@@ -81,12 +81,14 @@ namespace SeaConf.Test.Infrastructure
             private readonly IWriter _writer;
             private readonly IReader _reader;
             private readonly IReadOnlyDictionary<ModelPath, IStorageModel> _models;
+            private readonly List<IProperty> _properties;
 
             public SynchronizedStorageModel(string name, ModelPath path, IReadOnlyDictionary<ModelPath, IStorageModel> models) : base(name, path)
             {
                 _writer = Mock.Of<IWriter>();
                 _reader = Mock.Of<IReader>();
                 _models = models;
+                _properties = new List<IProperty>();
             }
 
             /// <summary>
@@ -109,6 +111,34 @@ namespace SeaConf.Test.Infrastructure
             }
 
             /// <summary>
+            /// Adding property.
+            /// </summary>
+            /// <param name="propertyInfo">Information about the stored property.</param>
+            public override ValueTask AddPropertyAsync(IProperty propertyInfo)
+            {
+                _properties.Add(propertyInfo);
+                return ValueTask.CompletedTask;
+            }
+
+            /// <summary>
+            /// Deleting property.
+            /// </summary>
+            /// <param name="propertyInfo">Information about the stored property.</param>
+            public override ValueTask DeletePropertyAsync(IProperty propertyInfo)
+            {
+                return ValueTask.CompletedTask;
+            }
+
+            /// <summary>
+            /// Getting all properties.
+            /// </summary>
+            /// <returns>All properties.</returns>
+            public override IEnumerable<IProperty> GetProperties()
+            {
+                return _properties;
+            }
+
+            /// <summary>
             /// Creating a writer.
             /// </summary>
             public override IWriter CreateWriter()
@@ -124,6 +154,8 @@ namespace SeaConf.Test.Infrastructure
                 return _reader;
             }
 
+            /// <summary>Returns a string that represents the current object.</summary>
+            /// <returns>A string that represents the current object.</returns>
             public override string ToString()
             {
                 return $"Name = {Name}";

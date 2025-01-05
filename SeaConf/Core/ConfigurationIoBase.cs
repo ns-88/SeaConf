@@ -46,7 +46,7 @@ namespace SeaConf.Core
         {
             var memoryModels = _memorySource.GetModelsAsync(synchronizedNodes.Select(x => x.MemoryNode)).ConfigureAwait(false);
             var storageModels = _storageSource.GetModelsAsync(synchronizedNodes.Select(x => x.StorageNode)).ConfigureAwait(false);
-            
+
             var memoryModelsMap = new Dictionary<ModelPath, IMemoryModel>();
             var storageModelsMap = new Dictionary<ModelPath, IStorageModel>();
 
@@ -83,7 +83,7 @@ namespace SeaConf.Core
         /// </summary>
         /// <param name="rootMemoryNodes">Root nodes of source in memory.</param>
         /// <param name="rootStorageNodes">Root nodes of source in storage.</param>
-        /// <returns>Synchronized data models.</returns>
+        /// <returns>Synchronized composite configuration data models.</returns>
         private async Task<IReadOnlyList<CompositeModel>> SynchronizationAsync(IReadOnlyCollection<INode> rootMemoryNodes, IReadOnlyCollection<INode> rootStorageNodes)
         {
             if (rootMemoryNodes.Count == 0)
@@ -215,16 +215,68 @@ namespace SeaConf.Core
                     }
                 }
 
-                synchronizedModels.Add(new CompositeModel(memoryModel, storageModel));
+                var compositeModel = new CompositeModel(memoryModel, storageModel);
+
+                try
+                {
+                    await SynchronizingPropertiesAsync(compositeModel).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(string.Format(Strings.SynchronizingPropertiesFailed,
+                        compositeModel.MemoryModel.Name, compositeModel.StorageModel.Name), ex);
+                }
+
+                synchronizedModels.Add(compositeModel);
             }
 
             return synchronizedModels;
         }
 
         /// <summary>
+        /// Synchronization of properties between models in memory and in storage source.
+        /// </summary>
+        /// <param name="compositeModel">Composite configuration data model.</param>
+        private static async ValueTask SynchronizingPropertiesAsync(CompositeModel compositeModel)
+        {
+            var memoryModelProperties = compositeModel.MemoryModel.GetProperties().ToList();
+            var storageModelProperties = compositeModel.StorageModel.GetProperties().ToList();
+
+            var comparer = EqualityComparer<IProperty>.Create((lhs, rhs) => lhs?.Name == rhs?.Name, p => p.Name.GetHashCode());
+
+            var propertiesForAdd = memoryModelProperties.Except(storageModelProperties, comparer);
+
+            foreach (var property in propertiesForAdd)
+            {
+                try
+                {
+                    await compositeModel.StorageModel.AddPropertyAsync(property).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(string.Format(Strings.AddingPropertyFailed, property.Name), ex);
+                }
+            }
+
+            var propertiesForRemove = storageModelProperties.Except(memoryModelProperties, comparer);
+
+            foreach (var property in propertiesForRemove)
+            {
+                try
+                {
+                    await compositeModel.StorageModel.DeletePropertyAsync(property).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(string.Format(Strings.DeletingPropertyFailed, property.Name), ex);
+                }
+            }
+        }
+
+        /// <summary>
         /// Getting composite models.
         /// </summary>
-        /// <returns>Composite models.</returns>
+        /// <returns>Composite configuration data models.</returns>
         private async IAsyncEnumerable<CompositeModel> GetModelsAsync()
         {
             var rootMemoryNodes = await _memorySource.GetRootNodesAsync().ConfigureAwait(false);
@@ -345,7 +397,7 @@ namespace SeaConf.Core
         /// <summary>
         /// Composite data model source.
         /// </summary>
-        public readonly struct CompositeSource : IAsyncDisposable
+        public readonly struct CompositeSource
         {
             private readonly ConfigurationIoBase _configurationIo;
 
@@ -366,27 +418,17 @@ namespace SeaConf.Core
             /// <summary>
             /// Loading.
             /// </summary>
-            public async ValueTask LoadAsync()
+            public ValueTask LoadAsync()
             {
-                await _configurationIo._storageSource.LoadAsync().ConfigureAwait(false);
+                return _configurationIo._storageSource.LoadAsync();
             }
 
             /// <summary>
             /// Saving.
             /// </summary>
-            public async ValueTask SaveAsync()
+            public ValueTask SaveAsync()
             {
-                await _configurationIo._storageSource.SaveAsync().ConfigureAwait(false);
-            }
-
-            /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources asynchronously.</summary>
-            /// <returns>A task that represents the asynchronous dispose operation.</returns>
-            public async ValueTask DisposeAsync()
-            {
-                if (_configurationIo._storageSource != null!)
-                {
-                    await _configurationIo._storageSource.DisposeAsync().ConfigureAwait(false);
-                }
+                return _configurationIo._storageSource.SaveAsync();
             }
         }
 

@@ -96,11 +96,17 @@ namespace SeaConf
                 // Создание фабрики провайдеров чтения и записи данных.
                 using var valueProvidersFactory = _valueProvidersManager.CreateFactory();
 
-                // Создание средства чтения конфигурации.
-                var reader = new ConfigurationReader(_memorySource, _sourceFactory.CreateStorageSource(), valueProvidersFactory, this, _syncMode);
+                // Создание источника конфигурации в хранилище.
+                var storageSource = _sourceFactory.CreateStorageSource();
 
-                // Выполнение чтения конфигурации.
-                await reader.ReadAsync().ConfigureAwait(false);
+                await using (storageSource.ConfigureAwait(false))
+                {
+                    // Создание средства чтения конфигурации.
+                    var reader = new ConfigurationReader(_memorySource, storageSource, valueProvidersFactory, this, _syncMode);
+
+                    // Выполнение чтения конфигурации.
+                    await reader.ReadAsync().ConfigureAwait(false);
+                }
             }
             catch (Exception ex)
             {
@@ -118,11 +124,17 @@ namespace SeaConf
                 // Создание фабрики провайдеров чтения и записи данных.
                 using var valueProvidersFactory = _valueProvidersManager.CreateFactory();
 
-                // Создание средства записи конфигурации.
-                var writer = new ConfigurationWriter(_memorySource, _sourceFactory.CreateStorageSource(), valueProvidersFactory, this, _syncMode);
+                // Создание источника конфигурации в хранилище.
+                var storageSource = _sourceFactory.CreateStorageSource();
 
-                // Выполнение записи конфигурации.
-                await writer.WriteAsync().ConfigureAwait(false);
+                await using (storageSource.ConfigureAwait(false))
+                {
+                    // Создание средства записи конфигурации.
+                    var writer = new ConfigurationWriter(_memorySource, storageSource, valueProvidersFactory, this, _syncMode);
+
+                    // Выполнение записи конфигурации.
+                    await writer.WriteAsync().ConfigureAwait(false);
+                }
             }
             catch (Exception ex)
             {

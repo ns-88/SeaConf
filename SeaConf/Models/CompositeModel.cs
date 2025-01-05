@@ -29,7 +29,7 @@ namespace SeaConf.Models
         /// <returns>The fully qualified type name.</returns>
         public override string ToString()
         {
-            return $"MemoryModel = {MemoryModel}, StorageModel = {StorageModel}";
+            return $"MemoryModel: {MemoryModel}, StorageModel: {StorageModel}";
         }
 
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources asynchronously.</summary>
