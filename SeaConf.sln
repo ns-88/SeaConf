@@ -5,14 +5,30 @@ VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeaConf", "SeaConf\SeaConf.csproj", "{96EF8F4A-F267-49A6-AC97-B603C03B3B66}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeaConf.Demo", "SeaConf.Demo\SeaConf.Demo.csproj", "{1DE58033-EA4C-4EA3-90BA-705373F0589B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeaConf.Test", "SeaConf.Test\SeaConf.Test.csproj", "{554C7AA1-3A9D-4AA1-B4C5-F81CD866B84F}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{84291F8C-E30D-48B5-B401-4DBA0E27BE6D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Shared", ".Shared", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{1DF406B0-D947-47F5-BFC5-E89B04942827}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeaConf.Core.Sources.RegistrySource", "Core\Sources\SeaConf.Core.Sources.RegistrySource\SeaConf.Core.Sources.RegistrySource.csproj", "{88EB7316-7C6A-4962-A6A0-DA2E68DBB8A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeaConf.Core.Sources.XmlSource", "Core\Sources\SeaConf.Core.Sources.XmlSource\SeaConf.Core.Sources.XmlSource.csproj", "{1D22DCF5-CCF3-4032-A7A4-399D3CA87428}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{5290D907-B2E6-405F-B55B-90A20890E697}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeaConf.Common", "Shared\SeaConf.Shared.Common\SeaConf.Common.csproj", "{EF22C48C-BDB7-8141-E9F4-1229EA9CDFBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeaConf.Demo", "Shared\SeaConf.Shared.Demo\SeaConf.Demo.csproj", "{58D098F7-ACCC-CAE1-F934-90115D3E545D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeaConf.Test", "Shared\SeaConf.Shared.Test\SeaConf.Test.csproj", "{C1565CCF-CDD9-0E65-16AA-6CB0D5FC4F49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeaConf.Core.Common", "Core\SeaConf.Core.Common\SeaConf.Core.Common.csproj", "{13A2AC72-6A0B-4304-88C7-1FE16102B5B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeaConf.Core.Sources.MemorySource", "Core\Sources\SeaConf.Core.Sources.MemorySource\SeaConf.Core.Sources.MemorySource.csproj", "{3A1DB8A0-FB72-3AC4-4103-A59F14A49DD5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,15 +40,47 @@ Global
 		{96EF8F4A-F267-49A6-AC97-B603C03B3B66}.Debug|x64.Build.0 = Debug|x64
 		{96EF8F4A-F267-49A6-AC97-B603C03B3B66}.Release|x64.ActiveCfg = Release|x64
 		{96EF8F4A-F267-49A6-AC97-B603C03B3B66}.Release|x64.Build.0 = Release|x64
-		{1DE58033-EA4C-4EA3-90BA-705373F0589B}.Debug|x64.ActiveCfg = Debug|x64
-		{1DE58033-EA4C-4EA3-90BA-705373F0589B}.Debug|x64.Build.0 = Debug|x64
-		{1DE58033-EA4C-4EA3-90BA-705373F0589B}.Release|x64.ActiveCfg = Release|x64
-		{554C7AA1-3A9D-4AA1-B4C5-F81CD866B84F}.Debug|x64.ActiveCfg = Debug|x64
-		{554C7AA1-3A9D-4AA1-B4C5-F81CD866B84F}.Debug|x64.Build.0 = Debug|x64
-		{554C7AA1-3A9D-4AA1-B4C5-F81CD866B84F}.Release|x64.ActiveCfg = Release|x64
+		{88EB7316-7C6A-4962-A6A0-DA2E68DBB8A1}.Debug|x64.ActiveCfg = Debug|x64
+		{88EB7316-7C6A-4962-A6A0-DA2E68DBB8A1}.Debug|x64.Build.0 = Debug|x64
+		{88EB7316-7C6A-4962-A6A0-DA2E68DBB8A1}.Release|x64.ActiveCfg = Release|x64
+		{88EB7316-7C6A-4962-A6A0-DA2E68DBB8A1}.Release|x64.Build.0 = Release|x64
+		{1D22DCF5-CCF3-4032-A7A4-399D3CA87428}.Debug|x64.ActiveCfg = Debug|x64
+		{1D22DCF5-CCF3-4032-A7A4-399D3CA87428}.Debug|x64.Build.0 = Debug|x64
+		{1D22DCF5-CCF3-4032-A7A4-399D3CA87428}.Release|x64.ActiveCfg = Release|x64
+		{1D22DCF5-CCF3-4032-A7A4-399D3CA87428}.Release|x64.Build.0 = Release|x64
+		{EF22C48C-BDB7-8141-E9F4-1229EA9CDFBC}.Debug|x64.ActiveCfg = Debug|x64
+		{EF22C48C-BDB7-8141-E9F4-1229EA9CDFBC}.Debug|x64.Build.0 = Debug|x64
+		{EF22C48C-BDB7-8141-E9F4-1229EA9CDFBC}.Release|x64.ActiveCfg = Release|x64
+		{EF22C48C-BDB7-8141-E9F4-1229EA9CDFBC}.Release|x64.Build.0 = Release|x64
+		{58D098F7-ACCC-CAE1-F934-90115D3E545D}.Debug|x64.ActiveCfg = Debug|x64
+		{58D098F7-ACCC-CAE1-F934-90115D3E545D}.Debug|x64.Build.0 = Debug|x64
+		{58D098F7-ACCC-CAE1-F934-90115D3E545D}.Release|x64.ActiveCfg = Release|x64
+		{58D098F7-ACCC-CAE1-F934-90115D3E545D}.Release|x64.Build.0 = Release|x64
+		{C1565CCF-CDD9-0E65-16AA-6CB0D5FC4F49}.Debug|x64.ActiveCfg = Debug|x64
+		{C1565CCF-CDD9-0E65-16AA-6CB0D5FC4F49}.Debug|x64.Build.0 = Debug|x64
+		{C1565CCF-CDD9-0E65-16AA-6CB0D5FC4F49}.Release|x64.ActiveCfg = Release|x64
+		{C1565CCF-CDD9-0E65-16AA-6CB0D5FC4F49}.Release|x64.Build.0 = Release|x64
+		{13A2AC72-6A0B-4304-88C7-1FE16102B5B3}.Debug|x64.ActiveCfg = Debug|x64
+		{13A2AC72-6A0B-4304-88C7-1FE16102B5B3}.Debug|x64.Build.0 = Debug|x64
+		{13A2AC72-6A0B-4304-88C7-1FE16102B5B3}.Release|x64.ActiveCfg = Release|x64
+		{13A2AC72-6A0B-4304-88C7-1FE16102B5B3}.Release|x64.Build.0 = Release|x64
+		{3A1DB8A0-FB72-3AC4-4103-A59F14A49DD5}.Debug|x64.ActiveCfg = Debug|x64
+		{3A1DB8A0-FB72-3AC4-4103-A59F14A49DD5}.Debug|x64.Build.0 = Debug|x64
+		{3A1DB8A0-FB72-3AC4-4103-A59F14A49DD5}.Release|x64.ActiveCfg = Release|x64
+		{3A1DB8A0-FB72-3AC4-4103-A59F14A49DD5}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1DF406B0-D947-47F5-BFC5-E89B04942827} = {5290D907-B2E6-405F-B55B-90A20890E697}
+		{88EB7316-7C6A-4962-A6A0-DA2E68DBB8A1} = {1DF406B0-D947-47F5-BFC5-E89B04942827}
+		{1D22DCF5-CCF3-4032-A7A4-399D3CA87428} = {1DF406B0-D947-47F5-BFC5-E89B04942827}
+		{EF22C48C-BDB7-8141-E9F4-1229EA9CDFBC} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+		{58D098F7-ACCC-CAE1-F934-90115D3E545D} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+		{C1565CCF-CDD9-0E65-16AA-6CB0D5FC4F49} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+		{13A2AC72-6A0B-4304-88C7-1FE16102B5B3} = {5290D907-B2E6-405F-B55B-90A20890E697}
+		{3A1DB8A0-FB72-3AC4-4103-A59F14A49DD5} = {1DF406B0-D947-47F5-BFC5-E89B04942827}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {24C1D3F3-EA41-4208-9337-0804D5275D92}

@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\SeaConf.Core.Common\SeaConf.Core.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="SeaConf" />
+		<InternalsVisibleTo Include="SeaConf.Test" />
+	</ItemGroup>
+
+</Project>

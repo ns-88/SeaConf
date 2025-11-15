@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<Compile Update="Resources.Designer.cs">
+			<DependentUpon>Resources.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Resources.resx">
+			<SubType>Designer</SubType>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+			<Generator>ResXFileCodeGenerator</Generator>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="SeaConf.Test" />
+		<InternalsVisibleTo Include="SeaConf.Core.Common" />
+		<InternalsVisibleTo Include="SeaConf.Core.Sources.RegistrySource" />
+		<InternalsVisibleTo Include="SeaConf.Core.Sources.XmlSource" />
+		<InternalsVisibleTo Include="SeaConf.Core.Sources.MemorySource" />
+		<InternalsVisibleTo Include="SeaConf" />
+		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+	</ItemGroup>
+
+</Project>

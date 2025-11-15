@@ -1,57 +1,46 @@
-﻿using System.Runtime.Versioning;
-using SeaConf.Core.Sources;
-using SeaConf.Infrastructure;
-using SeaConf.Interfaces.Core;
-using SeaConf.Interfaces.Factories;
+﻿using SeaConf.Common;
+using SeaConf.Core.Common.Abstractions;
+using SeaConf.Core.Common.Abstractions.Factories;
+using SeaConf.Core.Sources.MemorySource;
+using SeaConf.Core.Sources.RegistrySource;
+using SeaConf.Core.Sources.XmlSource;
+using System.Runtime.Versioning;
 
-namespace SeaConf
+namespace SeaConf;
+
+/// <summary>
+/// Factory that creates configuration data source in registry Windows.
+/// </summary>
+[SupportedOSPlatform("windows")]
+internal class RegistrySourceFactory(string companyName, string appName) : ISourceFactory
 {
-    /// <summary>
-    /// Factory that creates configuration data source in registry Windows.
-    /// </summary>
-    [SupportedOSPlatform("windows")]
-	internal class RegistrySourceFactory(string companyName, string appName) : ISourceFactory
+	/// <inheritdoc />
+	public IStorageSource CreateStorageSource()
 	{
-        /// <summary>
-        /// Create a configuration data source in storage.
-        /// </summary>
-        /// <returns>Configuration data source in storage.</returns>
-		public IStorageSource CreateStorageSource()
-		{
-			return new RegistrySource(companyName, appName, Strings.RootCollectionName);
-		}
+		return new RegistrySource(companyName, appName, Resources.RootCollectionName);
+	}
 
-        /// <summary>
-        /// Create a configuration data source in memory.
-        /// </summary>
-        /// <returns>Configuration data source in memory.</returns>
-        public IMemorySource CreateMemorySource()
-        {
-            return new MemorySource();
-        }
-    }
-
-    /// <summary>
-    /// Factory that creates configuration data source in xml-file.
-    /// </summary>
-	internal class XmlSourceFactory(string path) : ISourceFactory
+	/// <inheritdoc />
+	public IMemorySource CreateMemorySource()
 	{
-        /// <summary>
-        /// Create a configuration data source in storage.
-        /// </summary>
-        /// <returns>Configuration data source in storage.</returns>
-		public IStorageSource CreateStorageSource()
-        {
-			return new XmlSource(path, Strings.RootCollectionName);
-		}
+		return new MemorySource();
+	}
+}
 
-        /// <summary>
-        /// Create a configuration data source in memory.
-        /// </summary>
-        /// <returns>Configuration data source in memory.</returns>
-        public IMemorySource CreateMemorySource()
-        {
-            return new MemorySource();
-        }
-    }
+/// <summary>
+/// Factory that creates configuration data source in xml-file.
+/// </summary>
+internal class XmlSourceFactory(string path) : ISourceFactory
+{
+	/// <inheritdoc />
+	public IStorageSource CreateStorageSource()
+	{
+		return new XmlSource(path, Resources.RootCollectionName);
+	}
+
+	/// <inheritdoc />
+	public IMemorySource CreateMemorySource()
+	{
+		return new MemorySource();
+	}
 }

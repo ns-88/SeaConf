@@ -1,0 +1,435 @@
+﻿using SeaConf.Common;
+using SeaConf.Common.Enums;
+using SeaConf.Core.Common.Abstractions;
+using SeaConf.Core.Common.Abstractions.Models;
+using SeaConf.Core.Common.Models;
+using SeaConf.Core.Common.ValueProviders;
+using System.Diagnostics;
+
+namespace SeaConf.Core.Common;
+
+/// <summary>
+/// Base configuration input/output.
+/// </summary>
+internal class ConfigurationIoBase
+{
+	private readonly IMemorySource _memorySource;
+	private readonly IStorageSource _storageSource;
+	private readonly SyncMode _synchronizationMode;
+
+	protected readonly IComponents Components;
+	protected readonly ValueProvidersFactory ValueProvidersFactory;
+
+	public ConfigurationIoBase(
+		IMemorySource memorySource,
+		IStorageSource storageSource,
+		ValueProvidersFactory valueProvidersFactory,
+		IComponents components,
+		SyncMode synchronizationMode
+	)
+	{
+		_memorySource = memorySource;
+		_storageSource = storageSource;
+		_synchronizationMode = synchronizationMode;
+
+		ValueProvidersFactory = valueProvidersFactory;
+		Components = components;
+	}
+
+	/// <summary>
+	/// Getting all data models from storage and memory sources.
+	/// </summary>
+	/// <param name="synchronizedNodes">Synchronized nodes.</param>
+	/// <returns>All data models from storage and memory sources.</returns>
+	private async Task<Models> GetAllModelsFromSourcesAsync(IReadOnlyList<SynchronizedNodes> synchronizedNodes)
+	{
+		var memoryModels = _memorySource.GetModelsAsync(synchronizedNodes.Select(x => x.MemoryNode)).ConfigureAwait(false);
+		var storageModels = _storageSource.GetModelsAsync(synchronizedNodes.Select(x => x.StorageNode)).ConfigureAwait(false);
+
+		var memoryModelsMap = new Dictionary<ModelPath, IMemoryModel>();
+		var storageModelsMap = new Dictionary<ModelPath, IStorageModel>();
+
+		var memoryModelsMapFillTask = Task.Run(async () =>
+		{
+			await foreach (var memoryModel in memoryModels.ConfigureAwait(false))
+			{
+				memoryModelsMap.Add(memoryModel.Path, memoryModel);
+			}
+		});
+
+		var storageModelsMapFillTask = Task.Run(async () =>
+		{
+			await foreach (var storageModel in storageModels.ConfigureAwait(false))
+			{
+				storageModelsMap.Add(storageModel.Path, storageModel);
+			}
+		});
+
+		try
+		{
+			await Task.WhenAll(memoryModelsMapFillTask, storageModelsMapFillTask).ConfigureAwait(false);
+		}
+		catch (Exception ex)
+		{
+			throw new InvalidOperationException(Resources.GetModelsFromMemoryAndStorageFailed, ex);
+		}
+
+		return new Models(memoryModelsMap, storageModelsMap);
+	}
+
+	/// <summary>
+	/// Synchronizing data models between in memory and storage source.
+	/// </summary>
+	/// <param name="rootMemoryNodes">Root nodes of source in memory.</param>
+	/// <param name="rootStorageNodes">Root nodes of source in storage.</param>
+	/// <returns>Synchronized composite configuration data models.</returns>
+	private async Task<IReadOnlyList<CompositeModel>> SynchronizationAsync(IReadOnlyCollection<INode> rootMemoryNodes, IReadOnlyCollection<INode> rootStorageNodes)
+	{
+		if (rootMemoryNodes.Count == 0)
+		{
+			throw new InvalidOperationException(Resources.ViolationStorageStructureNoModelsInStorage);
+		}
+
+		// ~~~Синхронизируем корневые модели~~~.
+
+		var nodeFound = false;
+		var synchronizedNodes = new List<SynchronizedNodes>();
+		var synchronizedModels = new List<CompositeModel>();
+
+		// Добавление моделей.
+		foreach (var rootMemoryNode in rootMemoryNodes)
+		{
+			foreach (var rootStorageNode in rootStorageNodes)
+			{
+				if (!rootMemoryNode.Name.Equals(rootStorageNode.Name, StringComparison.Ordinal))
+				{
+					continue;
+				}
+
+				synchronizedNodes.Add(new SynchronizedNodes(rootMemoryNode, rootStorageNode));
+
+				nodeFound = true;
+				break;
+			}
+
+			if (nodeFound)
+			{
+				nodeFound = false;
+				continue;
+			}
+
+			INode rootStorageNodeNew;
+			var path = ((IModel)rootMemoryNode).Path;
+
+			try
+			{
+				rootStorageNodeNew = (INode)await _storageSource.AddModelAsync(path).ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException(string.Format(Resources.AddingNewRootModelFailed, path, rootMemoryNode.Name), ex);
+			}
+
+			synchronizedNodes.Add(new SynchronizedNodes(rootMemoryNode, rootStorageNodeNew));
+		}
+
+		nodeFound = false;
+
+		// Удаление моделей.
+		foreach (var rootStorageNode in rootStorageNodes)
+		{
+			foreach (var node in synchronizedNodes)
+			{
+				if (!rootStorageNode.Name.Equals(node.StorageNode.Name, StringComparison.Ordinal))
+				{
+					continue;
+				}
+
+				nodeFound = true;
+				break;
+			}
+
+			if (nodeFound)
+			{
+				nodeFound = false;
+				continue;
+			}
+
+			var path = ((IModel)rootStorageNode).Path;
+
+			try
+			{
+				await _storageSource.DeleteModelAsync(path).ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException(string.Format(Resources.DeletingRootModelFailed, path, rootStorageNode.Name), ex);
+			}
+		}
+
+		// ~~~Синхронизируем дочерние модели~~~.
+
+		// Получаем все модели из источника в памяти и хранилище.
+		var models = await GetAllModelsFromSourcesAsync(synchronizedNodes).ConfigureAwait(false);
+
+		// Удаление моделей.
+		foreach (var storageModel in models.Storage)
+		{
+			if (models.Memory.ContainsKey(storageModel.Key))
+			{
+				continue;
+			}
+
+			try
+			{
+				var nodes = await ((INode)storageModel.Value).GetDescendantNodesAsync().ConfigureAwait(false);
+
+				foreach (var node in nodes)
+				{
+					models.Storage.Remove(((IModel)node).Path);
+				}
+
+				models.Storage.Remove(storageModel.Key);
+
+				await _storageSource.DeleteModelAsync(storageModel.Key).ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException(string.Format(Resources.DeletingModelFailed, storageModel.Key, storageModel.Value.Name), ex);
+			}
+		}
+
+		// Добавление моделей.
+		foreach (var (path, memoryModel) in models.Memory)
+		{
+			if (!models.Storage.TryGetValue(path, out var storageModel))
+			{
+				try
+				{
+					storageModel = await _storageSource.AddModelAsync(path).ConfigureAwait(false);
+				}
+				catch (Exception ex)
+				{
+					throw new InvalidOperationException(string.Format(Resources.AddingNewModelFailed, path, memoryModel.Name), ex);
+				}
+			}
+			
+			var compositeModel = new CompositeModel(memoryModel, storageModel);
+
+			try
+			{
+				await SynchronizingPropertiesAsync(compositeModel).ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException(string.Format(Resources.SynchronizingPropertiesFailed,
+					compositeModel.MemoryModel.Name, compositeModel.StorageModel.Name), ex);
+			}
+
+			synchronizedModels.Add(compositeModel);
+		}
+
+		return synchronizedModels;
+	}
+
+	/// <summary>
+	/// Synchronization of properties between models in memory and in storage source.
+	/// </summary>
+	/// <param name="compositeModel">Composite configuration data model.</param>
+	private static async ValueTask SynchronizingPropertiesAsync(CompositeModel compositeModel)
+	{
+		var memoryModelProperties = compositeModel.MemoryModel.GetProperties().ToList();
+		var storageModelProperties = compositeModel.StorageModel.GetProperties().ToList();
+
+		var comparer = EqualityComparer<IProperty>.Create((lhs, rhs) => lhs?.Name == rhs?.Name, p => p.Name.GetHashCode());
+
+		var propertiesForAdd = memoryModelProperties.Except(storageModelProperties, comparer);
+
+		foreach (var property in propertiesForAdd)
+		{
+			try
+			{
+				await compositeModel.StorageModel.AddPropertyAsync(property).ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException(string.Format(Resources.AddingPropertyFailed, property.Name), ex);
+			}
+		}
+
+		var propertiesForRemove = storageModelProperties.Except(memoryModelProperties, comparer);
+
+		foreach (var property in propertiesForRemove)
+		{
+			try
+			{
+				await compositeModel.StorageModel.DeletePropertyAsync(property).ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException(string.Format(Resources.DeletingPropertyFailed, property.Name), ex);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Getting composite models.
+	/// </summary>
+	/// <returns>Composite configuration data models.</returns>
+	private async IAsyncEnumerable<CompositeModel> GetModelsAsync()
+	{
+		var rootMemoryNodes = await _memorySource.GetRootNodesAsync().ConfigureAwait(false);
+		var rootStorageNodes = await _storageSource.GetRootNodesAsync().ConfigureAwait(false);
+
+		if (_synchronizationMode == SyncMode.Enable || (_synchronizationMode == SyncMode.EnableIfDebug && Debugger.IsAttached))
+		{
+			IReadOnlyList<CompositeModel> compositeModels;
+
+			try
+			{
+				compositeModels = await SynchronizationAsync(rootMemoryNodes, rootStorageNodes).ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException(Resources.SynchronizingDataModelsFailed, ex);
+			}
+
+			foreach (var model in compositeModels)
+			{
+				yield return model;
+			}
+		}
+		else
+		{
+			if (rootMemoryNodes.Count == 0)
+			{
+				throw new InvalidOperationException(Resources.ViolationStorageStructureNoModelsInMemory);
+			}
+
+			if (rootStorageNodes.Count == 0)
+			{
+				throw new InvalidOperationException(Resources.ViolationStorageStructureNoModelsInStorage);
+			}
+
+			if (rootMemoryNodes.Count != rootStorageNodes.Count)
+			{
+				throw new InvalidOperationException(string.Format(Resources.ViolationStorageStructureRootModelsNumberDoesNotMatch,
+					rootMemoryNodes.Count, rootStorageNodes.Count));
+			}
+
+			// ~~~Синхронизируем корневые модели, сопоставляя модели в памяти с моделями в источнике~~~.
+
+			var nodeFound = false;
+			var synchronizedNodes = new List<SynchronizedNodes>();
+
+			foreach (var memoryNode in rootMemoryNodes)
+			{
+				foreach (var storageNode in rootStorageNodes)
+				{
+					if (!memoryNode.Name.Equals(storageNode.Name, StringComparison.Ordinal))
+					{
+						continue;
+					}
+
+					synchronizedNodes.Add(new SynchronizedNodes(memoryNode, storageNode));
+					nodeFound = true;
+
+					break;
+				}
+
+				if (!nodeFound)
+				{
+					throw new InvalidOperationException(string.Format(Resources.ViolationStorageStructureModelFromStorageNotFound,
+						((IModel)memoryNode).Path, memoryNode.Name));
+				}
+
+				nodeFound = false;
+			}
+
+			// Получаем все модели из источника в памяти и хранилище.
+			var models = await GetAllModelsFromSourcesAsync(synchronizedNodes).ConfigureAwait(false);
+
+			if (models.Memory.Count != models.Storage.Count)
+			{
+				throw new InvalidOperationException(string.Format(Resources.ViolationStorageStructureModelsNumberDoesNotMatch,
+					models.Memory.Count, models.Storage.Count));
+			}
+
+			foreach (var (path, memoryModel) in models.Memory)
+			{
+				if (!models.Storage.TryGetValue(path, out var storageModel))
+				{
+					throw new InvalidOperationException(string.Format(Resources.ViolationStorageStructureModelFromStorageNotFound,
+						path, memoryModel.Name));
+				}
+
+				yield return new CompositeModel(memoryModel, storageModel);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Creating a composite source.
+	/// </summary>
+	/// <returns>Composite source.</returns>
+	protected CompositeSource CreateCompositeSource()
+	{
+		return new CompositeSource(this);
+	}
+
+	#region Nested types
+
+	/// <summary>
+	/// Synchronized nodes.
+	/// </summary>
+	/// <param name="MemoryNode">Nodes from an in memory source.</param>
+	/// <param name="StorageNode">Nodes from source in storage.</param>
+	private readonly record struct SynchronizedNodes(INode MemoryNode, INode StorageNode);
+
+	/// <summary>
+	/// Data models from the source in memory and storage.
+	/// </summary>
+	/// <param name="Memory">Models from an in memory source.</param>
+	/// <param name="Storage">Models from source in storage.</param>
+	private readonly record struct Models(IReadOnlyDictionary<ModelPath, IMemoryModel> Memory, Dictionary<ModelPath, IStorageModel> Storage);
+
+	/// <summary>
+	/// Composite data model source.
+	/// </summary>
+	public readonly struct CompositeSource
+	{
+		private readonly ConfigurationIoBase _configurationIo;
+
+		public CompositeSource(ConfigurationIoBase configurationIo)
+		{
+			_configurationIo = configurationIo;
+		}
+
+		/// <summary>
+		/// Getting composite models.
+		/// </summary>
+		/// <returns>Composite models.</returns>
+		public IAsyncEnumerable<CompositeModel> GetModelsAsync()
+		{
+			return _configurationIo.GetModelsAsync();
+		}
+
+		/// <summary>
+		/// Loading.
+		/// </summary>
+		public ValueTask LoadAsync()
+		{
+			return _configurationIo._storageSource.LoadAsync();
+		}
+
+		/// <summary>
+		/// Saving.
+		/// </summary>
+		public ValueTask SaveAsync()
+		{
+			return _configurationIo._storageSource.SaveAsync();
+		}
+	}
+
+	#endregion
+}
