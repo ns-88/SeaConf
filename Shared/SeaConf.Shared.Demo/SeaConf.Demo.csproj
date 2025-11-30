@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\SeaConf.Core.Common\SeaConf.Core.Common.csproj" />
+		<ProjectReference Include="..\..\SeaConf\SeaConf.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+
+</Project>

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\SeaConf.Core.Common\SeaConf.Core.Common.csproj" />
+		<ProjectReference Include="..\..\Core\Sources\SeaConf.Core.Sources.MemorySource\SeaConf.Core.Sources.MemorySource.csproj" />
+		<ProjectReference Include="..\..\SeaConf\SeaConf.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoFixture" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+		<PackageReference Include="Moq" />
+		<PackageReference Include="NUnit" />
+		<PackageReference Include="NUnit3TestAdapter" />
+		<PackageReference Include="System.Linq.Async" />
+	</ItemGroup>
+
+</Project>

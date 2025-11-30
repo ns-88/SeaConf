@@ -1,12 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<LangVersion>12.0</LangVersion>
-		<TargetFrameworks>net8.0</TargetFrameworks>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<Nullable>enable</Nullable>
-		<Platforms>x64</Platforms>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>SeaConf</Title>
@@ -18,8 +12,16 @@
 		<NeutralLanguage>en</NeutralLanguage>
 		<RepositoryType>git</RepositoryType>
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
-		<Version>1.0.4</Version>
+		<Version>1.0.5</Version>
+		<IsPackable>true</IsPackable>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Core\SeaConf.Core.Common\SeaConf.Core.Common.csproj" />
+		<ProjectReference Include="..\Core\Sources\SeaConf.Core.Sources.MemorySource\SeaConf.Core.Sources.MemorySource.csproj" />
+		<ProjectReference Include="..\Core\Sources\SeaConf.Core.Sources.RegistrySource\SeaConf.Core.Sources.RegistrySource.csproj" />
+		<ProjectReference Include="..\Core\Sources\SeaConf.Core.Sources.XmlSource\SeaConf.Core.Sources.XmlSource.csproj" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\readme.md">
@@ -29,18 +31,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="Infrastructure\Strings.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Strings.resx</DependentUpon>
+		<Compile Update="Configurations\ConfigurationComponents.cs">
+			<DependentUpon>Configuration.cs</DependentUpon>
 		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Infrastructure\Strings.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
+		<Compile Update="Configurations\ConfigurationList.cs">
+			<DependentUpon>Configuration.cs</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 </Project>

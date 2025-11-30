@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Shared\SeaConf.Shared.Common\SeaConf.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Models\PropertiesMemoryModel.cs">
+			<DependentUpon>PropertiesModel.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Models\PropertiesMemoryInitializedModel.cs">
+			<DependentUpon>PropertiesModel.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Models\PropertiesModelList.cs">
+			<DependentUpon>PropertiesModel.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Models\PropertyChangedEventArgs.cs">
+			<DependentUpon>PropertiesModel.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Models\ChangedModelsEventArgs.cs">
+			<DependentUpon>ChangedModels.cs</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="SeaConf.Core.Sources.RegistrySource" />
+		<InternalsVisibleTo Include="SeaConf.Core.Sources.XmlSource" />
+		<InternalsVisibleTo Include="SeaConf.Core.Sources.MemorySource" />
+		<InternalsVisibleTo Include="SeaConf" />
+	</ItemGroup>
+
+</Project>
